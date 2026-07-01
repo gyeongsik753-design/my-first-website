@@ -12,11 +12,40 @@ import {
   Chip,
   Button,
   Skeleton,
-  Alert,
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { supabase } from '../lib/supabase';
+
+const FALLBACK_PROJECTS = [
+  {
+    id: 1,
+    title: '개인 포트폴리오 사이트',
+    description: 'React + MUI로 제작한 반응형 포트폴리오. GitHub Pages 자동 배포 및 Supabase 방명록 기능 구현.',
+    tech_stack: ['React', 'MUI', 'Supabase', 'GitHub Actions'],
+    detail_url: 'https://gyeongsik753-design.github.io/my-first-website',
+    github_url: 'https://github.com/gyeongsik753-design/my-first-website',
+    sort_order: 1,
+  },
+  {
+    id: 2,
+    title: 'DUSK 패션 커뮤니티',
+    description: '패션 커뮤니티 웹사이트. 다크 톤 디자인과 MUI 컴포넌트로 구성된 스타일리시한 UI.',
+    tech_stack: ['React', 'MUI', 'Vite', 'CSS3'],
+    detail_url: 'https://gyeongsik753-design.github.io',
+    github_url: 'https://github.com/gyeongsik753-design',
+    sort_order: 2,
+  },
+  {
+    id: 3,
+    title: '랜딩 페이지',
+    description: '제품 소개 및 전환 최적화를 목표로 제작한 싱글 페이지 랜딩 사이트.',
+    tech_stack: ['React', 'Vite', 'MUI'],
+    detail_url: 'https://gyeongsik753-design.github.io/my-first-website',
+    github_url: 'https://github.com/gyeongsik753-design/my-first-website',
+    sort_order: 3,
+  },
+];
 
 const ProjectCard = ({ project }) => {
   const [imgError, setImgError] = useState(false);
@@ -201,7 +230,6 @@ const SkeletonCard = () => (
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -213,22 +241,12 @@ const Projects = () => {
           .order('sort_order', { ascending: true });
 
         if (supabaseError) {
-          const msg = supabaseError.message || '';
-          const isTableMissing =
-            supabaseError.code === '42P01' ||
-            msg.includes('does not exist') ||
-            msg.includes('schema cache') ||
-            msg.includes('Could not find');
-          if (isTableMissing) {
-            setProjects([]);
-          } else {
-            throw supabaseError;
-          }
+          setProjects(FALLBACK_PROJECTS);
         } else {
-          setProjects(data || []);
+          setProjects(data && data.length > 0 ? data : FALLBACK_PROJECTS);
         }
       } catch (err) {
-        setError(err.message);
+        setProjects(FALLBACK_PROJECTS);
       } finally {
         setLoading(false);
       }
@@ -285,12 +303,6 @@ const Projects = () => {
       {/* Projects Grid */}
       <Box sx={{ bgcolor: '#FFFFFF', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
-          {error && (
-            <Alert severity="error" sx={{ mb: 4 }}>
-              프로젝트를 불러오는 중 오류가 발생했습니다: {error}
-            </Alert>
-          )}
-
           <Grid container spacing={3}>
             {loading
               ? Array.from({ length: 3 }).map((_, i) => (
@@ -303,25 +315,6 @@ const Projects = () => {
                     <ProjectCard project={project} />
                   </Grid>
                 ))}
-
-            {!loading && !error && projects.length === 0 && (
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    textAlign: 'center',
-                    py: 12,
-                    border: '1px dashed #E0E0E0',
-                  }}
-                >
-                  <Typography variant="h6" sx={{ color: '#333', fontWeight: 700, mb: 1 }}>
-                    프로젝트를 준비 중입니다
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#999' }}>
-                    곧 멋진 작업물을 공개할 예정입니다.
-                  </Typography>
-                </Box>
-              </Grid>
-            )}
           </Grid>
         </Container>
       </Box>
