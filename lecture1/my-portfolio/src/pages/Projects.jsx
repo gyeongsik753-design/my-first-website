@@ -212,8 +212,16 @@ const Projects = () => {
           .eq('is_published', true)
           .order('sort_order', { ascending: true });
 
-        if (supabaseError) throw supabaseError;
-        setProjects(data || []);
+        if (supabaseError) {
+          // 테이블이 아직 없는 경우 (42P01) 는 빈 목록으로 처리
+          if (supabaseError.code === '42P01' || supabaseError.message?.includes('does not exist')) {
+            setProjects([]);
+          } else {
+            throw supabaseError;
+          }
+        } else {
+          setProjects(data || []);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -293,9 +301,18 @@ const Projects = () => {
 
             {!loading && !error && projects.length === 0 && (
               <Grid item xs={12}>
-                <Box sx={{ textAlign: 'center', py: 8 }}>
-                  <Typography variant="body1" color="text.secondary">
-                    등록된 프로젝트가 없습니다.
+                <Box
+                  sx={{
+                    textAlign: 'center',
+                    py: 12,
+                    border: '1px dashed #E0E0E0',
+                  }}
+                >
+                  <Typography variant="h6" sx={{ color: '#333', fontWeight: 700, mb: 1 }}>
+                    프로젝트를 준비 중입니다
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#999' }}>
+                    곧 멋진 작업물을 공개할 예정입니다.
                   </Typography>
                 </Box>
               </Grid>
