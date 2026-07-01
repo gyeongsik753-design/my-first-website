@@ -300,22 +300,32 @@ const Projects = () => {
         </Container>
       </Box>
 
-      {/* Projects Grid */}
-      <Box sx={{ bgcolor: '#FFFFFF', py: { xs: 8, md: 12 }, px: 2 }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={3}>
+      {/* Projects Horizontal Scroll */}
+      <Box sx={{ bgcolor: '#FFFFFF', py: { xs: 8, md: 12 } }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, md: 4 } }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 3,
+              overflowX: 'auto',
+              pb: 2,
+              '&::-webkit-scrollbar': { height: 6 },
+              '&::-webkit-scrollbar-track': { bgcolor: '#F5F5F5' },
+              '&::-webkit-scrollbar-thumb': { bgcolor: '#BDBDBD', borderRadius: 3 },
+            }}
+          >
             {loading
               ? Array.from({ length: 3 }).map((_, i) => (
-                  <Grid item xs={12} sm={6} md={4} key={i}>
+                  <Box key={i} sx={{ minWidth: { xs: '85vw', sm: 340, md: 380 }, flexShrink: 0 }}>
                     <SkeletonCard />
-                  </Grid>
+                  </Box>
                 ))
               : projects.map((project) => (
-                  <Grid item xs={12} sm={6} md={4} key={project.id}>
+                  <Box key={project.id} sx={{ minWidth: { xs: '85vw', sm: 340, md: 380 }, flexShrink: 0 }}>
                     <ProjectCard project={project} />
-                  </Grid>
+                  </Box>
                 ))}
-          </Grid>
+          </Box>
         </Container>
       </Box>
 
