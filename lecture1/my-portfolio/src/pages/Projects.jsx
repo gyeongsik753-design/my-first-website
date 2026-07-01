@@ -213,8 +213,13 @@ const Projects = () => {
           .order('sort_order', { ascending: true });
 
         if (supabaseError) {
-          // 테이블이 아직 없는 경우 (42P01) 는 빈 목록으로 처리
-          if (supabaseError.code === '42P01' || supabaseError.message?.includes('does not exist')) {
+          const msg = supabaseError.message || '';
+          const isTableMissing =
+            supabaseError.code === '42P01' ||
+            msg.includes('does not exist') ||
+            msg.includes('schema cache') ||
+            msg.includes('Could not find');
+          if (isTableMissing) {
             setProjects([]);
           } else {
             throw supabaseError;
