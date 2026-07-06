@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import BrushIcon from '@mui/icons-material/Brush';
 import GestureIcon from '@mui/icons-material/Gesture';
 import GridViewIcon from '@mui/icons-material/GridView';
@@ -35,51 +35,52 @@ const INITIAL_DATA = {
     photo: '',
   },
   sections: [
-    { id: 'dev-story', title: '나의 개발 스토리',  content: '컴퓨터 관련 일을 찾아보다가 관심이 생겼습니다.', showInHome: true  },
-    { id: 'philosophy', title: '개발 철학',        content: '표현하고 싶은 부분은 확실하게 표현합니다.',       showInHome: true  },
-    { id: 'personal',   title: '개인적인 이야기',  content: '',                                               showInHome: false },
+    { id: 'dev-story',  title: '나의 개발 스토리', content: '컴퓨터 관련 일을 찾아보다가 관심이 생겼습니다.', showInHome: true  },
+    { id: 'philosophy', title: '개발 철학',         content: '표현하고 싶은 부분은 확실하게 표현합니다.',       showInHome: true  },
+    { id: 'personal',   title: '개인적인 이야기',   content: '',                                               showInHome: false },
   ],
   skills: [
-    { id: 1, icon: 'BrushIcon',    name: 'Adobe Photoshop',   level: 30, category: 'Design', description: '사진 편집 및 합성 작업 가능', showInMain: false },
+    { id: 1, icon: 'BrushIcon',    name: 'Adobe Photoshop',   level: 30, category: 'Design', description: '사진 편집 및 합성 작업 가능',  showInMain: false },
     { id: 2, icon: 'GestureIcon',  name: 'Adobe Illustrator', level: 30, category: 'Design', description: '벡터 그래픽 및 로고 제작 가능', showInMain: false },
-    { id: 3, icon: 'GridViewIcon', name: 'Figma',             level: 60, category: 'Design', description: 'UI/UX 프로토타입 설계 가능', showInMain: true  },
+    { id: 3, icon: 'GridViewIcon', name: 'Figma',             level: 60, category: 'Design', description: 'UI/UX 프로토타입 설계 가능',   showInMain: true  },
   ],
 };
 
-/* ─── Context 생성 ─── */
+/* ─── Context ─── */
 const PortfolioContext = createContext(null);
 
 /* ─── Provider ─── */
 export const PortfolioProvider = ({ children }) => {
   const [aboutMeData, setAboutMeData] = useState(INITIAL_DATA);
 
-  /* 개별 섹션 내용 수정 */
-  const updateSectionContent = (id, content) => {
+  /* useCallback: setAboutMeData 는 항상 안정적이므로 의존성 [] 가능 */
+  const updateSectionContent = useCallback((id, content) => {
     setAboutMeData((prev) => ({
       ...prev,
       sections: prev.sections.map((s) => (s.id === id ? { ...s, content } : s)),
     }));
-  };
+  }, []);
 
-  /* 스킬 추가 */
-  const addSkill = (skill) => {
+  const addSkill = useCallback((skill) => {
     setAboutMeData((prev) => ({
       ...prev,
       skills: [...prev.skills, { ...skill, id: Date.now(), showInMain: false }],
     }));
-  };
+  }, []);
 
-  /* 프로필 사진 업데이트 */
-  const updatePhoto = (photoDataUrl) => {
+  const updatePhoto = useCallback((photoDataUrl) => {
     setAboutMeData((prev) => ({
       ...prev,
       basicInfo: { ...prev.basicInfo, photo: photoDataUrl },
     }));
-  };
+  }, []);
 
-  /* 홈용 파생 데이터 */
-  const getHomeData = () => {
-    const homeContent = aboutMeData.sections
+  /*
+   * useMemo: aboutMeData 가 바뀔 때만 재계산.
+   * getHomeData() 함수 대신 homeData 값으로 노출 → Home.jsx 매 렌더 재계산 방지.
+   */
+  const homeData = useMemo(() => {
+    const content = aboutMeData.sections
       .filter((s) => s.showInHome && s.content)
       .map((s) => ({
         id: s.id,
@@ -87,15 +88,20 @@ export const PortfolioProvider = ({ children }) => {
         summary: s.content.length > 80 ? s.content.substring(0, 80) + '…' : s.content,
       }));
 
-    const topSkills = [...aboutMeData.skills]
+    const skills = [...aboutMeData.skills]
       .sort((a, b) => b.level - a.level)
       .slice(0, 4);
 
-    return { content: homeContent, skills: topSkills, basicInfo: aboutMeData.basicInfo };
-  };
+    return { content, skills, basicInfo: aboutMeData.basicInfo };
+  }, [aboutMeData]);
+
+  const value = useMemo(
+    () => ({ aboutMeData, setAboutMeData, updateSectionContent, addSkill, updatePhoto, homeData }),
+    [aboutMeData, updateSectionContent, addSkill, updatePhoto, homeData],
+  );
 
   return (
-    <PortfolioContext.Provider value={{ aboutMeData, setAboutMeData, updateSectionContent, addSkill, updatePhoto, getHomeData }}>
+    <PortfolioContext.Provider value={value}>
       {children}
     </PortfolioContext.Provider>
   );
