@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, memo } from 'react';
 import { Box, Typography, Container, Button, Divider, Avatar, Grid, Chip, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PersonIcon from '@mui/icons-material/Person';
 import { usePortfolio, CATEGORY_CONFIG, ICON_MAP } from '../context/PortfolioContext';
 import ContactSection from '../components/ContactSection';
@@ -106,23 +107,200 @@ const Home = () => {
       <Box
         component="section"
         id="hero"
-        aria-label="히어로 섹션"
-        sx={{ bgcolor: '#000', color: '#fff', py: { xs: 10, md: 16 }, px: 2, textAlign: 'center' }}
+        aria-label="소개 섹션"
+        sx={{
+          position: 'relative',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          color: '#fff',
+          px: 2,
+          textAlign: 'center',
+          /* 배경: 검정 + 좌상단 빨간 glow */
+          background: 'radial-gradient(ellipse 70% 60% at 15% 10%, rgba(200,16,46,0.18) 0%, #000 65%)',
+          overflow: 'hidden',
+        }}
       >
-        <Container maxWidth="md">
-          <Box sx={{ py: { xs: 2, md: 4 } }}>
+        {/* 배경 노이즈 패턴 (미묘한 질감) */}
+        <Box
+          aria-hidden="true"
+          sx={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.03\'/%3E%3C/svg%3E")',
+            backgroundSize: '200px 200px',
+          }}
+        />
+
+        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+          {/* ① 배지 — 직무 */}
+          <Box
+            sx={{
+              display: 'inline-flex', alignItems: 'center', gap: 1.5, mb: 4,
+              animation: 'heroFadeUp 0.7s ease both',
+              animationDelay: '0.05s',
+              '@keyframes heroFadeUp': {
+                from: { opacity: 0, transform: 'translateY(20px)' },
+                to:   { opacity: 1, transform: 'translateY(0)'    },
+              },
+            }}
+          >
+            <Box sx={{ width: 28, height: 1, bgcolor: '#C8102E' }} aria-hidden="true" />
             <Typography
-              variant="h1"
-              sx={{ fontSize: { xs: '2.5rem', md: '4.5rem' }, fontWeight: 900, letterSpacing: '-0.03em', mb: 3, lineHeight: 1.1 }}
+              variant="overline"
+              component="span"
+              sx={{ color: '#C8102E', fontWeight: 700, letterSpacing: 4, fontSize: '0.75rem' }}
             >
-              HERO
+              UI/UX · Frontend Developer
             </Typography>
-            <SectionDivider />
-            <Typography variant="body1" sx={{ color: '#AAA', fontSize: { xs: '1rem', md: '1.2rem' }, maxWidth: 600, mx: 'auto', lineHeight: 1.8 }}>
-              여기는 Hero 섹션입니다. 메인 비주얼, 이름, 간단 소개가 들어갈 예정입니다.
-            </Typography>
+            <Box sx={{ width: 28, height: 1, bgcolor: '#C8102E' }} aria-hidden="true" />
+          </Box>
+
+          {/* ② 메인 타이틀 — 이름 */}
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              fontSize: { xs: '4rem', sm: '5.5rem', md: '8rem' },
+              fontWeight: 900,
+              letterSpacing: { xs: '-0.03em', md: '-0.04em' },
+              lineHeight: 1,
+              mb: 3,
+              animation: 'heroFadeUp 0.7s ease both',
+              animationDelay: '0.18s',
+            }}
+          >
+            신경식
+          </Typography>
+
+          {/* ③ 빨간 accent bar */}
+          <Box
+            aria-hidden="true"
+            sx={{
+              width: 56, height: 3, bgcolor: '#C8102E', mx: 'auto', mb: 4,
+              animation: 'heroFadeUp 0.7s ease both',
+              animationDelay: '0.30s',
+            }}
+          />
+
+          {/* ④ 슬로건 */}
+          <Typography
+            variant="h5"
+            component="p"
+            sx={{
+              fontWeight: 300,
+              fontSize: { xs: '1.1rem', md: '1.5rem' },
+              color: '#E0E0E0',
+              letterSpacing: '0.01em',
+              lineHeight: 1.6,
+              mb: 2,
+              animation: 'heroFadeUp 0.7s ease both',
+              animationDelay: '0.42s',
+            }}
+          >
+            조리사에서 개발자로,&nbsp;
+            <Box component="span" sx={{ color: '#C8102E', fontWeight: 700 }}>
+              표현의 방식을 바꾼 사람
+            </Box>
+          </Typography>
+
+          {/* ⑤ 보조 설명 */}
+          <Typography
+            variant="body1"
+            sx={{
+              color: '#777',
+              fontSize: { xs: '0.9rem', md: '1rem' },
+              maxWidth: 440,
+              mx: 'auto',
+              mb: 6,
+              lineHeight: 1.8,
+              animation: 'heroFadeUp 0.7s ease both',
+              animationDelay: '0.54s',
+            }}
+          >
+            보여주고 싶은 것을 직접 만듭니다.
+            <br />
+            Figma로 설계하고 React로 구현하는 개발자입니다.
+          </Typography>
+
+          {/* ⑥ CTA 버튼 */}
+          <Box
+            sx={{
+              display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap',
+              animation: 'heroFadeUp 0.7s ease both',
+              animationDelay: '0.66s',
+            }}
+          >
+            <Button
+              variant="contained"
+              component={Link}
+              to="/projects"
+              endIcon={<ArrowForwardIcon />}
+              aria-label="프로젝트 보기 페이지로 이동"
+              sx={{
+                bgcolor: '#C8102E', color: '#fff',
+                px: { xs: 3, md: 4 }, py: 1.6,
+                borderRadius: 0, fontWeight: 700,
+                fontSize: { xs: '0.9rem', md: '1rem' },
+                boxShadow: '0 0 24px rgba(200,16,46,0.35)',
+                transition: 'all 0.2s',
+                '&:hover': {
+                  bgcolor: '#A00D25',
+                  boxShadow: '0 0 36px rgba(200,16,46,0.55)',
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              프로젝트 보기
+            </Button>
+            <Button
+              variant="outlined"
+              component={Link}
+              to="/about"
+              aria-label="About Me 페이지로 이동"
+              sx={{
+                color: '#fff', borderColor: 'rgba(255,255,255,0.35)',
+                px: { xs: 3, md: 4 }, py: 1.6,
+                borderRadius: 0, fontWeight: 600,
+                fontSize: { xs: '0.9rem', md: '1rem' },
+                transition: 'all 0.2s',
+                '&:hover': {
+                  borderColor: '#fff',
+                  bgcolor: 'rgba(255,255,255,0.06)',
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              더 알아보기
+            </Button>
           </Box>
         </Container>
+
+        {/* ⑦ 스크롤 유도 화살표 */}
+        <Box
+          aria-hidden="true"
+          component="a"
+          href="#about-me"
+          sx={{
+            position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)',
+            color: 'rgba(255,255,255,0.3)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
+            textDecoration: 'none', cursor: 'pointer',
+            transition: 'color 0.2s',
+            '&:hover': { color: '#C8102E' },
+            animation: 'heroBounce 2s ease-in-out infinite',
+            animationDelay: '1.2s',
+            '@keyframes heroBounce': {
+              '0%, 100%': { transform: 'translateX(-50%) translateY(0)'  },
+              '50%':       { transform: 'translateX(-50%) translateY(8px)' },
+            },
+          }}
+        >
+          <Typography variant="caption" sx={{ fontSize: '0.65rem', letterSpacing: 3, textTransform: 'uppercase' }}>
+            scroll
+          </Typography>
+          <KeyboardArrowDownIcon sx={{ fontSize: 22 }} />
+        </Box>
       </Box>
 
       {/* ── About Me (Context 연동) ── */}
