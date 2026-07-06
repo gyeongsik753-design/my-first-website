@@ -179,7 +179,12 @@ const Home = () => {
         sx={{
           position: 'relative',
           minHeight: '100vh',
-          /* 모바일: 네비 높이(64px) + 콘텐츠 여백 확보 */
+          /*
+            App.jsx main의 pt(56/64px)를 상쇄하는 negative margin.
+            Hero만 배경이 네비 뒤까지 full-bleed 로 확장되도록 처리.
+            pt는 그대로 유지해 콘텐츠가 네비 아래에서 시작.
+          */
+          mt: { xs: '-56px', sm: '-64px' },
           pt: { xs: 10, sm: 8, md: 0 },
           pb: { xs: 10, sm: 8, md: 0 },
           display: 'flex',

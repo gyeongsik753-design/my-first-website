@@ -10,9 +10,20 @@ const App = () => {
   return (
     <PortfolioProvider>
       <HashRouter>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {/*
+          bgcolor: '#050505' — 고정 네비 뒤 배경이 흰색으로 보이지 않도록 다크 처리
+          Navbar가 position:fixed 이므로 main에 pt로 공간 확보
+        */}
+        <Box sx={{ bgcolor: '#050505', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Navbar />
-          <Box component="main" sx={{ flexGrow: 1 }}>
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              /* 고정 네비 높이 보정: xs=56px, sm+=64px */
+              pt: { xs: '56px', sm: '64px' },
+            }}
+          >
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<AboutMe />} />
