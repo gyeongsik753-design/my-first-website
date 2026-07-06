@@ -38,16 +38,20 @@ const SnsButton = ({ icon, href, label }) => (
     rel="noopener noreferrer"
     aria-label={label}
     sx={{
-      width: 48,
-      height: 48,
+      width: 48, height: 48,
       border: '1px solid #333333',
       color: '#AAAAAA',
-      transition: 'all 0.3s',
+      borderRadius: 0,
+      willChange: 'transform, box-shadow',
+      transition: 'all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)',
       '&:hover': {
         borderColor: '#C8102E',
         color: '#FFFFFF',
-        bgcolor: 'rgba(200, 16, 46, 0.1)',
+        bgcolor: 'rgba(200,16,46,0.1)',
+        transform: 'translateY(-6px) scale(1.1)',
+        boxShadow: '0 10px 22px rgba(200,16,46,0.28)',
       },
+      '&:active': { transform: 'translateY(-2px) scale(1.05)' },
     }}
   >
     {icon}

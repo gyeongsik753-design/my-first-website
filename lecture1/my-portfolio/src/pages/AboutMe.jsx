@@ -42,13 +42,36 @@ const SkillBar = memo(({ skill, animate }) => {
         aria-label={`${skill.name}, 숙련도 ${skill.level}퍼센트, ${levelLabel}`}
         sx={{
           border: '1px solid #E0E0E0', borderRadius: 0, p: 2.5, cursor: 'default',
-          transition: 'box-shadow 0.2s, transform 0.2s',
-          '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.10)', transform: 'translateY(-2px)' },
+          /* GPU 가속 예약 */
+          willChange: 'transform, box-shadow',
+          /* 스프링 이징 */
+          transition: [
+            'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            'box-shadow 0.4s ease',
+            'border-color 0.28s ease',
+          ].join(', '),
+          '&:hover': {
+            transform: 'translateY(-8px)',
+            boxShadow: `0 16px 36px ${cat.color}22, 0 0 0 1px ${cat.color}1A`,
+            borderColor: `${cat.color}35`,
+          },
+          /* 카드 hover → 아이콘 회전 + glow */
+          '&:hover .skill-icon-box': {
+            transform: 'rotate(-8deg) scale(1.18)',
+            boxShadow: `0 0 20px ${cat.color}60`,
+          },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
           <Box
-            sx={{ width: 36, height: 36, borderRadius: '50%', bgcolor: cat.bg, color: cat.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+            className="skill-icon-box"
+            sx={{
+              width: 36, height: 36, borderRadius: '50%',
+              bgcolor: cat.bg, color: cat.color,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              transition: 'transform 0.32s ease, box-shadow 0.32s ease',
+              willChange: 'transform, box-shadow',
+            }}
             aria-hidden="true"
           >
             {ICON_MAP[skill.icon] || ICON_MAP.CodeIcon}

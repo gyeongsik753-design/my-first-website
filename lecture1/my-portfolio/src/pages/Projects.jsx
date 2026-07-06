@@ -1,17 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
-  Box,
-  Typography,
-  Container,
-  Divider,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Chip,
-  Button,
-  Skeleton,
+  Box, Typography, Container, Divider, Grid,
+  Card, CardMedia, CardContent, CardActions,
+  Chip, Button, Skeleton,
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -47,6 +38,9 @@ const FALLBACK_PROJECTS = [
   },
 ];
 
+/* ════════════════════════════════════════════
+   프로젝트 카드 — 이미지 줌 + 오버레이 + 3D 리프트
+════════════════════════════════════════════ */
 const ProjectCard = ({ project }) => {
   const [imgError, setImgError] = useState(false);
 
@@ -63,59 +57,139 @@ const ProjectCard = ({ project }) => {
         border: '1px solid #E0E0E0',
         borderRadius: 0,
         boxShadow: 'none',
-        transition: 'box-shadow 0.25s ease, transform 0.25s ease',
+        /* GPU 가속 속성 사전 예약 */
+        willChange: 'transform, box-shadow',
+        /* 스프링 이징 — 탄력 있는 떠오름 */
+        transition: [
+          'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          'box-shadow 0.38s ease',
+          'border-color 0.28s ease',
+        ].join(', '),
         '&:hover': {
-          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-          transform: 'translateY(-4px)',
+          /* perspective + translateY 로 3D 효과 */
+          transform: 'perspective(900px) translateY(-14px) rotateX(2deg)',
+          boxShadow: [
+            '0 30px 60px rgba(0,0,0,0.16)',
+            '0 0 0 1px rgba(200,16,46,0.14)',
+          ].join(', '),
+          borderColor: 'rgba(200,16,46,0.22)',
+        },
+        /* 카드 hover → 이미지 줌 + 어두워짐 */
+        '&:hover .proj-thumb': {
+          transform: 'scale(1.09)',
+          filter: 'brightness(0.6)',
+        },
+        /* 카드 hover → 오버레이 표시 */
+        '&:hover .proj-overlay': { opacity: 1 },
+        '&:hover .proj-overlay-content': {
+          transform: 'translateY(0)',
+          opacity: 1,
         },
       }}
     >
-      {/* 썸네일 */}
-      <Box sx={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1' }}>
+      {/* ── 썸네일 + 인터랙티브 오버레이 ── */}
+      <Box sx={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', flexShrink: 0 }}>
         {thumbnailUrl && !imgError ? (
           <CardMedia
             component="img"
             image={thumbnailUrl}
             alt={project.title}
             onError={() => setImgError(true)}
+            className="proj-thumb"
             sx={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.3s ease',
-              '&:hover': { transform: 'scale(1.03)' },
+              width: '100%', height: '100%', objectFit: 'cover',
+              transition: 'transform 0.55s ease, filter 0.45s ease',
+              willChange: 'transform, filter',
             }}
           />
         ) : (
           <Box
+            className="proj-thumb"
             sx={{
-              width: '100%',
-              height: '100%',
-              bgcolor: '#F5F5F5',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: '100%', height: '100%',
+              bgcolor: '#F0F0F0',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'filter 0.45s ease',
             }}
           >
-            <Typography variant="body2" color="text.secondary">
-              미리보기 없음
-            </Typography>
+            <Typography variant="body2" color="text.secondary">미리보기 없음</Typography>
           </Box>
         )}
+
+        {/* ── 이미지 위 호버 오버레이 ── */}
+        <Box
+          className="proj-overlay"
+          aria-hidden="true"
+          sx={{
+            position: 'absolute', inset: 0,
+            /* 아래서 위로 그라데이션 */
+            background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 55%, transparent 100%)',
+            display: 'flex', alignItems: 'flex-end',
+            opacity: 0,
+            transition: 'opacity 0.35s ease',
+          }}
+        >
+          {/* 버튼 — 위로 슬라이드인 (stagger 0.06s) */}
+          <Box
+            className="proj-overlay-content"
+            sx={{
+              width: '100%',
+              p: { xs: 2, md: 2.5 },
+              display: 'flex', gap: 1.5, flexWrap: 'wrap',
+              transform: 'translateY(18px)',
+              opacity: 0,
+              transition: 'transform 0.38s ease 0.06s, opacity 0.38s ease 0.06s',
+            }}
+          >
+            {project.detail_url && (
+              <Button
+                component="a"
+                href={project.detail_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="contained"
+                size="small"
+                startIcon={<OpenInNewIcon fontSize="small" />}
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  bgcolor: '#C8102E', color: '#fff',
+                  borderRadius: 0, fontWeight: 700, fontSize: '0.75rem', px: 2,
+                  boxShadow: '0 0 18px rgba(200,16,46,0.5)',
+                  '&:hover': { bgcolor: '#A00D25', transform: 'scale(1.04)' },
+                }}
+              >
+                Live Demo
+              </Button>
+            )}
+            {project.github_url && (
+              <Button
+                component="a"
+                href={project.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outlined"
+                size="small"
+                startIcon={<GitHubIcon fontSize="small" />}
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  color: '#fff', borderColor: 'rgba(255,255,255,0.45)',
+                  borderRadius: 0, fontWeight: 600, fontSize: '0.75rem', px: 2,
+                  '&:hover': { borderColor: '#fff', bgcolor: 'rgba(255,255,255,0.1)' },
+                }}
+              >
+                GitHub
+              </Button>
+            )}
+          </Box>
+        </Box>
       </Box>
 
-      {/* 카드 내용 */}
+      {/* ── 카드 내용 ── */}
       <CardContent sx={{ flexGrow: 1, px: 3, py: 2.5 }}>
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 700, fontSize: '1rem', mb: 1, color: '#111111' }}
-        >
+        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem', mb: 1, color: '#111111' }}>
           {project.title}
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{ color: '#666666', lineHeight: 1.7, mb: 2, fontSize: '0.875rem' }}
-        >
+        <Typography variant="body2" sx={{ color: '#666666', lineHeight: 1.7, mb: 2, fontSize: '0.875rem' }}>
           {project.description}
         </Typography>
 
@@ -127,20 +201,24 @@ const ProjectCard = ({ project }) => {
               label={tech}
               size="small"
               sx={{
-                bgcolor: '#111111',
-                color: '#FFFFFF',
-                fontWeight: 600,
-                fontSize: '0.7rem',
-                borderRadius: '4px',
-                height: 24,
+                bgcolor: '#111111', color: '#FFFFFF',
+                fontWeight: 600, fontSize: '0.7rem',
+                borderRadius: '4px', height: 24,
+                willChange: 'transform, background-color',
+                transition: 'transform 0.18s ease, background-color 0.18s ease',
                 '& .MuiChip-label': { px: 1 },
+                '&:hover': {
+                  bgcolor: '#C8102E',
+                  transform: 'scale(1.06)',
+                  cursor: 'default',
+                },
               }}
             />
           ))}
         </Box>
       </CardContent>
 
-      {/* 버튼 */}
+      {/* ── 하단 버튼 (항상 표시 — 모바일 touch 대응) ── */}
       <CardActions sx={{ px: 3, pb: 2.5, pt: 0, gap: 1 }}>
         {project.detail_url && (
           <Button
@@ -151,19 +229,16 @@ const ProjectCard = ({ project }) => {
             rel="noopener noreferrer"
             startIcon={<OpenInNewIcon fontSize="small" />}
             sx={{
-              bgcolor: '#C8102E',
-              color: '#FFFFFF',
-              fontWeight: 700,
-              fontSize: '0.75rem',
-              borderRadius: 0,
-              px: 2,
-              boxShadow: 'none',
+              bgcolor: '#C8102E', color: '#FFFFFF',
+              fontWeight: 700, fontSize: '0.75rem',
+              borderRadius: 0, px: 2, boxShadow: 'none',
+              willChange: 'transform, box-shadow',
+              transition: 'all 0.22s ease',
               '&:hover': {
                 bgcolor: '#A00D25',
-                boxShadow: 'none',
-                transform: 'scale(1.03)',
+                transform: 'scale(1.05)',
+                boxShadow: '0 4px 14px rgba(200,16,46,0.4)',
               },
-              transition: 'all 0.2s ease',
             }}
           >
             Live Demo
@@ -178,19 +253,15 @@ const ProjectCard = ({ project }) => {
             rel="noopener noreferrer"
             startIcon={<GitHubIcon fontSize="small" />}
             sx={{
-              color: '#111111',
-              borderColor: '#111111',
-              fontWeight: 700,
-              fontSize: '0.75rem',
-              borderRadius: 0,
-              px: 2,
+              color: '#111111', borderColor: '#111111',
+              fontWeight: 700, fontSize: '0.75rem',
+              borderRadius: 0, px: 2,
+              willChange: 'transform',
+              transition: 'all 0.22s ease',
               '&:hover': {
-                bgcolor: '#111111',
-                color: '#FFFFFF',
-                borderColor: '#111111',
-                transform: 'scale(1.03)',
+                bgcolor: '#111111', color: '#FFFFFF', borderColor: '#111111',
+                transform: 'scale(1.05)',
               },
-              transition: 'all 0.2s ease',
             }}
           >
             GitHub
@@ -201,15 +272,11 @@ const ProjectCard = ({ project }) => {
   );
 };
 
+/* ════════════════════════════════════════════
+   스켈레톤 카드
+════════════════════════════════════════════ */
 const SkeletonCard = () => (
-  <Card
-    sx={{
-      height: '100%',
-      border: '1px solid #E0E0E0',
-      borderRadius: 0,
-      boxShadow: 'none',
-    }}
-  >
+  <Card sx={{ height: '100%', border: '1px solid #E0E0E0', borderRadius: 0, boxShadow: 'none' }}>
     <Skeleton variant="rectangular" sx={{ aspectRatio: '1 / 1', width: '100%' }} />
     <CardContent sx={{ px: 3, py: 2.5 }}>
       <Skeleton variant="text" width="70%" height={28} />
@@ -227,6 +294,9 @@ const SkeletonCard = () => (
   </Card>
 );
 
+/* ════════════════════════════════════════════
+   Projects 페이지
+════════════════════════════════════════════ */
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -251,64 +321,30 @@ const Projects = () => {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, []);
 
   return (
     <Box>
       {/* Hero Banner */}
-      <Box
-        sx={{
-          bgcolor: '#000000',
-          color: '#FFFFFF',
-          py: { xs: 8, md: 12 },
-          px: 2,
-          textAlign: 'center',
-        }}
-      >
+      <Box sx={{ bgcolor: '#000000', color: '#FFFFFF', py: { xs: 8, md: 12 }, px: 2, textAlign: 'center' }}>
         <Container maxWidth="md">
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 900,
-              fontSize: { xs: '2rem', md: '3.5rem' },
-              letterSpacing: '-0.02em',
-            }}
-          >
+          <Typography variant="h2" sx={{ fontWeight: 900, fontSize: { xs: '2rem', md: '3.5rem' }, letterSpacing: '-0.02em' }}>
             PROJECTS
           </Typography>
-          <Divider
-            sx={{
-              width: 60,
-              mx: 'auto',
-              my: 3,
-              borderColor: '#C8102E',
-              borderWidth: 2,
-            }}
-          />
-          <Typography
-            variant="body1"
-            sx={{
-              color: '#AAAAAA',
-              fontSize: { xs: '1rem', md: '1.1rem' },
-              lineHeight: 1.8,
-            }}
-          >
+          <Divider sx={{ width: 60, mx: 'auto', my: 3, borderColor: '#C8102E', borderWidth: 2 }} />
+          <Typography variant="body1" sx={{ color: '#AAAAAA', fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.8 }}>
             직접 만든 작업물을 소개합니다
           </Typography>
         </Container>
       </Box>
 
-      {/* Projects Horizontal Scroll */}
+      {/* Projects — 수평 스크롤 */}
       <Box sx={{ bgcolor: '#FFFFFF', py: { xs: 8, md: 12 } }}>
         <Container maxWidth="lg" sx={{ px: { xs: 2, md: 4 } }}>
           <Box
             sx={{
-              display: 'flex',
-              gap: 3,
-              overflowX: 'auto',
-              pb: 2,
+              display: 'flex', gap: 3, overflowX: 'auto', pb: 2,
               '&::-webkit-scrollbar': { height: 6 },
               '&::-webkit-scrollbar-track': { bgcolor: '#F5F5F5' },
               '&::-webkit-scrollbar-thumb': { bgcolor: '#BDBDBD', borderRadius: 3 },
@@ -330,19 +366,8 @@ const Projects = () => {
       </Box>
 
       {/* Footer */}
-      <Box
-        component="footer"
-        sx={{
-          bgcolor: '#000000',
-          color: '#666666',
-          py: 3,
-          textAlign: 'center',
-          borderTop: '1px solid #333333',
-        }}
-      >
-        <Typography variant="body2">
-          &copy; 2026 Portfolio. All rights reserved.
-        </Typography>
+      <Box component="footer" sx={{ bgcolor: '#000000', color: '#666666', py: 3, textAlign: 'center', borderTop: '1px solid #333333' }}>
+        <Typography variant="body2">&copy; 2026 Portfolio. All rights reserved.</Typography>
       </Box>
     </Box>
   );

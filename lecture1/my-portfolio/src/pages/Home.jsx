@@ -49,12 +49,39 @@ const MiniSkillCard = memo(({ skill, visible }) => {
         sx={{
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1,
           p: 2, border: '1px solid #E0E0E0', borderRadius: 0,
-          transition: 'border-color 0.2s, background-color 0.2s',
+          /* GPU 가속 예약 */
+          willChange: 'transform, box-shadow',
+          transition: [
+            'transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            'box-shadow 0.38s ease',
+            'border-color 0.22s ease',
+            'background-color 0.22s ease',
+          ].join(', '),
           cursor: 'default',
-          '&:hover': { borderColor: cat.color, bgcolor: cat.bg },
+          '&:hover': {
+            borderColor: cat.color,
+            bgcolor: cat.bg,
+            transform: 'translateY(-6px)',
+            boxShadow: `0 12px 28px ${cat.color}1E, 0 0 0 1px ${cat.color}18`,
+          },
+          /* 카드 hover → 아이콘 회전 + glow */
+          '&:hover .mini-icon-box': {
+            transform: 'rotate(-8deg) scale(1.18)',
+            boxShadow: `0 0 16px ${cat.color}65`,
+          },
         }}
       >
-        <Box sx={{ width: 44, height: 44, borderRadius: '50%', bgcolor: cat.bg, color: cat.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-hidden="true">
+        <Box
+          className="mini-icon-box"
+          sx={{
+            width: 44, height: 44, borderRadius: '50%',
+            bgcolor: cat.bg, color: cat.color,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'transform 0.32s ease, box-shadow 0.32s ease',
+            willChange: 'transform, box-shadow',
+          }}
+          aria-hidden="true"
+        >
           {ICON_MAP[skill.icon] || ICON_MAP.CodeIcon}
         </Box>
         <Typography variant="caption" sx={{ fontWeight: 700, color: '#111', textAlign: 'center', lineHeight: 1.3 }}>
@@ -99,15 +126,16 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
         border: '1px solid rgba(255,255,255,0.14)',
         color: 'rgba(255,255,255,0.4)',
         borderRadius: 0,
-        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        willChange: 'transform, box-shadow, color, border-color',
+        transition: 'all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)',
         '&:hover': {
           color: hoverColor,
           borderColor: hoverColor,
           bgcolor: hoverBg,
-          transform: 'translateY(-5px)',
-          boxShadow: hoverShadow || '0 8px 24px rgba(255,255,255,0.08)',
+          transform: 'translateY(-7px) scale(1.12)',
+          boxShadow: hoverShadow || '0 12px 28px rgba(255,255,255,0.1)',
         },
-        '&:active': { transform: 'translateY(-2px)' },
+        '&:active': { transform: 'translateY(-2px) scale(1.05)' },
       }}
     >
       {icon}
@@ -450,7 +478,8 @@ const Home = () => {
                   fontSize: { xs: '0.875rem', md: '1rem' },
                   letterSpacing: '0.04em',
                   boxShadow: '0 0 20px rgba(200,16,46,0.3), 0 4px 16px rgba(0,0,0,0.4)',
-                  transition: 'all 0.25s ease',
+                  willChange: 'transform, box-shadow',
+                  transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   '&::before': {
                     content: '""', position: 'absolute', top: 0, left: '-100%',
                     width: '100%', height: '100%',
@@ -459,8 +488,8 @@ const Home = () => {
                   },
                   '&:hover': {
                     bgcolor: '#A00D25',
-                    boxShadow: '0 0 44px rgba(200,16,46,0.6), 0 8px 24px rgba(0,0,0,0.5)',
-                    transform: 'translateY(-3px)',
+                    boxShadow: '0 0 48px rgba(200,16,46,0.65), 0 14px 28px rgba(0,0,0,0.5)',
+                    transform: 'translateY(-4px) scale(1.03)',
                   },
                   '&:hover::before': { left: '100%' },
                   '&:active': { transform: 'translateY(-1px)' },
