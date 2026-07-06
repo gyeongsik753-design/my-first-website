@@ -3,6 +3,8 @@ import {
   Box, Typography, Container, Button, IconButton,
   Divider, Avatar, Grid, Chip, Tooltip,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -13,15 +15,20 @@ import PersonIcon from '@mui/icons-material/Person';
 import { usePortfolio, CATEGORY_CONFIG, ICON_MAP } from '../context/PortfolioContext';
 import ContactSection from '../components/ContactSection';
 
-/* ─── smooth scroll 헬퍼 ─── */
+/* ─── smooth scroll ─── */
 const scrollTo = (id) =>
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-/* ─── 공통 헬퍼 컴포넌트 ─── */
+/* ─── 섹션 타이틀 ─── */
 const SectionTitle = memo(({ children, dark = false }) => (
   <Typography
     variant="h3"
-    sx={{ fontWeight: 900, mb: 1, fontSize: { xs: '1.8rem', md: '2.5rem' }, letterSpacing: '-0.02em', color: dark ? '#fff' : '#000' }}
+    sx={{
+      fontWeight: 900, mb: 1,
+      fontSize: { xs: '1.6rem', sm: '1.9rem', md: '2.5rem' },
+      letterSpacing: '-0.02em',
+      color: dark ? '#fff' : '#000',
+    }}
   >
     {children}
   </Typography>
@@ -31,7 +38,7 @@ const SectionDivider = memo(() => (
   <Divider sx={{ width: 60, mx: 'auto', my: 3, borderColor: '#C8102E', borderWidth: 2 }} />
 ));
 
-/* ─── 홈용 미니 스킬 카드 ─── */
+/* ─── 홈 미니 스킬 카드 ─── */
 const MiniSkillCard = memo(({ skill, visible }) => {
   const cat = CATEGORY_CONFIG[skill.category] || CATEGORY_CONFIG.Design;
   return (
@@ -53,11 +60,7 @@ const MiniSkillCard = memo(({ skill, visible }) => {
         <Typography variant="caption" sx={{ fontWeight: 700, color: '#111', textAlign: 'center', lineHeight: 1.3 }}>
           {skill.name}
         </Typography>
-        <Box
-          role="progressbar" aria-valuenow={skill.level} aria-valuemin={0} aria-valuemax={100}
-          aria-label={`${skill.name} 숙련도`}
-          sx={{ width: '100%', height: 4, bgcolor: '#F0F0F0', borderRadius: 2, overflow: 'hidden' }}
-        >
+        <Box role="progressbar" aria-valuenow={skill.level} aria-valuemin={0} aria-valuemax={100} aria-label={`${skill.name} 숙련도`} sx={{ width: '100%', height: 4, bgcolor: '#F0F0F0', borderRadius: 2, overflow: 'hidden' }}>
           <Box sx={{ height: '100%', width: visible ? `${skill.level}%` : '0%', bgcolor: cat.color, borderRadius: 2, transition: 'width 0.9s cubic-bezier(0.4, 0, 0.2, 1)' }} />
         </Box>
         <Chip label={`${skill.level}%`} size="small" aria-hidden="true" sx={{ bgcolor: cat.bg, color: cat.color, fontWeight: 700, height: 18, fontSize: '0.65rem' }} />
@@ -75,10 +78,7 @@ const Cursor = memo(() => (
       display: 'inline-block', width: '2px', height: '1.1em',
       bgcolor: '#C8102E', ml: '3px', verticalAlign: 'middle',
       animation: 'cursorBlink 0.9s step-end infinite',
-      '@keyframes cursorBlink': {
-        '0%, 100%': { opacity: 1 },
-        '50%':       { opacity: 0 },
-      },
+      '@keyframes cursorBlink': { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0 } },
     }}
   />
 ));
@@ -92,10 +92,11 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
       target={href.startsWith('mailto') ? '_self' : '_blank'}
       rel="noopener noreferrer"
       aria-label={label}
-      size="small"
       sx={{
-        width: 46, height: 46,
-        border: '1px solid rgba(255,255,255,0.12)',
+        /* 모바일: 52px, 태블릿+: 46px — 터치 타겟 최소 44px 준수 */
+        width: { xs: 52, sm: 46 },
+        height: { xs: 52, sm: 46 },
+        border: '1px solid rgba(255,255,255,0.14)',
         color: 'rgba(255,255,255,0.4)',
         borderRadius: 0,
         transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -104,7 +105,7 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
           borderColor: hoverColor,
           bgcolor: hoverBg,
           transform: 'translateY(-5px)',
-          boxShadow: hoverShadow || `0 8px 24px rgba(255,255,255,0.08)`,
+          boxShadow: hoverShadow || '0 8px 24px rgba(255,255,255,0.08)',
         },
         '&:active': { transform: 'translateY(-2px)' },
       }}
@@ -114,50 +115,51 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
   </Tooltip>
 ));
 
-/* ═══════════════════════════════════════════════════════
+/* ════════════════════════════════════════════
    메인 컴포넌트
-═══════════════════════════════════════════════════════ */
+════════════════════════════════════════════ */
 const TAGLINE = '조리사에서 개발자로, 표현의 방식을 바꾼 사람';
-const HIGHLIGHT_START = TAGLINE.indexOf('표현');   // '표현...' 부터 빨간색
+const HIGHLIGHT_START = TAGLINE.indexOf('표현');
 
 const Home = () => {
+  /* ── useMediaQuery: 브레이크포인트 감지 ── */
+  const theme = useTheme();
+  const isMobile  = useMediaQuery(theme.breakpoints.down('sm'));        // < 600px
+  const isTablet  = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 600–899px
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));           // ≥ 900px
+
   const { homeData } = usePortfolio();
   const { content: homeContent, skills: topSkills, basicInfo } = homeData;
 
-  /* 스킬 섹션 IntersectionObserver */
+  /* 스킬 IntersectionObserver */
   const skillsRef = useRef(null);
   const [skillsVisible, setSkillsVisible] = useState(false);
-
   useEffect(() => {
     const el = skillsRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setSkillsVisible(true); },
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setSkillsVisible(true); },
       { threshold: 0.15 },
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   /* 타이핑 효과 */
   const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-
   useEffect(() => {
-    const startTimer = setTimeout(() => {
+    const t = setTimeout(() => {
       setIsTyping(true);
       let idx = 0;
-      const intervalId = setInterval(() => {
+      const iv = setInterval(() => {
         idx += 1;
         setDisplayText(TAGLINE.slice(0, idx));
-        if (idx >= TAGLINE.length) {
-          clearInterval(intervalId);
-          setIsTyping(false);
-        }
+        if (idx >= TAGLINE.length) { clearInterval(iv); setIsTyping(false); }
       }, 55);
-      return () => clearInterval(intervalId);
+      return () => clearInterval(iv);
     }, 1200);
-    return () => clearTimeout(startTimer);
+    return () => clearTimeout(t);
   }, []);
 
   /* 스크롤 핸들러 */
@@ -167,9 +169,9 @@ const Home = () => {
   return (
     <Box>
 
-      {/* ═══════════════════════════════════════════
+      {/* ════════════════════════════════════════════
           HERO
-      ═══════════════════════════════════════════ */}
+      ════════════════════════════════════════════ */}
       <Box
         component="section"
         id="hero"
@@ -177,77 +179,205 @@ const Home = () => {
         sx={{
           position: 'relative',
           minHeight: '100vh',
+          /* 모바일: 네비 높이(64px) + 콘텐츠 여백 확보 */
+          pt: { xs: 10, sm: 8, md: 0 },
+          pb: { xs: 10, sm: 8, md: 0 },
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           color: '#fff',
-          px: 2,
+          /* 좌우 패딩: xs=16px, sm=24px — md 이상은 Container가 담당 */
+          px: { xs: 2, sm: 3, md: 2 },
           textAlign: 'center',
           overflow: 'hidden',
           background: 'linear-gradient(145deg, #060606 0%, #080808 50%, #0e0003 100%)',
         }}
       >
-        {/* 배경 레이어: 도트 그리드 */}
-        <Box aria-hidden="true" sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: 'radial-gradient(circle, rgba(200,16,46,0.13) 1px, transparent 1px)', backgroundSize: '38px 38px' }} />
-        {/* 배경 레이어: 빨간 Glow */}
-        <Box aria-hidden="true" sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 55% 45% at 5% 5%, rgba(200,16,46,0.22) 0%, transparent 70%)' }} />
+        {/* 배경: 도트 그리드 — 모바일은 격자 촘촘하게 */}
+        <Box aria-hidden="true" sx={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: 'radial-gradient(circle, rgba(200,16,46,0.13) 1px, transparent 1px)',
+          backgroundSize: { xs: '26px 26px', sm: '32px 32px', md: '38px 38px' },
+        }} />
+        {/* 배경: 빨간 Glow */}
+        <Box aria-hidden="true" sx={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 55% 45% at 5% 5%, rgba(200,16,46,0.22) 0%, transparent 70%)',
+        }} />
 
-        {/* 기하학 도형 A: 대형 원 (우상단, 느린 회전) */}
-        <Box aria-hidden="true" sx={{ position: 'absolute', top: { xs: -120, md: -160 }, right: { xs: -100, md: -60 }, width: { xs: 320, md: 500 }, height: { xs: 320, md: 500 }, borderRadius: '50%', border: '1px solid rgba(200,16,46,0.14)', animation: 'spinCW 35s linear infinite', '@keyframes spinCW': { to: { transform: 'rotate(360deg)' } }, '&::after': { content: '""', position: 'absolute', inset: '14%', borderRadius: '50%', border: '1px solid rgba(200,16,46,0.07)' } }} />
-        {/* 기하학 도형 B: 중형 원 (좌하단, 역회전) */}
-        <Box aria-hidden="true" sx={{ position: 'absolute', bottom: { xs: 60, md: 80 }, left: { xs: -60, md: -20 }, width: { xs: 200, md: 280 }, height: { xs: 200, md: 280 }, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', animation: 'spinCCW 25s linear infinite', '@keyframes spinCCW': { to: { transform: 'rotate(-360deg)' } } }} />
-        {/* 기하학 도형 C: 소형 사각형 (우하단) */}
-        <Box aria-hidden="true" sx={{ position: 'absolute', bottom: { xs: 80, md: 130 }, right: { xs: 24, md: 100 }, width: { xs: 48, md: 72 }, height: { xs: 48, md: 72 }, border: '1px solid rgba(200,16,46,0.22)', animation: 'floatUpDown 5s ease-in-out infinite', animationDelay: '1s', '@keyframes floatUpDown': { '0%, 100%': { transform: 'translateY(0) rotate(0deg)' }, '50%': { transform: 'translateY(-16px) rotate(8deg)' } } }} />
-        {/* 기하학 도형 D: 소형 사각형 (좌중단) */}
-        <Box aria-hidden="true" sx={{ position: 'absolute', top: '40%', left: { xs: 16, md: '6%' }, width: { xs: 28, md: 40 }, height: { xs: 28, md: 40 }, border: '1px solid rgba(255,255,255,0.07)', animation: 'floatUpDown 7s ease-in-out infinite', animationDelay: '2.5s' }} />
-        {/* 포인트 도트들 */}
+        {/* 장식 A: 대형 원 (우상단) */}
+        <Box aria-hidden="true" sx={{
+          position: 'absolute',
+          top:   { xs: -80,  sm: -120, md: -160 },
+          right: { xs: -80,  sm: -80,  md: -60  },
+          width:  { xs: 200, sm: 340,  md: 500   },
+          height: { xs: 200, sm: 340,  md: 500   },
+          borderRadius: '50%',
+          border: '1px solid rgba(200,16,46,0.14)',
+          animation: 'spinCW 35s linear infinite',
+          '@keyframes spinCW': { to: { transform: 'rotate(360deg)' } },
+          '&::after': { content: '""', position: 'absolute', inset: '14%', borderRadius: '50%', border: '1px solid rgba(200,16,46,0.07)' },
+        }} />
+
+        {/* 장식 B: 중형 원 (좌하단) */}
+        <Box aria-hidden="true" sx={{
+          position: 'absolute',
+          bottom: { xs: 50, sm: 60, md: 80 },
+          left:   { xs: -50, sm: -40, md: -20 },
+          width:  { xs: 120, sm: 200, md: 280  },
+          height: { xs: 120, sm: 200, md: 280  },
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.05)',
+          animation: 'spinCCW 25s linear infinite',
+          '@keyframes spinCCW': { to: { transform: 'rotate(-360deg)' } },
+        }} />
+
+        {/* 장식 C: 소형 사각형 (우하단) */}
+        <Box aria-hidden="true" sx={{
+          position: 'absolute',
+          bottom: { xs: 70,  sm: 100, md: 130 },
+          right:  { xs: 14,  sm: 40,  md: 100 },
+          width:  { xs: 28,  sm: 48,  md: 72  },
+          height: { xs: 28,  sm: 48,  md: 72  },
+          border: '1px solid rgba(200,16,46,0.22)',
+          animation: 'floatUpDown 5s ease-in-out infinite',
+          animationDelay: '1s',
+          '@keyframes floatUpDown': {
+            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+            '50%':       { transform: 'translateY(-14px) rotate(8deg)' },
+          },
+        }} />
+
+        {/* 장식 D: 소형 사각형 (좌중단) — 모바일 제외, 태블릿+ 표시 */}
+        {!isMobile && (
+          <Box aria-hidden="true" sx={{
+            position: 'absolute',
+            top:    '40%',
+            left:   { sm: 16, md: '6%' },
+            width:  { sm: 28, md: 40 },
+            height: { sm: 28, md: 40 },
+            border: '1px solid rgba(255,255,255,0.07)',
+            animation: 'floatUpDown 7s ease-in-out infinite',
+            animationDelay: '2.5s',
+          }} />
+        )}
+
+        {/* 포인트 도트 — 모바일: 상단 2개만, 태블릿+: 4개 */}
         {[
-          { top: '28%', left: { xs: '5%', md: '9%' },    delay: '0s',   size: 5 },
-          { top: '18%', right: { xs: '8%', md: '14%' },  delay: '1s',   size: 4 },
-          { bottom: '35%', right: { xs: '6%', md: '10%' }, delay: '2s', size: 3 },
-          { bottom: '25%', left: { xs: '12%', md: '18%' }, delay: '1.5s', size: 4 },
-        ].map((pos, i) => (
-          <Box key={i} aria-hidden="true" sx={{ position: 'absolute', ...pos, width: pos.size, height: pos.size, borderRadius: '50%', bgcolor: '#C8102E', animation: 'pulseDot 3s ease-in-out infinite', animationDelay: pos.delay, '@keyframes pulseDot': { '0%, 100%': { opacity: 0.3, transform: 'scale(1)' }, '50%': { opacity: 1, transform: 'scale(1.8)' } } }} />
-        ))}
+          { top: '28%', left: { xs: '4%', md: '9%' },      delay: '0s',   size: 5 },
+          { top: '18%', right: { xs: '6%', md: '14%' },    delay: '1s',   size: 4 },
+          { bottom: '35%', right: { xs: '5%', md: '10%' }, delay: '2s',   size: 3, mobileHide: true },
+          { bottom: '25%', left: { xs: '10%', md: '18%' }, delay: '1.5s', size: 4, mobileHide: true },
+        ]
+          .filter(({ mobileHide }) => !mobileHide || !isMobile)
+          .map(({ mobileHide: _m, ...pos }, i) => (
+            <Box key={i} aria-hidden="true" sx={{
+              position: 'absolute', ...pos,
+              width: pos.size, height: pos.size,
+              borderRadius: '50%', bgcolor: '#C8102E',
+              animation: 'pulseDot 3s ease-in-out infinite',
+              animationDelay: pos.delay,
+              '@keyframes pulseDot': {
+                '0%, 100%': { opacity: 0.3, transform: 'scale(1)' },
+                '50%':       { opacity: 1,   transform: 'scale(1.8)' },
+              },
+            }} />
+          ))}
 
         {/* ──────────── 메인 콘텐츠 ──────────── */}
-        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
-
+        <Container
+          maxWidth="md"
+          sx={{
+            position: 'relative', zIndex: 1,
+            /* Container 내부 패딩 제거 — 부모 Box px로 통일 */
+            px: { xs: 0, sm: 0 },
+          }}
+        >
           {/* ① 직무 배지 */}
-          <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1.5, mb: { xs: 3, md: 4 }, opacity: 0, animation: 'heroFadeUp 0.6s ease forwards', animationDelay: '0.1s', '@keyframes heroFadeUp': { from: { opacity: 0, transform: 'translateY(18px)' }, to: { opacity: 1, transform: 'translateY(0)' } } }}>
-            <Box sx={{ width: 24, height: 1, bgcolor: '#C8102E' }} />
-            <Typography component="span" sx={{ color: '#C8102E', fontWeight: 700, fontSize: { xs: '0.65rem', md: '0.72rem' }, letterSpacing: { xs: 3, md: 5 }, textTransform: 'uppercase' }}>
+          <Box sx={{
+            display: 'inline-flex', alignItems: 'center',
+            gap: { xs: 1, sm: 1.5 },
+            mb: { xs: 2.5, sm: 3, md: 4 },
+            opacity: 0,
+            animation: 'heroFadeUp 0.6s ease forwards',
+            animationDelay: '0.1s',
+            '@keyframes heroFadeUp': {
+              from: { opacity: 0, transform: 'translateY(18px)' },
+              to:   { opacity: 1, transform: 'translateY(0)' },
+            },
+          }}>
+            <Box sx={{ width: { xs: 14, sm: 20, md: 24 }, height: 1, bgcolor: '#C8102E' }} />
+            <Typography component="span" sx={{
+              color: '#C8102E', fontWeight: 700,
+              fontSize: { xs: '0.57rem', sm: '0.62rem', md: '0.72rem' },
+              letterSpacing: { xs: 2, sm: 3, md: 5 },
+              textTransform: 'uppercase',
+            }}>
+              {/* 모바일에서 한 줄로 들어가도록 축약 없이 그대로 */}
               UI/UX · Frontend Developer
             </Typography>
-            <Box sx={{ width: 24, height: 1, bgcolor: '#C8102E' }} />
+            <Box sx={{ width: { xs: 14, sm: 20, md: 24 }, height: 1, bgcolor: '#C8102E' }} />
           </Box>
 
           {/* ② 이름 — 글자별 stagger */}
           <Typography
             variant="h1" component="h1" aria-label="신경식"
             sx={{
-              fontSize: { xs: '5rem', sm: '7rem', md: '10rem' },
+              /* xs: 320px 기준 3글자 × ~60px = 180px → 여유 있음 */
+              fontSize: { xs: '3.8rem', sm: '5.5rem', md: '8rem', lg: '10rem' },
               fontWeight: 900,
-              letterSpacing: { xs: '-0.03em', md: '-0.045em' },
-              lineHeight: 0.95, mb: { xs: 2.5, md: 3 },
+              letterSpacing: { xs: '-0.02em', sm: '-0.03em', md: '-0.045em' },
+              lineHeight: 0.95,
+              mb: { xs: 2, sm: 2.5, md: 3 },
               background: 'linear-gradient(180deg, #ffffff 30%, rgba(255,255,255,0.7) 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             {'신경식'.split('').map((char, i) => (
-              <Box component="span" key={i} sx={{ display: 'inline-block', opacity: 0, animation: 'heroFadeUp 0.5s ease forwards', animationDelay: `${0.3 + i * 0.12}s` }}>
+              <Box component="span" key={i} sx={{
+                display: 'inline-block', opacity: 0,
+                animation: 'heroFadeUp 0.5s ease forwards',
+                animationDelay: `${0.3 + i * 0.12}s`,
+              }}>
                 {char}
               </Box>
             ))}
           </Typography>
 
-          {/* ③ 빨간 bar — 중앙 확장 */}
-          <Box aria-hidden="true" sx={{ height: 3, bgcolor: '#C8102E', mx: 'auto', mb: { xs: 3, md: 4 }, width: 56, transformOrigin: 'center', transform: 'scaleX(0)', animation: 'barExpand 0.5s ease forwards', animationDelay: '0.72s', '@keyframes barExpand': { from: { transform: 'scaleX(0)' }, to: { transform: 'scaleX(1)' } } }} />
+          {/* ③ 빨간 accent bar */}
+          <Box aria-hidden="true" sx={{
+            height: { xs: 2, md: 3 },
+            bgcolor: '#C8102E',
+            mx: 'auto',
+            mb: { xs: 2.5, sm: 3, md: 4 },
+            width: { xs: 36, sm: 48, md: 56 },
+            transformOrigin: 'center',
+            transform: 'scaleX(0)',
+            animation: 'barExpand 0.5s ease forwards',
+            animationDelay: '0.72s',
+            '@keyframes barExpand': { from: { transform: 'scaleX(0)' }, to: { transform: 'scaleX(1)' } },
+          }} />
 
           {/* ④ 슬로건 — 타이핑 */}
-          <Box sx={{ minHeight: { xs: '3.2rem', md: '4rem' }, mb: { xs: 2, md: 2.5 }, opacity: 0, animation: 'heroFadeUp 0.5s ease forwards', animationDelay: '0.82s' }}>
-            <Typography component="p" sx={{ fontWeight: 300, fontSize: { xs: '1rem', sm: '1.2rem', md: '1.45rem' }, color: '#D8D8D8', letterSpacing: '0.01em', lineHeight: 1.7 }}>
+          <Box sx={{
+            /* 완성 텍스트 높이 미리 확보 → 레이아웃 점프 방지 */
+            minHeight: { xs: '2.8rem', sm: '3.2rem', md: '4rem' },
+            mb: { xs: 1.5, sm: 2, md: 2.5 },
+            opacity: 0,
+            animation: 'heroFadeUp 0.5s ease forwards',
+            animationDelay: '0.82s',
+          }}>
+            <Typography component="p" sx={{
+              fontWeight: 300,
+              fontSize: { xs: '0.875rem', sm: '1.05rem', md: '1.3rem', lg: '1.45rem' },
+              color: '#D8D8D8',
+              letterSpacing: '0.01em',
+              lineHeight: { xs: 1.65, sm: 1.7 },
+              wordBreak: 'keep-all', /* 한국어 단어 중간 줄바꿈 방지 */
+            }}>
               {HIGHLIGHT_START > 0 && displayText.length > HIGHLIGHT_START ? (
                 <>
                   {displayText.slice(0, HIGHLIGHT_START)}
@@ -261,7 +391,18 @@ const Home = () => {
           </Box>
 
           {/* ⑤ 보조 설명 */}
-          <Typography variant="body1" sx={{ color: '#5a5a5a', fontSize: { xs: '0.85rem', md: '0.95rem' }, maxWidth: 380, mx: 'auto', mb: { xs: 5, md: 6 }, lineHeight: 2, opacity: 0, animation: 'heroFadeUp 0.5s ease forwards', animationDelay: '0.92s' }}>
+          <Typography sx={{
+            color: '#5a5a5a',
+            fontSize: { xs: '0.78rem', sm: '0.85rem', md: '0.95rem' },
+            maxWidth: { xs: '100%', sm: 360, md: 400 },
+            mx: 'auto',
+            mb: { xs: 4, sm: 5, md: 6 },
+            lineHeight: { xs: 1.85, md: 2 },
+            opacity: 0,
+            animation: 'heroFadeUp 0.5s ease forwards',
+            animationDelay: '0.92s',
+            wordBreak: 'keep-all',
+          }}>
             보여주고 싶은 것을 직접 만듭니다.
             <br />
             Figma로 설계하고 React로 구현하는 개발자입니다.
@@ -270,8 +411,19 @@ const Home = () => {
           {/* ⑥ CTA 전체 영역 */}
           <Box sx={{ opacity: 0, animation: 'heroFadeUp 0.5s ease forwards', animationDelay: '1.02s' }}>
 
-            {/* ── 메인 버튼 2개 ── */}
-            <Box sx={{ display: 'flex', gap: { xs: 1.5, md: 2 }, justifyContent: 'center', flexWrap: 'wrap', mb: { xs: 3.5, md: 4.5 } }}>
+            {/* ── 메인 버튼 행 ── */}
+            <Box sx={{
+              display: 'flex',
+              /* 모바일: 세로 쌓기 / 태블릿+: 가로 배치 */
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: { xs: 'stretch', sm: 'center' },
+              justifyContent: 'center',
+              gap: { xs: 1.5, sm: 2 },
+              mb: { xs: 3, sm: 3.5, md: 4.5 },
+              /* 모바일: 버튼 최대 너비로 너무 넓어지지 않게 */
+              maxWidth: { xs: 320, sm: 'none' },
+              mx: 'auto',
+            }}>
 
               {/* Primary: 프로젝트 보기 */}
               <Button
@@ -280,16 +432,20 @@ const Home = () => {
                 to="/projects"
                 endIcon={<ArrowForwardIcon />}
                 aria-label="프로젝트 목록 페이지로 이동"
+                /* useMediaQuery로 fullWidth 결정 */
+                fullWidth={isMobile}
                 sx={{
                   position: 'relative', overflow: 'hidden',
                   bgcolor: '#C8102E', color: '#fff',
-                  px: { xs: 3.5, md: 5 }, py: { xs: 1.5, md: 1.8 },
+                  px: { xs: 3, sm: 3.5, md: 5 },
+                  py: { xs: 1.6, sm: 1.5, md: 1.8 },
+                  /* 터치 타겟 최소 48px (모바일 권고) */
+                  minHeight: { xs: 48, sm: 44 },
                   borderRadius: 0, fontWeight: 700,
                   fontSize: { xs: '0.875rem', md: '1rem' },
                   letterSpacing: '0.04em',
                   boxShadow: '0 0 20px rgba(200,16,46,0.3), 0 4px 16px rgba(0,0,0,0.4)',
                   transition: 'all 0.25s ease',
-                  /* 호버 빛 스윕 */
                   '&::before': {
                     content: '""', position: 'absolute', top: 0, left: '-100%',
                     width: '100%', height: '100%',
@@ -312,11 +468,14 @@ const Home = () => {
               <Button
                 variant="outlined"
                 onClick={handleScrollContact}
-                startIcon={<EmailIcon sx={{ fontSize: '1rem !important' }} />}
+                startIcon={<EmailIcon sx={{ fontSize: '0.95rem !important' }} />}
                 aria-label="연락처 섹션으로 이동"
+                fullWidth={isMobile}
                 sx={{
                   color: '#ccc', borderColor: 'rgba(255,255,255,0.2)',
-                  px: { xs: 3.5, md: 5 }, py: { xs: 1.5, md: 1.8 },
+                  px: { xs: 3, sm: 3.5, md: 5 },
+                  py: { xs: 1.6, sm: 1.5, md: 1.8 },
+                  minHeight: { xs: 48, sm: 44 },
                   borderRadius: 0, fontWeight: 500,
                   fontSize: { xs: '0.875rem', md: '1rem' },
                   letterSpacing: '0.04em',
@@ -336,16 +495,30 @@ const Home = () => {
             </Box>
 
             {/* ── 구분선 ── */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center', mb: { xs: 2.5, md: 3 } }}>
-              <Box sx={{ width: 48, height: '1px', bgcolor: 'rgba(255,255,255,0.1)' }} />
-              <Typography sx={{ color: 'rgba(255,255,255,0.18)', fontSize: '0.58rem', letterSpacing: 4, textTransform: 'uppercase' }}>
+            <Box sx={{
+              display: 'flex', alignItems: 'center',
+              gap: { xs: 1.5, md: 2 },
+              justifyContent: 'center',
+              mb: { xs: 2, sm: 2.5, md: 3 },
+            }}>
+              <Box sx={{ width: { xs: 32, md: 48 }, height: '1px', bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Typography sx={{
+                color: 'rgba(255,255,255,0.18)',
+                fontSize: { xs: '0.52rem', md: '0.58rem' },
+                letterSpacing: { xs: 3, md: 4 },
+                textTransform: 'uppercase',
+              }}>
                 find me on
               </Typography>
-              <Box sx={{ width: 48, height: '1px', bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Box sx={{ width: { xs: 32, md: 48 }, height: '1px', bgcolor: 'rgba(255,255,255,0.1)' }} />
             </Box>
 
-            {/* ── 소셜 아이콘 3개 ── */}
-            <Box sx={{ display: 'flex', gap: 1.5, justifyContent: 'center' }}>
+            {/* ── 소셜 아이콘 — 모바일: gap 더 넓게 (터치 간격 확보) ── */}
+            <Box sx={{
+              display: 'flex',
+              gap: { xs: 2, sm: 1.5 },
+              justifyContent: 'center',
+            }}>
               <SocialBtn
                 icon={<GitHubIcon fontSize="small" />}
                 label="GitHub 프로필"
@@ -374,21 +547,25 @@ const Home = () => {
           </Box>
         </Container>
 
-        {/* ⑦ 스크롤 유도 화살표 (JS smooth scroll — HashRouter 충돌 방지) */}
+        {/* ⑦ 스크롤 화살표 */}
         <Box
           component="button"
           onClick={handleScrollAbout}
           aria-label="다음 섹션으로 스크롤"
           sx={{
             position: 'absolute',
-            bottom: { xs: 20, md: 32 },
+            bottom: { xs: 14, sm: 22, md: 32 },
             left: '50%',
             transform: 'translateX(-50%)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            gap: { xs: 0.3, md: 0.5 },
+            /* 터치 타겟 패딩 추가 */
+            p: { xs: 1.5, md: 1 },
             background: 'none', border: 'none', cursor: 'pointer',
             color: 'rgba(255,255,255,0.22)',
             transition: 'color 0.2s',
             '&:hover': { color: '#C8102E' },
+            '&:focus-visible': { outline: '2px solid #C8102E', outlineOffset: 4 },
             opacity: 0,
             animation: 'heroFadeUp 0.5s ease forwards, heroBounce 2.2s ease-in-out infinite',
             animationDelay: '1.8s, 2.4s',
@@ -398,23 +575,28 @@ const Home = () => {
             },
           }}
         >
-          <Typography sx={{ fontSize: '0.58rem', letterSpacing: 4, textTransform: 'uppercase', opacity: 0.6, color: 'inherit' }}>
+          <Typography sx={{
+            fontSize: { xs: '0.5rem', md: '0.58rem' },
+            letterSpacing: { xs: 3, md: 4 },
+            textTransform: 'uppercase',
+            opacity: 0.6, color: 'inherit',
+          }}>
             scroll
           </Typography>
-          <KeyboardArrowDownIcon sx={{ fontSize: 18 }} />
+          <KeyboardArrowDownIcon sx={{ fontSize: { xs: 15, md: 18 } }} />
         </Box>
       </Box>
 
-      {/* ═══════════════════════════════════════════
+      {/* ════════════════════════════════════════════
           ABOUT ME
-      ═══════════════════════════════════════════ */}
+      ════════════════════════════════════════════ */}
       <Box component="section" id="about-me" aria-labelledby="home-about-title" sx={{ bgcolor: '#fff', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
             <SectionTitle><span id="home-about-title">ABOUT ME</span></SectionTitle>
             <SectionDivider />
           </Box>
-          <Grid container spacing={4} alignItems="flex-start">
+          <Grid container spacing={{ xs: 3, md: 4 }} alignItems="flex-start">
             <Grid item xs={12} md={4}>
               <Box sx={{ border: '1px solid #E0E0E0', p: 3, textAlign: 'center' }}>
                 <Avatar src={basicInfo.photo || undefined} sx={{ width: 100, height: 100, bgcolor: '#E0E0E0', border: '3px solid #111', mx: 'auto', mb: 2 }} alt={`${basicInfo.name} 프로필 사진`}>
@@ -457,12 +639,12 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* ═══════════════════════════════════════════
+      {/* ════════════════════════════════════════════
           SKILL TREE
-      ═══════════════════════════════════════════ */}
+      ════════════════════════════════════════════ */}
       <Box ref={skillsRef} component="section" id="skill-tree" aria-labelledby="home-skill-title" sx={{ bgcolor: '#F5F5F5', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
             <SectionTitle><span id="home-skill-title">SKILL TREE</span></SectionTitle>
             <SectionDivider />
             <Typography variant="body1" sx={{ color: '#666', maxWidth: 500, mx: 'auto', lineHeight: 1.8 }}>
@@ -490,9 +672,9 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* ═══════════════════════════════════════════
+      {/* ════════════════════════════════════════════
           PROJECTS
-      ═══════════════════════════════════════════ */}
+      ════════════════════════════════════════════ */}
       <Box component="section" id="projects" aria-label="프로젝트 섹션" sx={{ bgcolor: '#000', color: '#fff', py: { xs: 8, md: 12 }, px: 2, textAlign: 'center' }}>
         <Container maxWidth="md">
           <SectionTitle dark>PROJECTS</SectionTitle>
@@ -506,9 +688,9 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* ═══════════════════════════════════════════
+      {/* ════════════════════════════════════════════
           CONTACT
-      ═══════════════════════════════════════════ */}
+      ════════════════════════════════════════════ */}
       <Box component="section" id="contact" aria-label="연락처 섹션" sx={{ bgcolor: '#000', color: '#fff', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="md" sx={{ textAlign: 'center' }}>
           <SectionTitle dark>CONTACT</SectionTitle>
