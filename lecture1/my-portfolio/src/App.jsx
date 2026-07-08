@@ -5,10 +5,13 @@ import Home from './pages/Home';
 import AboutMe from './pages/AboutMe';
 import Projects from './pages/Projects';
 import { PortfolioProvider } from './context/PortfolioContext';
+import CustomCursor from './components/CustomCursor';
 
 const App = () => {
   return (
     <PortfolioProvider>
+      {/* 커스텀 커서 — 라우터 외부, pointer:fine 기기에서만 활성 */}
+      <CustomCursor />
       <HashRouter>
         {/*
           bgcolor: '#050505' — 고정 네비 뒤 배경이 흰색으로 보이지 않도록 다크 처리
