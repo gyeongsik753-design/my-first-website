@@ -7,6 +7,7 @@ import {
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { supabase } from '../lib/supabase';
+import AnimateOnScroll from '../components/AnimateOnScroll';
 
 const FALLBACK_PROJECTS = [
   {
@@ -331,13 +332,15 @@ const Projects = () => {
       {/* Hero Banner */}
       <Box sx={{ bgcolor: '#000000', color: '#FFFFFF', py: { xs: 8, md: 12 }, px: 2, textAlign: 'center' }}>
         <Container maxWidth="md">
-          <Typography variant="h2" sx={{ fontWeight: 900, fontSize: { xs: '2rem', md: '3.5rem' }, letterSpacing: '-0.02em' }}>
-            PROJECTS
-          </Typography>
-          <Divider sx={{ width: 60, mx: 'auto', my: 3, borderColor: '#C8102E', borderWidth: 2 }} />
-          <Typography variant="body1" sx={{ color: '#AAAAAA', fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.8 }}>
-            직접 만든 작업물을 소개합니다
-          </Typography>
+          <AnimateOnScroll variant="fadeDown" duration={0.72}>
+            <Typography variant="h2" sx={{ fontWeight: 900, fontSize: { xs: '2rem', md: '3.5rem' }, letterSpacing: '-0.02em' }}>
+              PROJECTS
+            </Typography>
+            <Divider sx={{ width: 60, mx: 'auto', my: 3, borderColor: '#C8102E', borderWidth: 2 }} />
+            <Typography variant="body1" sx={{ color: '#AAAAAA', fontSize: { xs: '1rem', md: '1.1rem' }, lineHeight: 1.8 }}>
+              직접 만든 작업물을 소개합니다
+            </Typography>
+          </AnimateOnScroll>
         </Container>
       </Box>
 

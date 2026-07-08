@@ -15,6 +15,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { usePortfolio, CATEGORY_CONFIG, ICON_MAP } from '../context/PortfolioContext';
 import ContactSection from '../components/ContactSection';
 import CircularSkillProgress from '../components/CircularSkillProgress';
+import AnimateOnScroll from '../components/AnimateOnScroll';
 
 /* ─── smooth scroll ─── */
 const scrollTo = (id) =>
@@ -236,6 +237,45 @@ const Home = () => {
     return () => obs.disconnect();
   }, []);
 
+  /* ── 패럴렉스 & 히어로 스크롤 페이드 ──
+     · CSS custom properties를 rAF(throttle)로 업데이트
+     · 다층 배경 속도 차이 → 깊이감 연출
+     · Hero 높이 1.5배 구간에서만 연산 (성능 최적화)
+  */
+  useEffect(() => {
+    let rafId = null;
+    const root = document.documentElement;
+
+    const update = () => {
+      const y    = window.scrollY;
+      const vhH  = window.innerHeight;
+      if (y < vhH * 1.5) {
+        root.style.setProperty('--px-slow', `${(y * 0.14).toFixed(1)}px`);
+        root.style.setProperty('--px-mid',  `${(y * 0.28).toFixed(1)}px`);
+        root.style.setProperty('--px-fast', `${(y * 0.46).toFixed(1)}px`);
+      }
+      /* 0~400px 구간에서 Hero 콘텐츠 서서히 투명화 + 미세 축소 */
+      const fade  = +Math.max(0, 1 - y / 400).toFixed(3);
+      const scale = +(0.94 + fade * 0.06).toFixed(4);
+      root.style.setProperty('--hero-scroll-opacity', fade);
+      root.style.setProperty('--hero-scroll-scale',   scale);
+      rafId = null;
+    };
+
+    const onScroll = () => { if (!rafId) rafId = requestAnimationFrame(update); };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+      root.style.removeProperty('--px-slow');
+      root.style.removeProperty('--px-mid');
+      root.style.removeProperty('--px-fast');
+      root.style.removeProperty('--hero-scroll-opacity');
+      root.style.removeProperty('--hero-scroll-scale');
+    };
+  }, []);
+
   /* 타이핑 효과 */
   const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -290,31 +330,41 @@ const Home = () => {
           background: 'linear-gradient(145deg, #060606 0%, #080808 50%, #0e0003 100%)',
         }}
       >
-        {/* 배경: 도트 그리드 — 모바일은 격자 촘촘하게 */}
+        {/* 배경: 도트 그리드 — 패럴렉스 빠른 속도 (-Y, 전경처럼 올라감) */}
         <Box aria-hidden="true" sx={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           backgroundImage: 'radial-gradient(circle, rgba(200,16,46,0.13) 1px, transparent 1px)',
           backgroundSize: { xs: '26px 26px', sm: '32px 32px', md: '38px 38px' },
+          transform: 'translate3d(0, calc(var(--px-fast, 0px) * -1), 0)',
+          willChange: 'transform',
         }} />
-        {/* 배경: 빨간 Glow */}
+        {/* 배경: 빨간 Glow — 패럴렉스 느린 속도 (+Y, 배경처럼 처짐) */}
         <Box aria-hidden="true" sx={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           background: 'radial-gradient(ellipse 55% 45% at 5% 5%, rgba(200,16,46,0.22) 0%, transparent 70%)',
+          transform: 'translate3d(0, var(--px-slow, 0px), 0)',
+          willChange: 'transform',
         }} />
 
-        {/* 장식 A: 대형 원 (우상단) */}
+        {/* 장식 A: 대형 원 (우상단) — 외부: 위치 + 패럴렉스 / 내부: 스핀 */}
         <Box aria-hidden="true" sx={{
           position: 'absolute',
-          top:   { xs: -80,  sm: -120, md: -160 },
-          right: { xs: -80,  sm: -80,  md: -60  },
-          width:  { xs: 200, sm: 340,  md: 500   },
-          height: { xs: 200, sm: 340,  md: 500   },
-          borderRadius: '50%',
-          border: '1px solid rgba(200,16,46,0.14)',
-          animation: 'spinCW 35s linear infinite',
-          '@keyframes spinCW': { to: { transform: 'rotate(360deg)' } },
-          '&::after': { content: '""', position: 'absolute', inset: '14%', borderRadius: '50%', border: '1px solid rgba(200,16,46,0.07)' },
-        }} />
+          top:   { xs: -80, sm: -120, md: -160 },
+          right: { xs: -80, sm: -80,  md: -60  },
+          /* transform 분리: 외부가 parallax, 내부가 spin (두 transform 충돌 없음) */
+          transform: 'translate3d(0, var(--px-mid, 0px), 0)',
+          willChange: 'transform',
+        }}>
+          <Box sx={{
+            width:  { xs: 200, sm: 340, md: 500 },
+            height: { xs: 200, sm: 340, md: 500 },
+            borderRadius: '50%',
+            border: '1px solid rgba(200,16,46,0.14)',
+            animation: 'spinCW 35s linear infinite',
+            '@keyframes spinCW': { to: { transform: 'rotate(360deg)' } },
+            '&::after': { content: '""', position: 'absolute', inset: '14%', borderRadius: '50%', border: '1px solid rgba(200,16,46,0.07)' },
+          }} />
+        </Box>
 
         {/* 장식 B: 중형 원 (좌하단) */}
         <Box aria-hidden="true" sx={{
@@ -386,8 +436,12 @@ const Home = () => {
           maxWidth="md"
           sx={{
             position: 'relative', zIndex: 1,
-            /* Container 내부 패딩 제거 — 부모 Box px로 통일 */
             px: { xs: 0, sm: 0 },
+            /* 스크롤 페이드: scrollY→ CSS custom property → rAF 업데이트
+               0px: opacity=1 scale=1  /  400px: opacity=0 scale=0.94 */
+            opacity: 'var(--hero-scroll-opacity, 1)',
+            transform: 'scale3d(var(--hero-scroll-scale, 1), var(--hero-scroll-scale, 1), 1)',
+            willChange: 'transform, opacity',
           }}
         >
           {/* ① 직무 배지 */}
@@ -689,12 +743,13 @@ const Home = () => {
       ════════════════════════════════════════════ */}
       <Box component="section" id="about-me" aria-labelledby="home-about-title" sx={{ bgcolor: '#fff', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
+          <AnimateOnScroll variant="fadeUp" sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
             <SectionTitle><span id="home-about-title">ABOUT ME</span></SectionTitle>
             <SectionDivider />
-          </Box>
+          </AnimateOnScroll>
           <Grid container spacing={{ xs: 3, md: 4 }} alignItems="flex-start">
             <Grid item xs={12} md={4}>
+              <AnimateOnScroll variant="fadeRight" delay={0.15}>
               <Box sx={{ border: '1px solid #E0E0E0', p: 3, textAlign: 'center' }}>
                 <Avatar src={basicInfo.photo || undefined} sx={{ width: 100, height: 100, bgcolor: '#E0E0E0', border: '3px solid #111', mx: 'auto', mb: 2 }} alt={`${basicInfo.name} 프로필 사진`}>
                   {!basicInfo.photo && <PersonIcon sx={{ fontSize: '2.5rem', color: '#999' }} aria-hidden="true" />}
@@ -709,8 +764,10 @@ const Home = () => {
                   </Box>
                 ))}
               </Box>
+              </AnimateOnScroll>
             </Grid>
             <Grid item xs={12} md={8}>
+              <AnimateOnScroll variant="fadeLeft" delay={0.25}>
               {homeContent.length > 0 ? (
                 homeContent.map((item, idx) => (
                   <Box key={item.id} sx={{ mb: 3, pb: 3, borderBottom: idx < homeContent.length - 1 ? '1px solid #F0F0F0' : 'none', animation: 'fadeSlideIn 0.4s ease both', animationDelay: `${idx * 0.08}s`, '@keyframes fadeSlideIn': { from: { opacity: 0, transform: 'translateY(8px)' }, to: { opacity: 1, transform: 'translateY(0)' } } }}>
@@ -731,6 +788,7 @@ const Home = () => {
                   더 알아보기
                 </Button>
               </Box>
+              </AnimateOnScroll>
             </Grid>
           </Grid>
         </Container>
@@ -741,18 +799,20 @@ const Home = () => {
       ════════════════════════════════════════════ */}
       <Box ref={skillsRef} component="section" id="skill-tree" aria-labelledby="home-skill-title" sx={{ bgcolor: '#F5F5F5', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
+          <AnimateOnScroll variant="fadeUp" sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
             <SectionTitle><span id="home-skill-title">SKILL TREE</span></SectionTitle>
             <SectionDivider />
             <Typography variant="body1" sx={{ color: '#666', maxWidth: 500, mx: 'auto', lineHeight: 1.8 }}>
               현재 보유 기술 중 숙련도 상위 스킬입니다.
             </Typography>
-          </Box>
+          </AnimateOnScroll>
           {topSkills.length > 0 ? (
             <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: { xs: '100%', sm: 560 }, mx: 'auto', mb: 4 }} role="list" aria-label="주요 스킬 목록">
               {topSkills.map((skill, idx) => (
-                <Grid item xs={6} sm={3} key={skill.id} role="listitem" sx={{ animation: skillsVisible ? 'fadeSlideIn 0.4s ease both' : 'none', animationDelay: skillsVisible ? `${idx * 0.1}s` : '0s' }}>
+                <Grid item xs={6} sm={3} key={skill.id} role="listitem">
+                  <AnimateOnScroll variant="scaleUp" delay={idx * 0.12}>
                   <CircularSkillProgress skill={skill} visible={skillsVisible} />
+                  </AnimateOnScroll>
                 </Grid>
               ))}
             </Grid>

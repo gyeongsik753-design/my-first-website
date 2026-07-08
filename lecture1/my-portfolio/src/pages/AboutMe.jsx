@@ -19,6 +19,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { usePortfolio, CATEGORY_CONFIG, ICON_MAP } from '../context/PortfolioContext';
+import AnimateOnScroll from '../components/AnimateOnScroll';
 
 /* ─── 기본 정보 행 (memo: props 동일 시 리렌더 방지) ─── */
 const InfoRow = memo(({ icon, label, value }) => (
@@ -503,9 +504,11 @@ const AboutMe = () => {
                   />
                 </Box>
                 <Grid container spacing={2}>
-                  {catSkills.map((skill) => (
+                  {catSkills.map((skill, skillIdx) => (
                     <Grid item xs={12} sm={6} md={4} key={skill.id}>
-                      <SkillBar skill={skill} animate={animate} />
+                      <AnimateOnScroll variant="scaleUp" delay={skillIdx * 0.08} threshold={0.1}>
+                        <SkillBar skill={skill} animate={animate} />
+                      </AnimateOnScroll>
                     </Grid>
                   ))}
                 </Grid>
