@@ -30,7 +30,7 @@ const SectionTitle = memo(({ children, dark = false }) => (
       fontWeight: 900, mb: 1,
       fontSize: { xs: '1.6rem', sm: '1.9rem', md: '2.5rem' },
       letterSpacing: '-0.02em',
-      color: dark ? '#fff' : '#000',
+      color: dark ? 'var(--tm-text-1)' : '#111111',
     }}
   >
     {children}
@@ -126,8 +126,8 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
         /* 모바일: 52px, 태블릿+: 46px — 터치 타겟 최소 44px 준수 */
         width: { xs: 52, sm: 46 },
         height: { xs: 52, sm: 46 },
-        border: '1px solid rgba(255,255,255,0.14)',
-        color: 'rgba(255,255,255,0.4)',
+        border: '1px solid var(--tm-social-border)',
+        color: 'var(--tm-social-icon)',
         borderRadius: 0,
         willChange: 'transform, box-shadow, color, border-color',
         transition: 'all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -184,7 +184,7 @@ const AnimatedStat = memo(({ target, suffix, label, sublabel, visible }) => {
       >
         {count}{suffix}
       </Typography>
-      <Typography sx={{ color: '#fff', fontWeight: 700, mt: 1.5, fontSize: { xs: '0.82rem', md: '0.95rem' } }}>
+      <Typography sx={{ color: 'var(--tm-text-1)', fontWeight: 700, mt: 1.5, fontSize: { xs: '0.82rem', md: '0.95rem' } }}>
         {label}
       </Typography>
       <Typography sx={{ color: '#3A3A3A', fontSize: '0.6rem', letterSpacing: 3.5, textTransform: 'uppercase', mt: 0.5 }}>
@@ -323,12 +323,12 @@ const Home = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          color: '#fff',
+          color: 'var(--tm-text-1)',
           /* 좌우 패딩: xs=16px, sm=24px — md 이상은 Container가 담당 */
           px: { xs: 2, sm: 3, md: 2 },
           textAlign: 'center',
           overflow: 'hidden',
-          background: 'linear-gradient(145deg, #060606 0%, #080808 50%, #0e0003 100%)',
+          background: 'var(--tm-hero-bg)',
         }}
       >
         {/* 배경: 도트 그리드 — 패럴렉스 빠른 속도 (-Y, 전경처럼 올라감) */}
@@ -481,7 +481,7 @@ const Home = () => {
               letterSpacing: { xs: '-0.02em', sm: '-0.03em', md: '-0.045em' },
               lineHeight: 0.95,
               mb: { xs: 2, sm: 2.5, md: 3 },
-              background: 'linear-gradient(180deg, #ffffff 30%, rgba(255,255,255,0.7) 100%)',
+              background: 'var(--tm-name-gradient)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -539,7 +539,7 @@ const Home = () => {
             <Typography component="p" sx={{
               fontWeight: 300,
               fontSize: { xs: '0.875rem', sm: '1.05rem', md: '1.3rem', lg: '1.45rem' },
-              color: '#D8D8D8',
+              color: 'var(--tm-text-tagline)',
               letterSpacing: '0.01em',
               lineHeight: { xs: 1.65, sm: 1.7 },
               wordBreak: 'keep-all', /* 한국어 단어 중간 줄바꿈 방지 */
@@ -639,7 +639,7 @@ const Home = () => {
                 aria-label="연락처 섹션으로 이동"
                 fullWidth={isMobile}
                 sx={{
-                  color: '#ccc', borderColor: 'rgba(255,255,255,0.2)',
+                  color: 'var(--tm-text-2)', borderColor: 'var(--tm-social-border)',
                   px: { xs: 3, sm: 3.5, md: 5 },
                   py: { xs: 1.6, sm: 1.5, md: 1.8 },
                   minHeight: { xs: 48, sm: 44 },
@@ -648,9 +648,9 @@ const Home = () => {
                   letterSpacing: '0.04em',
                   transition: 'all 0.25s ease',
                   '&:hover': {
-                    color: '#fff',
-                    borderColor: 'rgba(255,255,255,0.55)',
-                    bgcolor: 'rgba(255,255,255,0.06)',
+                    color: 'var(--tm-text-1)',
+                    borderColor: 'var(--tm-social-icon)',
+                    bgcolor: 'rgba(128,128,128,0.06)',
                     transform: 'translateY(-3px)',
                     boxShadow: '0 4px 20px rgba(255,255,255,0.05)',
                   },
@@ -668,16 +668,16 @@ const Home = () => {
               justifyContent: 'center',
               mb: { xs: 2, sm: 2.5, md: 3 },
             }}>
-              <Box sx={{ width: { xs: 32, md: 48 }, height: '1px', bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Box sx={{ width: { xs: 32, md: 48 }, height: '1px', bgcolor: 'var(--tm-social-border)' }} />
               <Typography sx={{
-                color: 'rgba(255,255,255,0.18)',
+                color: 'var(--tm-social-border)',
                 fontSize: { xs: '0.52rem', md: '0.58rem' },
                 letterSpacing: { xs: 3, md: 4 },
                 textTransform: 'uppercase',
               }}>
                 find me on
               </Typography>
-              <Box sx={{ width: { xs: 32, md: 48 }, height: '1px', bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Box sx={{ width: { xs: 32, md: 48 }, height: '1px', bgcolor: 'var(--tm-social-border)' }} />
             </Box>
 
             {/* ── 소셜 아이콘 — 모바일: gap 더 넓게 (터치 간격 확보) ── */}
@@ -757,7 +757,7 @@ const Home = () => {
       {/* ════════════════════════════════════════════
           ABOUT ME
       ════════════════════════════════════════════ */}
-      <Box component="section" id="about-me" aria-labelledby="home-about-title" sx={{ bgcolor: '#fff', py: { xs: 8, md: 12 }, px: 2 }}>
+      <Box component="section" id="about-me" aria-labelledby="home-about-title" sx={{ bgcolor: 'var(--tm-bg-light)', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
           <AnimateOnScroll variant="fadeUp" sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
             <SectionTitle><span id="home-about-title">ABOUT ME</span></SectionTitle>
@@ -813,7 +813,7 @@ const Home = () => {
       {/* ════════════════════════════════════════════
           SKILL TREE
       ════════════════════════════════════════════ */}
-      <Box ref={skillsRef} component="section" id="skill-tree" aria-labelledby="home-skill-title" sx={{ bgcolor: '#F5F5F5', py: { xs: 8, md: 12 }, px: 2 }}>
+      <Box ref={skillsRef} component="section" id="skill-tree" aria-labelledby="home-skill-title" sx={{ bgcolor: 'var(--tm-bg-gray)', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
           <AnimateOnScroll variant="fadeUp" sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
             <SectionTitle><span id="home-skill-title">SKILL TREE</span></SectionTitle>
@@ -852,7 +852,7 @@ const Home = () => {
         ref={statsRef}
         component="section"
         aria-label="포트폴리오 통계"
-        sx={{ bgcolor: '#000000', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}
+        sx={{ bgcolor: 'var(--tm-bg-section)', borderTop: '1px solid var(--tm-border-1)', borderBottom: '1px solid var(--tm-border-1)' }}
       >
         <Container maxWidth="lg">
           <Box sx={{
@@ -865,11 +865,11 @@ const Home = () => {
                 sx={{
                   /* 2×2 격자(xs) / 4열(md) 구분선 */
                   borderRight: {
-                    xs: idx % 2 === 0 ? '1px solid #111111' : 'none',
-                    md: idx < 3      ? '1px solid #111111' : 'none',
+                    xs: idx % 2 === 0 ? '1px solid var(--tm-border-1)' : 'none',
+                    md: idx < 3      ? '1px solid var(--tm-border-1)' : 'none',
                   },
                   borderBottom: {
-                    xs: idx < 2 ? '1px solid #111111' : 'none',
+                    xs: idx < 2 ? '1px solid var(--tm-border-1)' : 'none',
                     md: 'none',
                   },
                 }}
@@ -884,11 +884,11 @@ const Home = () => {
       {/* ════════════════════════════════════════════
           PROJECTS
       ════════════════════════════════════════════ */}
-      <Box component="section" id="projects" aria-label="프로젝트 섹션" sx={{ bgcolor: '#000', color: '#fff', py: { xs: 8, md: 12 }, px: 2, textAlign: 'center' }}>
+      <Box component="section" id="projects" aria-label="프로젝트 섹션" sx={{ bgcolor: 'var(--tm-bg-section)', color: 'var(--tm-text-1)', py: { xs: 8, md: 12 }, px: 2, textAlign: 'center' }}>
         <Container maxWidth="md">
           <SectionTitle dark>PROJECTS</SectionTitle>
           <SectionDivider />
-          <Typography variant="body1" sx={{ color: '#AAA', fontSize: { xs: '1rem', md: '1.1rem' }, maxWidth: 600, mx: 'auto', lineHeight: 1.8, mb: 4 }}>
+          <Typography variant="body1" sx={{ color: 'var(--tm-text-2)', fontSize: { xs: '1rem', md: '1.1rem' }, maxWidth: 600, mx: 'auto', lineHeight: 1.8, mb: 4 }}>
             여기는 Projects 섹션입니다.
           </Typography>
           <Button variant="outlined" component={Link} to="/projects" endIcon={<ArrowForwardIcon />} aria-label="프로젝트 목록 페이지로 이동" sx={{ color: '#fff', borderColor: '#fff', px: 4, py: 1.5, borderRadius: 0, fontWeight: 600, '&:hover': { borderColor: '#C8102E', color: '#C8102E', bgcolor: 'transparent' } }}>
@@ -900,11 +900,11 @@ const Home = () => {
       {/* ════════════════════════════════════════════
           CONTACT
       ════════════════════════════════════════════ */}
-      <Box component="section" id="contact" aria-label="연락처 섹션" sx={{ bgcolor: '#000', color: '#fff', py: { xs: 8, md: 12 }, px: 2 }}>
+      <Box component="section" id="contact" aria-label="연락처 섹션" sx={{ bgcolor: 'var(--tm-bg-section)', color: 'var(--tm-text-1)', py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="md" sx={{ textAlign: 'center' }}>
           <SectionTitle dark>CONTACT</SectionTitle>
           <SectionDivider />
-          <Typography variant="body1" sx={{ color: '#AAA', fontSize: { xs: '1rem', md: '1.1rem' }, maxWidth: 600, mx: 'auto', lineHeight: 1.8, mb: 6 }}>
+          <Typography variant="body1" sx={{ color: 'var(--tm-text-2)', fontSize: { xs: '1rem', md: '1.1rem' }, maxWidth: 600, mx: 'auto', lineHeight: 1.8, mb: 6 }}>
             함께 작업하고 싶으시다면 연락해 주세요. 방명록도 남겨주시면 감사하겠습니다.
           </Typography>
         </Container>
@@ -914,7 +914,7 @@ const Home = () => {
       </Box>
 
       {/* Footer */}
-      <Box component="footer" sx={{ bgcolor: '#000', color: '#666', py: 3, textAlign: 'center', borderTop: '1px solid #333' }}>
+      <Box component="footer" sx={{ bgcolor: 'var(--tm-bg-section)', color: 'var(--tm-text-3)', py: 3, textAlign: 'center', borderTop: '1px solid var(--tm-border-2)' }}>
         <Typography variant="body2">&copy; 2026 Portfolio. All rights reserved.</Typography>
       </Box>
     </Box>

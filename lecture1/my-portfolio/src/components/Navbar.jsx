@@ -7,6 +7,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
+import DarkModeToggle from './DarkModeToggle';
 
 const NAV_ITEMS = [
   { label: 'Home',     path: '/',        subLabel: '홈' },
@@ -33,7 +34,7 @@ const HamburgerIcon = ({ open }) => {
           sx={{
             position: 'absolute',
             left: 0, right: 0, top,
-            height: 2, bgcolor: '#fff', borderRadius: 1,
+            height: 2, bgcolor: 'var(--tm-text-1)', borderRadius: 1,
             transition: 'all 0.32s cubic-bezier(0.4, 0, 0.2, 1)',
             transform: open ? openTransform : 'none',
             opacity: open && openOpacity !== undefined ? openOpacity : 1,
@@ -158,12 +159,12 @@ const Navbar = () => {
         sx={{
           bgcolor: atTop
             ? 'transparent'
-            : 'rgba(5, 5, 5, 0.88)',
+            : 'var(--tm-navbar-bg)',
           backdropFilter: atTop ? 'none' : 'blur(16px)',
           boxShadow: 'none',
           borderBottom: atTop
             ? 'none'
-            : '1px solid rgba(255,255,255,0.05)',
+            : '1px solid var(--tm-navbar-border)',
           /* CSS transform으로 GPU 가속 숨김/표시 */
           transition: [
             'transform 0.38s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -182,7 +183,7 @@ const Navbar = () => {
             to="/"
             sx={{
               flexGrow: 1,
-              color: '#fff',
+              color: 'var(--tm-text-1)',
               textDecoration: 'none',
               fontWeight: 900,
               letterSpacing: '0.05em',
@@ -204,7 +205,7 @@ const Navbar = () => {
                   component={Link}
                   to={item.path}
                   sx={{
-                    color: isActive ? '#C8102E' : '#fff',
+                    color: isActive ? '#C8102E' : 'var(--tm-text-1)',
                     fontWeight: isActive ? 700 : 400,
                     fontSize: '0.95rem',
                     px: 2, py: 1.2,
@@ -236,6 +237,9 @@ const Navbar = () => {
             })}
           </Box>
 
+          {/* 다크모드 토글 — 항상 표시 (모바일/데스크톱 공통) */}
+          <DarkModeToggle sx={{ mr: { xs: 0.5, md: 1 } }} />
+
           {/* 모바일 햄버거 버튼 — 터치 타겟 44×44px */}
           <IconButton
             onClick={() => setDrawerOpen((v) => !v)}
@@ -244,7 +248,7 @@ const Navbar = () => {
             aria-controls="mobile-drawer"
             sx={{
               display: { xs: 'flex', md: 'none' },
-              color: '#fff',
+              color: 'var(--tm-text-1)',
               width: 44, height: 44,
               borderRadius: 1,
               transition: 'background-color 0.2s',
@@ -266,9 +270,9 @@ const Navbar = () => {
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
           sx: {
-            bgcolor: '#050505',
+            bgcolor: 'var(--tm-drawer-bg)',
             width: { xs: '82vw', sm: 300 },
-            borderLeft: '1px solid #1A1A1A',
+            borderLeft: '1px solid var(--tm-drawer-border)',
             display: 'flex',
             flexDirection: 'column',
           },
@@ -279,11 +283,11 @@ const Navbar = () => {
         <Box sx={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           px: 3, py: 2.5,
-          borderBottom: '1px solid #1A1A1A',
+          borderBottom: '1px solid var(--tm-drawer-border)',
           flexShrink: 0,
         }}>
           <Typography sx={{
-            color: '#fff', fontWeight: 900,
+            color: 'var(--tm-text-1)', fontWeight: 900,
             letterSpacing: '0.08em', fontSize: '0.85rem',
             textTransform: 'uppercase',
           }}>
@@ -331,7 +335,7 @@ const Navbar = () => {
                     secondary={item.subLabel}
                     primaryTypographyProps={{
                       sx: {
-                        color: isActive ? '#C8102E' : '#fff',
+                        color: isActive ? '#C8102E' : 'var(--tm-text-1)',
                         fontWeight: isActive ? 700 : 400,
                         fontSize: '1.05rem',
                         letterSpacing: '0.02em',
@@ -340,7 +344,7 @@ const Navbar = () => {
                     }}
                     secondaryTypographyProps={{
                       sx: {
-                        color: isActive ? 'rgba(200,16,46,0.6)' : '#444',
+                        color: isActive ? 'rgba(200,16,46,0.6)' : 'var(--tm-drawer-link)',
                         fontSize: '0.7rem',
                         letterSpacing: 1,
                       },
@@ -364,14 +368,14 @@ const Navbar = () => {
         {/* 드로어 하단: 소셜 링크 */}
         <Box sx={{
           px: 3, py: 3,
-          borderTop: '1px solid #1A1A1A',
+          borderTop: '1px solid var(--tm-drawer-border)',
           flexShrink: 0,
           opacity: drawerOpen ? 1 : 0,
           transform: drawerOpen ? 'translateY(0)' : 'translateY(12px)',
           transition: `opacity 0.35s ease ${0.05 + NAV_ITEMS.length * 0.07}s, transform 0.35s ease ${0.05 + NAV_ITEMS.length * 0.07}s`,
         }}>
           <Typography sx={{
-            color: '#333', fontSize: '0.57rem',
+            color: 'var(--tm-drawer-label)', fontSize: '0.57rem',
             letterSpacing: 3.5, mb: 2, textTransform: 'uppercase',
           }}>
             Connect
@@ -389,8 +393,8 @@ const Navbar = () => {
                 rel="noopener noreferrer"
                 size="small"
                 sx={{
-                  color: '#666',
-                  border: '1px solid #1E1E1E',
+                  color: 'var(--tm-drawer-btn-color)',
+                  border: '1px solid var(--tm-drawer-btn-border)',
                   borderRadius: 0,
                   px: 2, py: 0.8,
                   fontSize: '0.72rem',

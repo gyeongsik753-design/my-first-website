@@ -129,7 +129,7 @@ const TypewriterMorph = memo(({ startDelay = 0, sx = {}, ...props }) => {
       >
         {/* ── "I'm a" 레이블 ── */}
         <Box component="span" sx={{
-          color: 'rgba(255,255,255,0.28)',
+          color: 'var(--tm-text-2)',
           fontWeight: 300,
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
