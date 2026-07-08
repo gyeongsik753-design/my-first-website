@@ -34,6 +34,26 @@ const SkillBar = memo(({ skill, animate }) => {
   const cat = CATEGORY_CONFIG[skill.category] || CATEGORY_CONFIG.Design;
   const levelLabel = skill.level <= 30 ? '기초 · 학습 중' : skill.level <= 60 ? '중급 · 성장 중' : '상급';
 
+  /* ── rAF 숫자 카운팅: animate prop 트리거 ──
+     진행 바와 숫자가 동시에 증가하는 효과
+  */
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!animate) return;
+    let rafId, t0;
+    const dur = 1400;
+    const tgt = skill.level;
+    const step = (ts) => {
+      if (!t0) t0 = ts;
+      const p = Math.min((ts - t0) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 3); // ease-out cubic
+      setCount(Math.round(e * tgt));
+      if (p < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [animate, skill.level]);
+
   return (
     <Tooltip title={skill.description || skill.name} placement="top" arrow>
       <Card
@@ -79,7 +99,7 @@ const SkillBar = memo(({ skill, animate }) => {
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#111', fontSize: '0.85rem' }}>{skill.name}</Typography>
-              <Typography variant="caption" sx={{ fontWeight: 700, color: cat.color, ml: 1, flexShrink: 0 }} aria-hidden="true">{skill.level}%</Typography>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: cat.color, ml: 1, flexShrink: 0, fontVariantNumeric: 'tabular-nums' }} aria-hidden="true">{count}%</Typography>
             </Box>
             <Chip label={cat.label} size="small" sx={{ bgcolor: cat.bg, color: cat.color, fontWeight: 700, fontSize: '0.65rem', height: 18, mt: 0.3 }} />
           </Box>

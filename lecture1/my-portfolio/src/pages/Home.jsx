@@ -14,6 +14,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import { usePortfolio, CATEGORY_CONFIG, ICON_MAP } from '../context/PortfolioContext';
 import ContactSection from '../components/ContactSection';
+import CircularSkillProgress from '../components/CircularSkillProgress';
 
 /* ─── smooth scroll ─── */
 const scrollTo = (id) =>
@@ -143,6 +144,54 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
   </Tooltip>
 ));
 
+/* ─── 통계 카운터 데이터 ─── */
+const HOME_STATS = [
+  { target: 3,   suffix: '+',  label: '완성 프로젝트', sublabel: 'Projects'       },
+  { target: 50,  suffix: '+',  label: '깃 커밋',       sublabel: 'Git Commits'    },
+  { target: 5,   suffix: '+',  label: '기술 스택',     sublabel: 'Tech Skills'    },
+  { target: 6,   suffix: '개월', label: '개발 경험',   sublabel: 'Dev Experience' },
+];
+
+/* ─── requestAnimationFrame 숫자 카운팅 ─── */
+const AnimatedStat = memo(({ target, suffix, label, sublabel, visible }) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!visible) return;
+    let rafId, t0;
+    const dur = 1800;
+    const step = (ts) => {
+      if (!t0) t0 = ts;
+      const p = Math.min((ts - t0) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 3); // ease-out cubic
+      setCount(Math.round(e * target));
+      if (p < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [visible, target]);
+
+  return (
+    <Box sx={{ textAlign: 'center', py: { xs: 3.5, md: 5 } }}>
+      <Typography
+        sx={{
+          fontSize: { xs: '2.8rem', sm: '3.5rem', md: '4.5rem' },
+          fontWeight: 900, lineHeight: 1, color: '#C8102E',
+          /* 카운팅 시 숫자 너비 변동으로 레이아웃 흔들림 방지 */
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {count}{suffix}
+      </Typography>
+      <Typography sx={{ color: '#fff', fontWeight: 700, mt: 1.5, fontSize: { xs: '0.82rem', md: '0.95rem' } }}>
+        {label}
+      </Typography>
+      <Typography sx={{ color: '#3A3A3A', fontSize: '0.6rem', letterSpacing: 3.5, textTransform: 'uppercase', mt: 0.5 }}>
+        {sublabel}
+      </Typography>
+    </Box>
+  );
+});
+
 /* ════════════════════════════════════════════
    메인 컴포넌트
 ════════════════════════════════════════════ */
@@ -168,6 +217,20 @@ const Home = () => {
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setSkillsVisible(true); },
       { threshold: 0.15 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  /* 통계 카운터 IntersectionObserver */
+  const statsRef = useRef(null);
+  const [statsVisible, setStatsVisible] = useState(false);
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setStatsVisible(true); },
+      { threshold: 0.3 },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -689,7 +752,7 @@ const Home = () => {
             <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: { xs: '100%', sm: 560 }, mx: 'auto', mb: 4 }} role="list" aria-label="주요 스킬 목록">
               {topSkills.map((skill, idx) => (
                 <Grid item xs={6} sm={3} key={skill.id} role="listitem" sx={{ animation: skillsVisible ? 'fadeSlideIn 0.4s ease both' : 'none', animationDelay: skillsVisible ? `${idx * 0.1}s` : '0s' }}>
-                  <MiniSkillCard skill={skill} visible={skillsVisible} />
+                  <CircularSkillProgress skill={skill} visible={skillsVisible} />
                 </Grid>
               ))}
             </Grid>
@@ -702,6 +765,42 @@ const Home = () => {
             <Button variant="outlined" component={Link} to="/about" endIcon={<ArrowForwardIcon />} aria-label="전체 스킬 목록 보기" sx={{ borderColor: '#111', color: '#111', px: 4, py: 1.5, borderRadius: 0, fontWeight: 600, '&:hover': { bgcolor: '#111', color: '#fff' } }}>
               전체 스킬 보기
             </Button>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* ════════════════════════════════════════════
+          STATS COUNTER — 스크롤 트리거 숫자 카운팅
+      ════════════════════════════════════════════ */}
+      <Box
+        ref={statsRef}
+        component="section"
+        aria-label="포트폴리오 통계"
+        sx={{ bgcolor: '#000000', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr 1fr', md: '1fr 1fr 1fr 1fr' },
+          }}>
+            {HOME_STATS.map((stat, idx) => (
+              <Box
+                key={stat.label}
+                sx={{
+                  /* 2×2 격자(xs) / 4열(md) 구분선 */
+                  borderRight: {
+                    xs: idx % 2 === 0 ? '1px solid #111111' : 'none',
+                    md: idx < 3      ? '1px solid #111111' : 'none',
+                  },
+                  borderBottom: {
+                    xs: idx < 2 ? '1px solid #111111' : 'none',
+                    md: 'none',
+                  },
+                }}
+              >
+                <AnimatedStat {...stat} visible={statsVisible} />
+              </Box>
+            ))}
           </Box>
         </Container>
       </Box>

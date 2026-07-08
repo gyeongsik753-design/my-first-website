@@ -275,21 +275,23 @@ const ProjectCard = ({ project }) => {
 /* ════════════════════════════════════════════
    스켈레톤 카드
 ════════════════════════════════════════════ */
+/* ── wave 시머 애니메이션 스켈레톤 카드 ── */
 const SkeletonCard = () => (
   <Card sx={{ height: '100%', border: '1px solid #E0E0E0', borderRadius: 0, boxShadow: 'none' }}>
-    <Skeleton variant="rectangular" sx={{ aspectRatio: '1 / 1', width: '100%' }} />
+    {/* animation="wave" → 좌→우 shimmer 효과 */}
+    <Skeleton animation="wave" variant="rectangular" sx={{ aspectRatio: '1 / 1', width: '100%' }} />
     <CardContent sx={{ px: 3, py: 2.5 }}>
-      <Skeleton variant="text" width="70%" height={28} />
-      <Skeleton variant="text" width="100%" />
-      <Skeleton variant="text" width="90%" />
+      <Skeleton animation="wave" variant="text" width="70%" height={28} />
+      <Skeleton animation="wave" variant="text" width="100%" />
+      <Skeleton animation="wave" variant="text" width="90%" />
       <Box sx={{ display: 'flex', gap: 1, mt: 1.5 }}>
-        <Skeleton variant="rectangular" width={60} height={24} />
-        <Skeleton variant="rectangular" width={60} height={24} />
+        <Skeleton animation="wave" variant="rectangular" width={60} height={24} />
+        <Skeleton animation="wave" variant="rectangular" width={60} height={24} />
       </Box>
     </CardContent>
     <CardActions sx={{ px: 3, pb: 2.5, pt: 0, gap: 1 }}>
-      <Skeleton variant="rectangular" width={100} height={32} />
-      <Skeleton variant="rectangular" width={90} height={32} />
+      <Skeleton animation="wave" variant="rectangular" width={100} height={32} />
+      <Skeleton animation="wave" variant="rectangular" width={90} height={32} />
     </CardActions>
   </Card>
 );
@@ -342,6 +344,34 @@ const Projects = () => {
       {/* Projects — 수평 스크롤 */}
       <Box sx={{ bgcolor: '#FFFFFF', py: { xs: 8, md: 12 } }}>
         <Container maxWidth="lg" sx={{ px: { xs: 2, md: 4 } }}>
+
+          {/* ── 브랜드 로딩 스피너 ──
+              로테이팅 arc + 텍스트
+              skeleton UI 위에 별도 표시
+          */}
+          {loading && (
+            <Box sx={{
+              display: 'flex', justifyContent: 'center', alignItems: 'center',
+              gap: 2, mb: 5,
+            }}>
+              <Box sx={{
+                width: 36, height: 36, borderRadius: '50%',
+                border: '3px solid rgba(200,16,46,0.16)',
+                borderTopColor: '#C8102E',
+                /* CSS @keyframes — 순수 CSS 회전 */
+                animation: 'pSpin 0.72s linear infinite',
+                '@keyframes pSpin': { '100%': { transform: 'rotate(360deg)' } },
+              }} />
+              <Typography sx={{
+                color: '#999', fontSize: '0.85rem',
+                letterSpacing: 0.5, fontWeight: 500,
+              }}>
+                프로젝트 불러오는 중...
+              </Typography>
+            </Box>
+          )}
+
+          {/* 카드 목록 */}
           <Box
             sx={{
               display: 'flex', gap: 3, overflowX: 'auto', pb: 2,
