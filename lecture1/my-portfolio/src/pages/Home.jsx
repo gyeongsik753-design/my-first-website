@@ -16,6 +16,7 @@ import { usePortfolio, CATEGORY_CONFIG, ICON_MAP } from '../context/PortfolioCon
 import ContactSection from '../components/ContactSection';
 import CircularSkillProgress from '../components/CircularSkillProgress';
 import AnimateOnScroll from '../components/AnimateOnScroll';
+import TypewriterMorph from '../components/TypewriterMorph';
 
 /* ─── smooth scroll ─── */
 const scrollTo = (id) =>
@@ -496,6 +497,21 @@ const Home = () => {
               </Box>
             ))}
           </Typography>
+
+          {/* ③-A TypewriterMorph: 역할 모핑 + 그라데이션 텍스트
+              · 이름 아래, 빨간 바 위 배치
+              · startDelay=1500: Hero 등장 완료 후 타이핑 시작
+              · heroFadeUp: 다른 Hero 요소와 동일한 진입 애니메이션
+          */}
+          <TypewriterMorph
+            startDelay={1500}
+            sx={{
+              mb: { xs: 1.5, sm: 2, md: 2.5 },
+              opacity: 0,
+              animation: 'heroFadeUp 0.5s ease forwards',
+              animationDelay: '0.64s',
+            }}
+          />
 
           {/* ③ 빨간 accent bar */}
           <Box aria-hidden="true" sx={{
