@@ -27,7 +27,7 @@ jobs:
         run: npm install
         working-directory: lecture1/my-portfolio
       - name: Build
-        run: npm run build
+        run: npm run build -- --base=/my-first-website/
         working-directory: lecture1/my-portfolio
       - name: Setup Pages
         uses: actions/configure-pages@v4
