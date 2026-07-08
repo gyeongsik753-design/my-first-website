@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd lecture1/my-portfolio && npm install && npm run build",
+  "buildCommand": "cd lecture1/my-portfolio && npm install && npm run build -- --base=/",
   "outputDirectory": "lecture1/my-portfolio/dist",
   "installCommand": "echo skip"
 }
