@@ -147,11 +147,14 @@ const SocialBtn = memo(({ icon, label, href, hoverColor = '#fff', hoverBg = 'rgb
 ));
 
 /* ─── 통계 카운터 데이터 ─── */
-const HOME_STATS = [
+const BASE_STATS = [
   { target: 3,   suffix: '+',  label: '완성 프로젝트', sublabel: 'Projects'       },
   { target: 50,  suffix: '+',  label: '깃 커밋',       sublabel: 'Git Commits'    },
-  { target: 5,   suffix: '+',  label: '기술 스택',     sublabel: 'Tech Skills'    },
-  { target: 6,   suffix: '개월', label: '개발 경험',   sublabel: 'Dev Experience' },
+];
+const buildHomeStats = (skillCount) => [
+  ...BASE_STATS,
+  { target: skillCount, suffix: '+',  label: '기술 스택',   sublabel: 'Tech Skills'    },
+  { target: 0,          suffix: '개월', label: '개발 경험', sublabel: 'Dev Experience' },
 ];
 
 /* ─── requestAnimationFrame 숫자 카운팅 ─── */
@@ -207,8 +210,9 @@ const Home = () => {
   const isTablet  = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 600–899px
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));           // ≥ 900px
 
-  const { homeData } = usePortfolio();
+  const { homeData, aboutMeData } = usePortfolio();
   const { content: homeContent, skills: topSkills, basicInfo } = homeData;
+  const homeStats = buildHomeStats(aboutMeData.skills.length);
 
   /* 스킬 IntersectionObserver */
   const skillsRef = useRef(null);
@@ -747,7 +751,7 @@ const Home = () => {
             display: 'grid',
             gridTemplateColumns: { xs: '1fr 1fr', md: '1fr 1fr 1fr 1fr' },
           }}>
-            {HOME_STATS.map((stat, idx) => (
+            {homeStats.map((stat, idx) => (
               <Box
                 key={stat.label}
                 sx={{
