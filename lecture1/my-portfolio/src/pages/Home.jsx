@@ -470,35 +470,8 @@ const Home = () => {
             <Box sx={{ width: { xs: 14, sm: 20, md: 24 }, height: 1, bgcolor: '#C8102E' }} />
           </Box>
 
-          {/* ② 이름 — 글자별 stagger */}
-          <Typography
-            variant="h1" component="h1" aria-label="신경식"
-            sx={{
-              /* xs: 320px 기준 3글자 × ~60px = 180px → 여유 있음 */
-              fontSize: { xs: '3.8rem', sm: '5.5rem', md: '8rem', lg: '10rem' },
-              fontWeight: 900,
-              letterSpacing: { xs: '-0.02em', sm: '-0.03em', md: '-0.045em' },
-              lineHeight: 0.95,
-              mb: { xs: 2, sm: 2.5, md: 3 },
-              background: 'var(--tm-name-gradient)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            {'신경식'.split('').map((char, i) => (
-              <Box component="span" key={i} sx={{
-                display: 'inline-block', opacity: 0,
-                animation: 'heroFadeUp 0.5s ease forwards',
-                animationDelay: `${0.3 + i * 0.12}s`,
-              }}>
-                {char}
-              </Box>
-            ))}
-          </Typography>
-
           {/* ③-A TypewriterMorph: 역할 모핑 + 그라데이션 텍스트
-              · 이름 아래, 빨간 바 위 배치
+              · 직무 배지 아래, 빨간 바 위 배치
               · startDelay=1500: Hero 등장 완료 후 타이핑 시작
               · heroFadeUp: 다른 Hero 요소와 동일한 진입 애니메이션
           */}

@@ -22,12 +22,8 @@ const DEL_SPD    = 62;   // ms: 지우기 속도
 const WAIT_DONE  = 1900; // ms: 단어 완성 후 일시정지
 const WAIT_EMPTY = 360;  // ms: 완전히 지운 후 다음 단어 시작 전
 
-/* ─── 역할별 그라데이션 ─── */
-const ROLE_GRADIENTS = [
-  /* 개발자 */  'linear-gradient(90deg, #C8102E 0%, #FF4D6D 35%, var(--tm-text-1) 55%, #FF4D6D 75%, #C8102E 100%)',
-  /* 디자이너 */ 'linear-gradient(90deg, #C8102E 0%, #FF6B35 35%, var(--tm-text-1) 55%, #FF6B35 75%, #C8102E 100%)',
-  /* 크리에이터 */ 'linear-gradient(90deg, #8B0000 0%, #C8102E 35%, #FF6B6B 55%, #C8102E 75%, #8B0000 100%)',
-];
+/* ─── 롤 텍스트 색상 — 태그라인 하이라이트("바꾼 사람")와 동일 ─── */
+const ROLE_COLOR = '#C8102E';
 
 /* ─── 타이핑 커서 ─── */
 const TypeCursor = () => (
@@ -140,26 +136,11 @@ const TypewriterMorph = memo(({ startDelay = 0, sx = {}, ...props }) => {
           I'm a
         </Box>
 
-        {/* ── 그라데이션 텍스트 래퍼 ──
-            · background-clip: text → 배경이 텍스트 모양으로 클리핑
-            · background-position 애니메이션 → 좌우 shimmer
-            · roleIdx 변경 시 그라데이션도 전환
-        */}
+        {/* ── 롤 텍스트 ── 태그라인 하이라이트와 동일한 단색 + 글로우 */}
         <Box component="span" sx={{
-          background: ROLE_GRADIENTS[roleIdx],
-          backgroundSize: '200% 100%',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
+          color: ROLE_COLOR,
           fontWeight: 800,
-          /* 그라데이션 전환 부드럽게 */
-          transition: 'background 0.6s ease',
-          /* 움직이는 shimmer — background-position 반복 */
-          animation: 'tmGradShimmer 3.2s ease-in-out infinite',
-          '@keyframes tmGradShimmer': {
-            '0%, 100%': { backgroundPosition: '0% 50%'   },
-            '50%':       { backgroundPosition: '100% 50%' },
-          },
+          textShadow: '0 0 20px rgba(200,16,46,0.4)',
         }}>
           {/* ── 글자별 등장 애니메이션 ──
               key = `roleIdx-i` → 역할 바뀔 때 + 새 글자 추가 시만 remount
