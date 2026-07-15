@@ -891,7 +891,7 @@ const Home = () => {
           <Typography variant="body1" sx={{ color: 'var(--tm-text-2)', fontSize: { xs: '1rem', md: '1.1rem' }, maxWidth: 600, mx: 'auto', lineHeight: 1.8, mb: 4 }}>
             여기는 Projects 섹션입니다.
           </Typography>
-          <Button variant="outlined" component={Link} to="/projects" endIcon={<ArrowForwardIcon />} aria-label="프로젝트 목록 페이지로 이동" sx={{ color: '#fff', borderColor: '#fff', px: 4, py: 1.5, borderRadius: 0, fontWeight: 600, '&:hover': { borderColor: '#C8102E', color: '#C8102E', bgcolor: 'transparent' } }}>
+          <Button variant="outlined" component={Link} to="/projects" endIcon={<ArrowForwardIcon />} aria-label="프로젝트 목록 페이지로 이동" sx={{ color: 'var(--tm-text-1)', borderColor: 'var(--tm-text-1)', px: 4, py: 1.5, borderRadius: 0, fontWeight: 600, '&:hover': { borderColor: '#C8102E', color: '#C8102E', bgcolor: 'transparent' } }}>
             더 보기
           </Button>
         </Container>
