@@ -374,26 +374,18 @@ const Projects = () => {
             </Box>
           )}
 
-          {/* 카드 목록 */}
+          {/* 카드 목록 — 반응형 그리드 (카드는 최대 260px로 고정, 남는 공간은 트랙 사이 여백으로 처리) */}
           <Box
             sx={{
-              display: 'flex', gap: 3, overflowX: 'auto', pb: 2,
-              '&::-webkit-scrollbar': { height: 6 },
-              '&::-webkit-scrollbar-track': { bgcolor: '#F5F5F5' },
-              '&::-webkit-scrollbar-thumb': { bgcolor: '#BDBDBD', borderRadius: 3 },
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 260px))',
+              justifyContent: 'center',
+              gap: 3,
             }}
           >
             {loading
-              ? Array.from({ length: 3 }).map((_, i) => (
-                  <Box key={i} sx={{ minWidth: { xs: '68vw', sm: 240, md: 260 }, flexShrink: 0 }}>
-                    <SkeletonCard />
-                  </Box>
-                ))
-              : projects.map((project) => (
-                  <Box key={project.id} sx={{ minWidth: { xs: '68vw', sm: 240, md: 260 }, flexShrink: 0 }}>
-                    <ProjectCard project={project} />
-                  </Box>
-                ))}
+              ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
+              : projects.map((project) => <ProjectCard key={project.id} project={project} />)}
           </Box>
         </Container>
       </Box>
