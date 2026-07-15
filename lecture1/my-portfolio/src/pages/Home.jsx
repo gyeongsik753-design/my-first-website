@@ -295,8 +295,7 @@ const Home = () => {
   }, []);
 
   /* 스크롤 핸들러 */
-  const handleScrollContact = useCallback(() => scrollTo('contact'), []);
-  const handleScrollAbout   = useCallback(() => scrollTo('about-me'), []);
+  const handleScrollAbout = useCallback(() => scrollTo('about-me'), []);
 
   return (
     <Box>
@@ -576,90 +575,6 @@ const Home = () => {
 
           {/* ⑥ CTA 전체 영역 */}
           <Box sx={{ opacity: 0, animation: 'heroFadeUp 0.5s ease forwards', animationDelay: '1.02s' }}>
-
-            {/* ── 메인 버튼 행 ── */}
-            <Box sx={{
-              display: 'flex',
-              /* 모바일: 세로 쌓기 / 태블릿+: 가로 배치 */
-              flexDirection: { xs: 'column', sm: 'row' },
-              alignItems: { xs: 'stretch', sm: 'center' },
-              justifyContent: 'center',
-              gap: { xs: 1.5, sm: 2 },
-              mb: { xs: 3, sm: 3.5, md: 4.5 },
-              /* 모바일: 버튼 최대 너비로 너무 넓어지지 않게 */
-              maxWidth: { xs: 320, sm: 'none' },
-              mx: 'auto',
-            }}>
-
-              {/* Primary: 프로젝트 보기 */}
-              <Button
-                variant="contained"
-                component={Link}
-                to="/projects"
-                endIcon={<ArrowForwardIcon />}
-                aria-label="프로젝트 목록 페이지로 이동"
-                /* useMediaQuery로 fullWidth 결정 */
-                fullWidth={isMobile}
-                sx={{
-                  position: 'relative', overflow: 'hidden',
-                  bgcolor: '#C8102E', color: '#fff',
-                  px: { xs: 3, sm: 3.5, md: 5 },
-                  py: { xs: 1.6, sm: 1.5, md: 1.8 },
-                  /* 터치 타겟 최소 48px (모바일 권고) */
-                  minHeight: { xs: 48, sm: 44 },
-                  borderRadius: 0, fontWeight: 700,
-                  fontSize: { xs: '0.875rem', md: '1rem' },
-                  letterSpacing: '0.04em',
-                  boxShadow: '0 0 20px rgba(200,16,46,0.3), 0 4px 16px rgba(0,0,0,0.4)',
-                  willChange: 'transform, box-shadow',
-                  transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&::before': {
-                    content: '""', position: 'absolute', top: 0, left: '-100%',
-                    width: '100%', height: '100%',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                    transition: 'left 0.45s ease',
-                  },
-                  '&:hover': {
-                    bgcolor: '#A00D25',
-                    boxShadow: '0 0 48px rgba(200,16,46,0.65), 0 14px 28px rgba(0,0,0,0.5)',
-                    transform: 'translateY(-4px) scale(1.03)',
-                  },
-                  '&:hover::before': { left: '100%' },
-                  '&:active': { transform: 'translateY(-1px)' },
-                }}
-              >
-                프로젝트 보기
-              </Button>
-
-              {/* Secondary: 연락하기 */}
-              <Button
-                variant="outlined"
-                onClick={handleScrollContact}
-                startIcon={<EmailIcon sx={{ fontSize: '0.95rem !important' }} />}
-                aria-label="연락처 섹션으로 이동"
-                fullWidth={isMobile}
-                sx={{
-                  color: 'var(--tm-text-2)', borderColor: 'var(--tm-social-border)',
-                  px: { xs: 3, sm: 3.5, md: 5 },
-                  py: { xs: 1.6, sm: 1.5, md: 1.8 },
-                  minHeight: { xs: 48, sm: 44 },
-                  borderRadius: 0, fontWeight: 500,
-                  fontSize: { xs: '0.875rem', md: '1rem' },
-                  letterSpacing: '0.04em',
-                  transition: 'all 0.25s ease',
-                  '&:hover': {
-                    color: 'var(--tm-text-1)',
-                    borderColor: 'var(--tm-social-icon)',
-                    bgcolor: 'rgba(128,128,128,0.06)',
-                    transform: 'translateY(-3px)',
-                    boxShadow: '0 4px 20px rgba(255,255,255,0.05)',
-                  },
-                  '&:active': { transform: 'translateY(-1px)' },
-                }}
-              >
-                연락하기
-              </Button>
-            </Box>
 
             {/* ── 구분선 ── */}
             <Box sx={{

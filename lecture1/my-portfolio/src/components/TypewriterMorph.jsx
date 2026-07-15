@@ -24,8 +24,8 @@ const WAIT_EMPTY = 360;  // ms: 완전히 지운 후 다음 단어 시작 전
 
 /* ─── 역할별 그라데이션 ─── */
 const ROLE_GRADIENTS = [
-  /* 개발자 */  'linear-gradient(90deg, #C8102E 0%, #FF4D6D 35%, #ffffff 55%, #FF4D6D 75%, #C8102E 100%)',
-  /* 디자이너 */ 'linear-gradient(90deg, #C8102E 0%, #FF6B35 35%, #ffffff 55%, #FF6B35 75%, #C8102E 100%)',
+  /* 개발자 */  'linear-gradient(90deg, #C8102E 0%, #FF4D6D 35%, var(--tm-text-1) 55%, #FF4D6D 75%, #C8102E 100%)',
+  /* 디자이너 */ 'linear-gradient(90deg, #C8102E 0%, #FF6B35 35%, var(--tm-text-1) 55%, #FF6B35 75%, #C8102E 100%)',
   /* 크리에이터 */ 'linear-gradient(90deg, #8B0000 0%, #C8102E 35%, #FF6B6B 55%, #C8102E 75%, #8B0000 100%)',
 ];
 
