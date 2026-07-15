@@ -186,11 +186,11 @@ const ProjectCard = ({ project }) => {
       </Box>
 
       {/* ── 카드 내용 ── */}
-      <CardContent sx={{ flexGrow: 1, px: 3, py: 2.5 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem', mb: 1, color: '#111111' }}>
+      <CardContent sx={{ flexGrow: 1, px: 2, py: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 0.75, color: '#111111' }}>
           {project.title}
         </Typography>
-        <Typography variant="body2" sx={{ color: '#666666', lineHeight: 1.7, mb: 2, fontSize: '0.875rem' }}>
+        <Typography variant="body2" sx={{ color: '#666666', lineHeight: 1.6, mb: 1.5, fontSize: '0.8rem' }}>
           {project.description}
         </Typography>
 
@@ -220,7 +220,7 @@ const ProjectCard = ({ project }) => {
       </CardContent>
 
       {/* ── 하단 버튼 (항상 표시 — 모바일 touch 대응) ── */}
-      <CardActions sx={{ px: 3, pb: 2.5, pt: 0, gap: 1 }}>
+      <CardActions sx={{ px: 2, pb: 2, pt: 0, gap: 1 }}>
         {project.detail_url && (
           <Button
             variant="contained"
@@ -281,16 +281,16 @@ const SkeletonCard = () => (
   <Card sx={{ height: '100%', border: '1px solid #E0E0E0', borderRadius: 0, boxShadow: 'none' }}>
     {/* animation="wave" → 좌→우 shimmer 효과 */}
     <Skeleton animation="wave" variant="rectangular" sx={{ aspectRatio: '1 / 1', width: '100%' }} />
-    <CardContent sx={{ px: 3, py: 2.5 }}>
-      <Skeleton animation="wave" variant="text" width="70%" height={28} />
+    <CardContent sx={{ px: 2, py: 2 }}>
+      <Skeleton animation="wave" variant="text" width="70%" height={24} />
       <Skeleton animation="wave" variant="text" width="100%" />
       <Skeleton animation="wave" variant="text" width="90%" />
       <Box sx={{ display: 'flex', gap: 1, mt: 1.5 }}>
-        <Skeleton animation="wave" variant="rectangular" width={60} height={24} />
-        <Skeleton animation="wave" variant="rectangular" width={60} height={24} />
+        <Skeleton animation="wave" variant="rectangular" width={50} height={22} />
+        <Skeleton animation="wave" variant="rectangular" width={50} height={22} />
       </Box>
     </CardContent>
-    <CardActions sx={{ px: 3, pb: 2.5, pt: 0, gap: 1 }}>
+    <CardActions sx={{ px: 2, pb: 2, pt: 0, gap: 1 }}>
       <Skeleton animation="wave" variant="rectangular" width={100} height={32} />
       <Skeleton animation="wave" variant="rectangular" width={90} height={32} />
     </CardActions>
@@ -385,12 +385,12 @@ const Projects = () => {
           >
             {loading
               ? Array.from({ length: 3 }).map((_, i) => (
-                  <Box key={i} sx={{ minWidth: { xs: '85vw', sm: 340, md: 380 }, flexShrink: 0 }}>
+                  <Box key={i} sx={{ minWidth: { xs: '68vw', sm: 240, md: 260 }, flexShrink: 0 }}>
                     <SkeletonCard />
                   </Box>
                 ))
               : projects.map((project) => (
-                  <Box key={project.id} sx={{ minWidth: { xs: '85vw', sm: 340, md: 380 }, flexShrink: 0 }}>
+                  <Box key={project.id} sx={{ minWidth: { xs: '68vw', sm: 240, md: 260 }, flexShrink: 0 }}>
                     <ProjectCard project={project} />
                   </Box>
                 ))}
