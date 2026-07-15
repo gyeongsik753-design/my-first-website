@@ -153,15 +153,15 @@ const BASE_STATS = [
 ];
 const buildHomeStats = (skillCount) => [
   ...BASE_STATS,
-  { target: skillCount, suffix: '+',  label: '기술 스택',   sublabel: 'Tech Skills'    },
-  { target: 0,          suffix: '개월', label: '개발 경험', sublabel: 'Dev Experience' },
+  { target: skillCount, suffix: '+', label: '기술 스택',   sublabel: 'Tech Skills'    },
+  { staticText: '신입',              label: '개발 경험', sublabel: 'Dev Experience' },
 ];
 
-/* ─── requestAnimationFrame 숫자 카운팅 ─── */
-const AnimatedStat = memo(({ target, suffix, label, sublabel, visible }) => {
+/* ─── requestAnimationFrame 숫자 카운팅 (staticText 지정 시 카운팅 없이 고정 텍스트) ─── */
+const AnimatedStat = memo(({ target, suffix, staticText, label, sublabel, visible }) => {
   const [count, setCount] = useState(0);
   useEffect(() => {
-    if (!visible) return;
+    if (staticText || !visible) return;
     let rafId, t0;
     const dur = 1800;
     const step = (ts) => {
@@ -173,7 +173,7 @@ const AnimatedStat = memo(({ target, suffix, label, sublabel, visible }) => {
     };
     rafId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafId);
-  }, [visible, target]);
+  }, [visible, target, staticText]);
 
   return (
     <Box sx={{ textAlign: 'center', py: { xs: 3.5, md: 5 } }}>
@@ -185,7 +185,7 @@ const AnimatedStat = memo(({ target, suffix, label, sublabel, visible }) => {
           fontVariantNumeric: 'tabular-nums',
         }}
       >
-        {count}{suffix}
+        {staticText ?? `${count}${suffix}`}
       </Typography>
       <Typography sx={{ color: 'var(--tm-text-1)', fontWeight: 700, mt: 1.5, fontSize: { xs: '0.82rem', md: '0.95rem' } }}>
         {label}
