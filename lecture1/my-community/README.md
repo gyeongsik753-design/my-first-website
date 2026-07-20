@@ -17,8 +17,13 @@
 
 ## 배포
 
-`main` 브랜치에 push하면 `.github/workflows/deploy.yml`이 자동으로 빌드 후
+GitHub Actions는 저장소 루트의 `.github/workflows/`만 인식하므로, 실제 배포 워크플로우는
+이 폴더가 아니라 저장소 루트의 `/.github/workflows/deploy.yml`에 있습니다
+(`lecture1/my-community/**` 경로 변경 시에만 트리거되도록 설정됨).
+`main` 브랜치에 push하면 자동으로 빌드 후
 GitHub Pages(`https://gyeongsik753-design.github.io/my-first-website/`)에 배포합니다.
+이 저장소는 프로젝트가 여러 개 있지만 GitHub Pages는 한 번에 하나만 서빙되므로,
+현재는 my-community가 그 자리를 차지합니다(이전에는 my-portfolio였습니다).
 GitHub 저장소 Settings > Secrets and variables > Actions에 아래 두 값을 등록해야 합니다.
 
 - `VITE_SUPABASE_URL`
