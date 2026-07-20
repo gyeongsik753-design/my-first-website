@@ -1,16 +1,13 @@
 import { Box, IconButton } from '@mui/material';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlineOutlined';
 
-// 기획안 사양: 맨 왼쪽 홈, 맨 오른쪽 설정(=마이페이지), 주요 버튼(글쓰기)은 하단 가운데
+// 홈/로그인은 화면 상단 우측(TopBarActions)으로 이동. 하단은 글쓰기(가운데)와 마이페이지(오른쪽)만 유지.
 export default function BottomNav() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const isHome = pathname === '/';
   const isMyPage = pathname === '/mypage';
 
   return (
@@ -28,24 +25,18 @@ export default function BottomNav() {
         borderColor: 'divider',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         px: 3,
         zIndex: 10,
       }}
     >
       <IconButton
-        component={RouterLink}
-        to="/"
-        aria-label="홈"
-        sx={{ width: 48, height: 48, color: isHome ? 'primary.main' : 'text.secondary' }}
-      >
-        {isHome ? <HomeIcon /> : <HomeOutlinedIcon />}
-      </IconButton>
-
-      <IconButton
         onClick={() => navigate('/create')}
         aria-label="게시물 작성"
         sx={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
           width: 56,
           height: 56,
           bgcolor: 'secondary.main',

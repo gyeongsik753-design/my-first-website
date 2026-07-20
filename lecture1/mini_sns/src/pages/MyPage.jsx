@@ -15,6 +15,7 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
+import TopBarActions from '../components/TopBarActions';
 
 export default function MyPage() {
   const { user, profile, signOut, refreshProfile } = useAuth();
@@ -72,9 +73,12 @@ export default function MyPage() {
       <AppBar position="sticky">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography sx={{ fontWeight: 700 }}>마이페이지 · 설정</Typography>
-          <IconButton onClick={handleLogout} aria-label="로그아웃" color="inherit">
-            <LogoutIcon />
-          </IconButton>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <TopBarActions />
+            <IconButton onClick={handleLogout} aria-label="로그아웃" color="inherit">
+              <LogoutIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
 

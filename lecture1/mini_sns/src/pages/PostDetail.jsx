@@ -17,6 +17,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
+import TopBarActions from '../components/TopBarActions';
 
 const LIKED_STORAGE_KEY = 'mini_sns_liked_post_ids';
 
@@ -123,8 +124,18 @@ export default function PostDetail() {
 
   if (!post) {
     return (
-      <Box sx={{ textAlign: 'center', py: 10 }}>
-        <Typography color="text.secondary">게시물을 찾을 수 없습니다.</Typography>
+      <Box>
+        <AppBar position="sticky">
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <IconButton edge="start" onClick={() => navigate(-1)} aria-label="뒤로가기">
+              <ArrowBackIcon />
+            </IconButton>
+            <TopBarActions />
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ textAlign: 'center', py: 10 }}>
+          <Typography color="text.secondary">게시물을 찾을 수 없습니다.</Typography>
+        </Box>
       </Box>
     );
   }
@@ -132,11 +143,14 @@ export default function PostDetail() {
   return (
     <Box sx={{ pb: 4 }}>
       <AppBar position="sticky">
-        <Toolbar sx={{ gap: 1 }}>
-          <IconButton edge="start" onClick={() => navigate(-1)} aria-label="뒤로가기">
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography sx={{ fontWeight: 700 }}>게시물</Typography>
+        <Toolbar sx={{ gap: 1, justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton edge="start" onClick={() => navigate(-1)} aria-label="뒤로가기">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography sx={{ fontWeight: 700 }}>게시물</Typography>
+          </Box>
+          <TopBarActions />
         </Toolbar>
       </AppBar>
 

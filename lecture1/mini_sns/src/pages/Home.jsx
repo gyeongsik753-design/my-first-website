@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
+import TopBarActions from '../components/TopBarActions';
 
 const isToday = (dateStr) => {
   const d = new Date(dateStr);
@@ -59,7 +60,10 @@ export default function Home() {
     <Box sx={{ pb: 9 }}>
       <AppBar position="sticky">
         <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', py: 1, gap: 1 }}>
-          <Typography sx={{ fontWeight: 900, fontSize: '1.3rem', letterSpacing: '0.02em' }}>WITF</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography sx={{ fontWeight: 900, fontSize: '1.3rem', letterSpacing: '0.02em' }}>WITF</Typography>
+            <TopBarActions showHome={false} />
+          </Box>
           <TextField
             placeholder="캡션 또는 사용자명 검색"
             value={search}
