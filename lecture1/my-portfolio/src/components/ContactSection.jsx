@@ -4,7 +4,6 @@ import {
   Typography,
   TextField,
   Button,
-  Card,
   IconButton,
   Grid,
   Divider,
@@ -18,6 +17,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LanguageIcon from '@mui/icons-material/Language';
 import SendIcon from '@mui/icons-material/Send';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { supabase } from '../lib/supabase';
 
 const EMOJIS = ['👋', '🔥', '🖤', '✨', '💫', '🤙', '👑', '💀'];
@@ -30,72 +31,102 @@ const REFERRAL_OPTIONS = [
   '기타',
 ];
 
+const LIKED_STORAGE_KEY = 'guestbook_liked_ids';
+
+const getLikedIds = () => {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(LIKED_STORAGE_KEY) || '[]'));
+  } catch {
+    return new Set();
+  }
+};
+
+const saveLikedIds = (ids) => {
+  localStorage.setItem(LIKED_STORAGE_KEY, JSON.stringify([...ids]));
+};
+
+/* 사각형 SNS 버튼 — 아이콘 + 이름, 무채색 인버트 호버 */
 const SnsButton = ({ icon, href, label }) => (
-  <IconButton
+  <Box
     component="a"
     href={href}
     target="_blank"
     rel="noopener noreferrer"
     aria-label={label}
     sx={{
-      width: 48, height: 48,
-      border: '1px solid #333333',
-      color: '#AAAAAA',
-      borderRadius: 0,
-      willChange: 'transform, box-shadow',
-      transition: 'all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 1,
+      px: 2.2,
+      py: 1.1,
+      border: '1px solid var(--tm-border-2)',
+      color: 'var(--tm-text-2)',
+      textDecoration: 'none',
+      fontSize: '0.82rem',
+      fontWeight: 600,
+      willChange: 'transform, background-color, color',
+      transition: 'all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)',
       '&:hover': {
-        borderColor: '#C8102E',
-        color: '#FFFFFF',
-        bgcolor: 'rgba(200,16,46,0.1)',
-        transform: 'translateY(-6px) scale(1.1)',
-        boxShadow: '0 10px 22px rgba(200,16,46,0.28)',
+        bgcolor: 'var(--tm-text-1)',
+        color: 'var(--tm-bg-root)',
+        borderColor: 'var(--tm-text-1)',
+        transform: 'translateY(-3px)',
       },
-      '&:active': { transform: 'translateY(-2px) scale(1.05)' },
     }}
   >
     {icon}
-  </IconButton>
+    {label}
+  </Box>
 );
 
-const GuestbookEntry = ({ entry }) => (
+const GuestbookEntry = ({ entry, liked, onLike }) => (
   <Box
     sx={{
       p: 2.5,
-      bgcolor: '#0A0A0A',
-      border: '1px solid #1A1A1A',
-      borderRadius: 1,
+      border: '1px solid var(--tm-border-1)',
     }}
   >
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-      <Typography sx={{ fontSize: '1.2rem', lineHeight: 1 }}>
-        {entry.emoji}
-      </Typography>
-      <Typography sx={{ fontWeight: 600, fontSize: '0.9rem', color: '#FFFFFF' }}>
+      <Typography sx={{ fontSize: '1.2rem', lineHeight: 1 }}>{entry.emoji}</Typography>
+      <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--tm-text-1)' }}>
         {entry.name}
       </Typography>
       {entry.organization && (
-        <Typography sx={{ fontSize: '0.78rem', color: '#555555' }}>
+        <Typography sx={{ fontSize: '0.78rem', color: 'var(--tm-text-3)' }}>
           · {entry.organization}
         </Typography>
       )}
-      <Typography sx={{ fontSize: '0.75rem', color: '#444444', ml: 'auto' }}>
+      <Typography sx={{ fontSize: '0.75rem', color: 'var(--tm-text-3)', ml: 'auto' }}>
         {new Date(entry.created_at).toLocaleDateString('ko-KR')}
       </Typography>
     </Box>
-    <Typography sx={{ fontSize: '0.88rem', color: '#BBBBBB', lineHeight: 1.6 }}>
+    <Typography sx={{ fontSize: '0.88rem', color: 'var(--tm-text-2)', lineHeight: 1.6, mb: 1 }}>
       {entry.message}
     </Typography>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <IconButton
+        onClick={() => onLike(entry.id)}
+        disabled={liked}
+        size="small"
+        aria-label="좋아요"
+        sx={{ color: liked ? 'var(--tm-text-1)' : 'var(--tm-text-3)' }}
+      >
+        {liked ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
+      </IconButton>
+      <Typography sx={{ fontSize: '0.78rem', color: 'var(--tm-text-3)' }}>{entry.likes ?? 0}</Typography>
+    </Box>
   </Box>
 );
 
 const ContactSection = () => {
   const [entries, setEntries] = useState([]);
+  const [likedIds, setLikedIds] = useState(() => getLikedIds());
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
   const [form, setForm] = useState({
     name: '',
     email: '',
+    phone: '',
     organization: '',
     referral: '',
     emoji: '👋',
@@ -107,9 +138,10 @@ const ContactSection = () => {
   }, []);
 
   const fetchEntries = async () => {
+    // 개인정보(email, phone)는 절대 함께 조회하지 않고 공개 항목만 select
     const { data } = await supabase
       .from('guestbook')
-      .select('*')
+      .select('id, name, organization, emoji, message, likes, created_at')
       .order('created_at', { ascending: false })
       .limit(10);
     setEntries(data || []);
@@ -117,6 +149,15 @@ const ContactSection = () => {
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const handleLike = async (entryId) => {
+    if (likedIds.has(entryId)) return;
+    const nextLiked = new Set(likedIds).add(entryId);
+    setLikedIds(nextLiked);
+    saveLikedIds(nextLiked);
+    setEntries((prev) => prev.map((e) => (e.id === entryId ? { ...e, likes: (e.likes ?? 0) + 1 } : e)));
+    await supabase.rpc('increment_guestbook_like', { entry_id: entryId });
   };
 
   const handleSubmit = async (e) => {
@@ -127,6 +168,7 @@ const ContactSection = () => {
     const { error } = await supabase.from('guestbook').insert({
       name: form.name.trim(),
       email: form.email.trim() || null,
+      phone: form.phone.trim() || null,
       organization: form.organization.trim() || null,
       referral: form.referral || null,
       emoji: form.emoji,
@@ -137,7 +179,7 @@ const ContactSection = () => {
       setToast({ open: true, message: '방명록 등록에 실패했습니다.', severity: 'error' });
     } else {
       setToast({ open: true, message: '방명록이 등록되었습니다!', severity: 'success' });
-      setForm({ name: '', email: '', organization: '', referral: '', emoji: '👋', message: '' });
+      setForm({ name: '', email: '', phone: '', organization: '', referral: '', emoji: '👋', message: '' });
       fetchEntries();
     }
     setLoading(false);
@@ -145,249 +187,176 @@ const ContactSection = () => {
 
   const inputSx = {
     '& .MuiOutlinedInput-root': {
-      bgcolor: '#0A0A0A',
-      color: '#FFFFFF',
+      color: 'var(--tm-text-1)',
       fontSize: '0.9rem',
-      '& fieldset': { borderColor: '#222222' },
-      '&:hover fieldset': { borderColor: '#444444' },
-      '&.Mui-focused fieldset': { borderColor: '#C8102E' },
+      '& fieldset': { borderColor: 'var(--tm-border-2)' },
+      '&:hover fieldset': { borderColor: 'var(--tm-text-2)' },
+      '&.Mui-focused fieldset': { borderColor: 'var(--tm-text-1)' },
     },
-    '& .MuiInputLabel-root': { color: '#555555', fontSize: '0.85rem' },
-    '& .MuiInputLabel-root.Mui-focused': { color: '#C8102E' },
+    '& .MuiInputLabel-root': { color: 'var(--tm-text-3)', fontSize: '0.85rem' },
+    '& .MuiInputLabel-root.Mui-focused': { color: 'var(--tm-text-1)' },
+  };
+
+  const cardSx = {
+    border: '1px solid var(--tm-border-1)',
+    p: { xs: 3, sm: 4 },
+  };
+
+  const eyebrowSx = {
+    fontWeight: 700,
+    fontSize: '0.75rem',
+    letterSpacing: '0.15em',
+    color: 'var(--tm-text-1)',
+    mb: 3,
   };
 
   return (
-    <Box>
-      <Grid container spacing={{ xs: 4, md: 6 }}>
-        {/* 왼쪽: 연락처 정보 */}
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Card
+    <Box sx={{ maxWidth: 640, mx: 'auto', display: 'flex', flexDirection: 'column', gap: { xs: 3, sm: 4 } }}>
+      {/* GET IN TOUCH */}
+      <Box sx={cardSx}>
+        <Typography sx={eyebrowSx}>GET IN TOUCH</Typography>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Box
             sx={{
-              bgcolor: '#0A0A0A',
-              border: '1px solid #1A1A1A',
-              borderRadius: 2,
-              p: 4,
-              boxShadow: 'none',
+              width: 44,
+              height: 44,
+              border: '1px solid var(--tm-border-2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
             }}
           >
+            <EmailIcon sx={{ color: 'var(--tm-text-2)', fontSize: 20 }} />
+          </Box>
+          <Box>
+            <Typography sx={{ fontSize: '0.72rem', color: 'var(--tm-text-3)', letterSpacing: '0.1em', mb: 0.3 }}>
+              EMAIL
+            </Typography>
             <Typography
+              component="a"
+              href="mailto:gyeongsik753@gmail.com"
               sx={{
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                letterSpacing: '0.15em',
-                color: '#C8102E',
-                mb: 3,
+                fontSize: '0.9rem',
+                color: 'var(--tm-text-1)',
+                textDecoration: 'none',
+                '&:hover': { opacity: 0.6 },
               }}
             >
-              GET IN TOUCH
+              gyeongsik753@gmail.com
             </Typography>
+          </Box>
+        </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-              <Box
-                sx={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: '50%',
-                  border: '1px solid #222222',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <EmailIcon sx={{ color: '#AAAAAA', fontSize: 20 }} />
-              </Box>
-              <Box>
-                <Typography sx={{ fontSize: '0.72rem', color: '#555555', letterSpacing: '0.1em', mb: 0.3 }}>
-                  EMAIL
-                </Typography>
-                <Typography
-                  component="a"
-                  href="mailto:gyeongsik753@gmail.com"
-                  sx={{
-                    fontSize: '0.9rem',
-                    color: '#FFFFFF',
-                    textDecoration: 'none',
-                    '&:hover': { color: '#C8102E' },
-                  }}
-                >
-                  gyeongsik753@gmail.com
-                </Typography>
-              </Box>
-            </Box>
+        <Divider sx={{ borderColor: 'var(--tm-border-1)', my: 3 }} />
 
-            <Divider sx={{ borderColor: '#1A1A1A', my: 3 }} />
+        <Typography sx={{ ...eyebrowSx, color: 'var(--tm-text-3)', mb: 2 }}>SOCIAL</Typography>
 
-            <Typography
-              sx={{
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                letterSpacing: '0.15em',
-                color: '#666666',
-                mb: 2,
-              }}
-            >
-              SOCIAL
-            </Typography>
+        <Box sx={{ display: 'flex', gap: 1.2, flexWrap: 'wrap' }}>
+          <SnsButton icon={<InstagramIcon fontSize="small" />} href="https://instagram.com" label="Instagram" />
+          <SnsButton icon={<GitHubIcon fontSize="small" />} href="https://github.com/gyeongsik753-design" label="GitHub" />
+          <SnsButton
+            icon={<LanguageIcon fontSize="small" />}
+            href="https://gyeongsik753-design.github.io/my-first-website/"
+            label="Website"
+          />
+        </Box>
+      </Box>
 
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
-              <SnsButton icon={<InstagramIcon />} href="https://instagram.com" label="Instagram" />
-              <SnsButton icon={<GitHubIcon />} href="https://github.com/gyeongsik753-design" label="GitHub" />
-              <SnsButton icon={<LanguageIcon />} href="https://gyeongsik753-design.github.io/my-first-website/" label="Website" />
-            </Box>
-          </Card>
-        </Grid>
+      {/* GUESTBOOK 작성 */}
+      <Box sx={cardSx}>
+        <Typography sx={eyebrowSx}>GUESTBOOK</Typography>
 
-        {/* 오른쪽: 방명록 폼 */}
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Card
-            sx={{
-              bgcolor: '#0A0A0A',
-              border: '1px solid #1A1A1A',
-              borderRadius: 2,
-              p: 4,
-              boxShadow: 'none',
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                letterSpacing: '0.15em',
-                color: '#C8102E',
-                mb: 3,
-              }}
-            >
-              GUESTBOOK
-            </Typography>
-
-            <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    label="이름 *"
-                    value={form.name}
-                    onChange={handleChange('name')}
-                    fullWidth
-                    size="small"
-                    required
-                    sx={inputSx}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    label="이메일 (비공개)"
-                    value={form.email}
-                    onChange={handleChange('email')}
-                    fullWidth
-                    size="small"
-                    type="email"
-                    sx={inputSx}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    label="소속 / 직업"
-                    value={form.organization}
-                    onChange={handleChange('organization')}
-                    fullWidth
-                    size="small"
-                    sx={inputSx}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    label="어떻게 알게 되셨나요?"
-                    value={form.referral}
-                    onChange={handleChange('referral')}
-                    fullWidth
-                    size="small"
-                    select
-                    sx={inputSx}
-                  >
-                    <MenuItem value="">선택 안함</MenuItem>
-                    {REFERRAL_OPTIONS.map((opt) => (
-                      <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-              </Grid>
-
-              <Box>
-                <Typography sx={{ fontSize: '0.78rem', color: '#555555', mb: 1 }}>이모지 선택</Typography>
-                <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap' }}>
-                  {EMOJIS.map((emoji) => (
-                    <Chip
-                      key={emoji}
-                      label={emoji}
-                      onClick={() => setForm((prev) => ({ ...prev, emoji }))}
-                      sx={{
-                        fontSize: '1.1rem',
-                        height: 36,
-                        bgcolor: form.emoji === emoji ? '#1A1A1A' : 'transparent',
-                        border: form.emoji === emoji ? '1px solid #C8102E' : '1px solid #222222',
-                        color: '#FFFFFF',
-                        cursor: 'pointer',
-                        '&:hover': { bgcolor: '#1A1A1A' },
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField label="이름" value={form.name} onChange={handleChange('name')} fullWidth size="small" required sx={inputSx} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField label="소속 / 직업" value={form.organization} onChange={handleChange('organization')} fullWidth size="small" sx={inputSx} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField label="이메일 (비공개)" value={form.email} onChange={handleChange('email')} fullWidth size="small" type="email" sx={inputSx} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField label="전화번호 (비공개)" value={form.phone} onChange={handleChange('phone')} fullWidth size="small" sx={inputSx} />
+            </Grid>
+            <Grid size={12}>
               <TextField
-                label="메시지 *"
-                value={form.message}
-                onChange={handleChange('message')}
+                label="어떻게 알게 되셨나요?"
+                value={form.referral}
+                onChange={handleChange('referral')}
                 fullWidth
-                multiline
-                rows={3}
-                required
+                size="small"
+                select
                 sx={inputSx}
-              />
-
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading}
-                endIcon={<SendIcon />}
-                sx={{
-                  bgcolor: '#FFFFFF',
-                  color: '#000000',
-                  fontWeight: 700,
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.08em',
-                  borderRadius: 0,
-                  py: 1.5,
-                  alignSelf: 'flex-end',
-                  px: 5,
-                  '&:hover': { bgcolor: '#C8102E', color: '#FFFFFF' },
-                  '&.Mui-disabled': { bgcolor: '#333333', color: '#666666' },
-                }}
               >
-                {loading ? '등록 중...' : '방명록 남기기'}
-              </Button>
+                <MenuItem value="">선택 안함</MenuItem>
+                {REFERRAL_OPTIONS.map((opt) => (
+                  <MenuItem key={opt} value={opt}>
+                    {opt}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+
+          <Box>
+            <Typography sx={{ fontSize: '0.78rem', color: 'var(--tm-text-3)', mb: 1 }}>이모지 선택</Typography>
+            <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap' }}>
+              {EMOJIS.map((emoji) => (
+                <Chip
+                  key={emoji}
+                  label={emoji}
+                  onClick={() => setForm((prev) => ({ ...prev, emoji }))}
+                  sx={{
+                    fontSize: '1.1rem',
+                    height: 36,
+                    borderRadius: 0,
+                    bgcolor: form.emoji === emoji ? 'var(--tm-text-1)' : 'transparent',
+                    border: '1px solid var(--tm-border-2)',
+                    color: form.emoji === emoji ? 'var(--tm-bg-root)' : 'var(--tm-text-1)',
+                    cursor: 'pointer',
+                  }}
+                />
+              ))}
             </Box>
-          </Card>
-        </Grid>
-      </Grid>
+          </Box>
+
+          <TextField label="메시지" value={form.message} onChange={handleChange('message')} fullWidth multiline rows={3} required sx={inputSx} />
+
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            endIcon={<SendIcon />}
+            sx={{
+              bgcolor: 'var(--tm-text-1)',
+              color: 'var(--tm-bg-root)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              letterSpacing: '0.08em',
+              borderRadius: 0,
+              py: 1.5,
+              alignSelf: 'flex-end',
+              px: 5,
+              '&:hover': { bgcolor: 'var(--tm-text-1)', opacity: 0.8 },
+              '&.Mui-disabled': { bgcolor: 'var(--tm-border-2)', color: 'var(--tm-text-3)' },
+            }}
+          >
+            {loading ? '등록 중...' : '방명록 남기기'}
+          </Button>
+        </Box>
+      </Box>
 
       {/* 방명록 목록 */}
       {entries.length > 0 && (
-        <Box sx={{ mt: 6 }}>
-          <Typography
-            sx={{
-              fontWeight: 700,
-              fontSize: '0.75rem',
-              letterSpacing: '0.15em',
-              color: '#666666',
-              mb: 2,
-            }}
-          >
-            RECENT MESSAGES
-          </Typography>
+        <Box>
+          <Typography sx={{ ...eyebrowSx, color: 'var(--tm-text-3)', mb: 2 }}>RECENT MESSAGES</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             {entries.map((entry) => (
-              <GuestbookEntry key={entry.id} entry={entry} />
+              <GuestbookEntry key={entry.id} entry={entry} liked={likedIds.has(entry.id)} onLike={handleLike} />
             ))}
           </Box>
         </Box>
@@ -402,7 +371,7 @@ const ContactSection = () => {
         <Alert
           severity={toast.severity}
           onClose={() => setToast((prev) => ({ ...prev, open: false }))}
-          sx={{ bgcolor: '#1A1A1A', color: '#FFFFFF', border: '1px solid #333333' }}
+          sx={{ bgcolor: 'var(--tm-bg-root)', color: 'var(--tm-text-1)', border: '1px solid var(--tm-border-2)' }}
         >
           {toast.message}
         </Alert>

@@ -800,7 +800,7 @@ const Home = () => {
             함께 작업하고 싶으시다면 연락해 주세요. 방명록도 남겨주시면 감사하겠습니다.
           </Typography>
         </Container>
-        <Container maxWidth="lg" sx={{ textAlign: 'left' }}>
+        <Container maxWidth="md" sx={{ textAlign: 'left' }}>
           <ContactSection />
         </Container>
       </Box>

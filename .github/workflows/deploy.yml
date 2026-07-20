@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lecture1/my-community/**'
+      - 'lecture1/my-portfolio/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -32,10 +32,10 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install
-        working-directory: lecture1/my-community
+        working-directory: lecture1/my-portfolio
       - name: Build
         run: npm run build -- --base=/my-first-website/
-        working-directory: lecture1/my-community
+        working-directory: lecture1/my-portfolio
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
@@ -46,7 +46,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: 'lecture1/my-community/dist'
+          path: 'lecture1/my-portfolio/dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
