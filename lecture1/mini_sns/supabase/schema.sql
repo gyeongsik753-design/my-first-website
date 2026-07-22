@@ -123,3 +123,19 @@ create policy "posts_delete_own" on public.posts for delete using (auth.uid() = 
 create policy "comments_select_all" on public.comments for select using (true);
 create policy "comments_insert_own" on public.comments for insert with check (auth.uid() = author_id);
 create policy "comments_delete_own" on public.comments for delete using (auth.uid() = author_id);
+
+-- ============================================================
+-- Storage: 게시물 사진 직접 업로드용 public 버킷
+-- ============================================================
+insert into storage.buckets (id, name, public)
+values ('post-images', 'post-images', true)
+on conflict (id) do nothing;
+
+create policy "post_images_public_read" on storage.objects
+  for select using (bucket_id = 'post-images');
+
+create policy "post_images_auth_upload" on storage.objects
+  for insert with check (bucket_id = 'post-images' and auth.role() = 'authenticated');
+
+create policy "post_images_owner_delete" on storage.objects
+  for delete using (bucket_id = 'post-images' and auth.uid() = owner);
