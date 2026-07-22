@@ -20,7 +20,13 @@ export default function Login() {
     setSubmitting(false);
 
     if (signInError) {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+      if (signInError.message?.toLowerCase().includes('email not confirmed')) {
+        setError('이메일 인증이 완료되지 않았습니다. 받은 편지함(스팸함 포함)에서 인증 메일을 확인해주세요.');
+      } else if (signInError.message?.toLowerCase().includes('invalid login credentials')) {
+        setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+      } else {
+        setError(signInError.message);
+      }
       return;
     }
     const redirectTo = location.state?.from?.pathname ?? '/';
