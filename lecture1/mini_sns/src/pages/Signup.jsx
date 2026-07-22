@@ -49,7 +49,18 @@ export default function Signup() {
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 3, py: 4 }}>
       <Box sx={{ width: '100%', maxWidth: 360 }}>
         <Typography
-          sx={{ textAlign: 'center', fontWeight: 900, fontSize: '2.2rem', letterSpacing: '0.02em', mb: 3 }}
+          component={RouterLink}
+          to="/"
+          sx={{
+            display: 'block',
+            textAlign: 'center',
+            fontWeight: 900,
+            fontSize: '2.2rem',
+            letterSpacing: '0.02em',
+            mb: 3,
+            color: 'inherit',
+            textDecoration: 'none',
+          }}
         >
           WITF
         </Typography>
