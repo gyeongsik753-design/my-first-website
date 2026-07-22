@@ -20,10 +20,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [postedToday, setPostedToday] = useState(true);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     let ignore = false;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- 최초 진입 시 로딩 표시
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- 최초 진입/새로고침 시 로딩 표시
     setLoading(true);
 
     supabase
@@ -46,7 +47,9 @@ export default function Home() {
     return () => {
       ignore = true;
     };
-  }, [user]);
+  }, [user, refreshTick]);
+
+  const handleRefresh = () => setRefreshTick((tick) => tick + 1);
 
   const filteredPosts = useMemo(() => {
     if (!search.trim()) return posts;
@@ -61,7 +64,12 @@ export default function Home() {
       <AppBar position="sticky">
         <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', py: 1, gap: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography sx={{ fontWeight: 900, fontSize: '1.3rem', letterSpacing: '0.02em' }}>WITF</Typography>
+            <Typography
+              onClick={handleRefresh}
+              sx={{ fontWeight: 900, fontSize: '1.3rem', letterSpacing: '0.02em', cursor: 'pointer', userSelect: 'none' }}
+            >
+              WITF
+            </Typography>
             <TopBarActions showHome={false} />
           </Box>
           <TextField
