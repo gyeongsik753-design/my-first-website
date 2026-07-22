@@ -14,6 +14,7 @@ import {
   Alert,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';
@@ -25,7 +26,10 @@ export default function MyPage() {
   const [loading, setLoading] = useState(true);
   const [editingBio, setEditingBio] = useState(false);
   const [bioDraft, setBioDraft] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState('');
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (!user) return;
@@ -50,15 +54,49 @@ export default function MyPage() {
 
   const startEditBio = () => {
     setBioDraft(profile?.bio ?? '');
+    setAvatarFile(null);
+    setAvatarPreview('');
+    setSaveError('');
     setEditingBio(true);
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    };
+  }, [avatarPreview]);
+
   const saveBio = async () => {
     setSaving(true);
-    await supabase.from('users').update({ bio: bioDraft.trim() }).eq('id', user.id);
-    await refreshProfile();
-    setSaving(false);
-    setEditingBio(false);
+    setSaveError('');
+    try {
+      const updates = { bio: bioDraft.trim() };
+
+      if (avatarFile) {
+        const path = `avatars/${user.id}/${Date.now()}-${avatarFile.name}`;
+        const { error: uploadError } = await supabase.storage.from('post-images').upload(path, avatarFile);
+        if (uploadError) throw uploadError;
+        const { data: publicUrlData } = supabase.storage.from('post-images').getPublicUrl(path);
+        updates.avatar_url = publicUrlData.publicUrl;
+      }
+
+      const { error: updateError } = await supabase.from('users').update(updates).eq('id', user.id);
+      if (updateError) throw updateError;
+
+      await refreshProfile();
+      setEditingBio(false);
+    } catch (err) {
+      setSaveError(err?.message ?? '프로필 저장에 실패했습니다.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (profileLoading) {
@@ -120,14 +158,42 @@ export default function MyPage() {
       </AppBar>
 
       <Box sx={{ p: 2.5, textAlign: 'center' }}>
-        <Avatar src={profile.avatar_url || undefined} sx={{ width: 84, height: 84, mx: 'auto', mb: 1.5, bgcolor: 'primary.main', fontSize: 28 }}>
-          {profile.username?.[0]?.toUpperCase() ?? '?'}
-        </Avatar>
+        <Box sx={{ position: 'relative', width: 84, mx: 'auto', mb: 1.5 }}>
+          <Avatar
+            src={avatarPreview || profile.avatar_url || undefined}
+            sx={{ width: 84, height: 84, bgcolor: 'primary.main', fontSize: 28 }}
+          >
+            {profile.username?.[0]?.toUpperCase() ?? '?'}
+          </Avatar>
+          {editingBio && (
+            <IconButton
+              component="label"
+              size="small"
+              aria-label="프로필 사진 변경"
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                bgcolor: 'secondary.main',
+                color: '#fff',
+                '&:hover': { bgcolor: 'secondary.main', opacity: 0.9 },
+              }}
+            >
+              <PhotoCameraIcon sx={{ fontSize: 16 }} />
+              <input type="file" accept="image/*" hidden onChange={handleAvatarChange} />
+            </IconButton>
+          )}
+        </Box>
         <Typography sx={{ fontWeight: 800, fontSize: '1.1rem' }}>{profile.display_name}</Typography>
         <Typography sx={{ color: 'text.secondary', fontSize: '0.85rem', mb: 1.5 }}>@{profile.username}</Typography>
 
         {editingBio ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
+            {saveError && (
+              <Alert severity="error" sx={{ width: '100%', maxWidth: 320, textAlign: 'left' }}>
+                {saveError}
+              </Alert>
+            )}
             <TextField
               value={bioDraft}
               onChange={(e) => setBioDraft(e.target.value)}
@@ -138,11 +204,18 @@ export default function MyPage() {
               sx={{ maxWidth: 320 }}
             />
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button size="small" onClick={() => setEditingBio(false)}>
+              <Button
+                size="small"
+                onClick={() => {
+                  setEditingBio(false);
+                  setAvatarFile(null);
+                  setAvatarPreview('');
+                }}
+              >
                 취소
               </Button>
               <Button size="small" variant="contained" color="secondary" onClick={saveBio} disabled={saving}>
-                저장
+                {saving ? '저장 중...' : '저장'}
               </Button>
             </Box>
           </Box>
