@@ -1,44 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Grid, CircularProgress, Alert, Divider } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
-import { fetchRandomFashionPhotos } from '../lib/unsplash';
 
 export default function PostCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [caption, setCaption] = useState('');
-  const [photos, setPhotos] = useState([]);
-  const [selected, setSelected] = useState(null);
   const [localFile, setLocalFile] = useState(null);
   const [localPreview, setLocalPreview] = useState('');
-  const [loadingPhotos, setLoadingPhotos] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-
-  const loadPhotos = async () => {
-    setLoadingPhotos(true);
-    setError('');
-    try {
-      const result = await fetchRandomFashionPhotos(6);
-      setPhotos(result);
-    } catch {
-      setError('Unsplash에서 이미지를 불러오지 못했습니다. VITE_UNSPLASH_ACCESS_KEY 설정을 확인해주세요.');
-    } finally {
-      setLoadingPhotos(false);
-    }
-  };
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- 최초 진입 시 이미지 자동 로드
-    loadPhotos();
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -46,18 +22,11 @@ export default function PostCreate() {
     };
   }, [localPreview]);
 
-  const handleSelectUnsplash = (photo) => {
-    setSelected(photo);
-    setLocalFile(null);
-    setLocalPreview('');
-  };
-
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setLocalFile(file);
     setLocalPreview(URL.createObjectURL(file));
-    setSelected(null);
   };
 
   const handleRemoveLocalFile = () => {
@@ -70,8 +39,8 @@ export default function PostCreate() {
       setError('캡션을 입력해주세요.');
       return;
     }
-    if (!selected && !localFile) {
-      setError('이미지를 선택하거나 업로드해주세요.');
+    if (!localFile) {
+      setError('사진을 선택해주세요.');
       return;
     }
 
@@ -79,19 +48,14 @@ export default function PostCreate() {
     setError('');
 
     try {
-      let imageUrl = selected?.url;
-
-      if (localFile) {
-        const path = `${user.id}/${Date.now()}-${localFile.name}`;
-        const { error: uploadError } = await supabase.storage.from('post-images').upload(path, localFile);
-        if (uploadError) throw uploadError;
-        const { data: publicUrlData } = supabase.storage.from('post-images').getPublicUrl(path);
-        imageUrl = publicUrlData.publicUrl;
-      }
+      const path = `${user.id}/${Date.now()}-${localFile.name}`;
+      const { error: uploadError } = await supabase.storage.from('post-images').upload(path, localFile);
+      if (uploadError) throw uploadError;
+      const { data: publicUrlData } = supabase.storage.from('post-images').getPublicUrl(path);
 
       const { data, error: insertError } = await supabase
         .from('posts')
-        .insert({ caption: caption.trim(), image_url: imageUrl, user_id: user.id })
+        .insert({ caption: caption.trim(), image_url: publicUrlData.publicUrl, user_id: user.id })
         .select('id')
         .single();
 
@@ -139,10 +103,10 @@ export default function PostCreate() {
           sx={{ mb: 3 }}
         />
 
-        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>내 사진 업로드</Typography>
+        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>사진 업로드</Typography>
 
         {localPreview ? (
-          <Box sx={{ position: 'relative', width: '100%', maxWidth: 240, mb: 1 }}>
+          <Box sx={{ position: 'relative', width: '100%', maxWidth: 240 }}>
             <Box
               component="img"
               src={localPreview}
@@ -159,58 +123,10 @@ export default function PostCreate() {
             </IconButton>
           </Box>
         ) : (
-          <Button variant="outlined" component="label" color="primary" startIcon={<UploadIcon />} sx={{ mb: 1 }}>
+          <Button variant="outlined" component="label" color="primary" startIcon={<UploadIcon />}>
             사진 선택
             <input type="file" accept="image/*" hidden onChange={handleFileChange} />
           </Button>
-        )}
-
-        <Divider sx={{ my: 3 }}>
-          <Typography variant="caption" color="text.secondary">
-            또는
-          </Typography>
-        </Divider>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>이미지 선택 (Unsplash)</Typography>
-          <Button size="small" startIcon={<RefreshIcon />} onClick={loadPhotos} disabled={loadingPhotos}>
-            새로고침
-          </Button>
-        </Box>
-
-        {loadingPhotos ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-            <CircularProgress color="secondary" />
-          </Box>
-        ) : (
-          <Grid container spacing={1}>
-            {photos.map((photo) => {
-              const isSelected = selected?.id === photo.id;
-              return (
-                <Grid key={photo.id} size={4}>
-                  <Box
-                    onClick={() => handleSelectUnsplash(photo)}
-                    sx={{
-                      position: 'relative',
-                      cursor: 'pointer',
-                      aspectRatio: '1 / 1',
-                      overflow: 'hidden',
-                      borderRadius: 1,
-                      border: isSelected ? '3px solid' : '1px solid',
-                      borderColor: isSelected ? 'secondary.main' : 'divider',
-                    }}
-                  >
-                    <Box component="img" src={photo.thumb} alt={photo.alt} sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    {isSelected && (
-                      <CheckCircleIcon
-                        sx={{ position: 'absolute', top: 4, right: 4, color: 'secondary.main', bgcolor: '#fff', borderRadius: '50%' }}
-                      />
-                    )}
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
         )}
       </Box>
     </Box>

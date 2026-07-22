@@ -1,16 +1,15 @@
 # WITF mini_sns
 
-Where Is The Fit — 패션 OOTD 공유 미니 SNS. React + Vite + MUI + Supabase + Unsplash API로 구현했습니다.
+Where Is The Fit — 패션 OOTD 공유 미니 SNS. React + Vite + MUI + Supabase로 구현했습니다.
 
 ## 로컬 개발
 
 1. Supabase 프로젝트를 만들고 `supabase/schema.sql`을 SQL Editor에서 실행하세요.
-2. [unsplash.com/developers](https://unsplash.com/developers)에서 앱을 만들고 Access Key를 발급받으세요.
-3. `.env.example`을 복사해 `.env`를 만들고 값을 채워주세요.
+2. `.env.example`을 복사해 `.env`를 만들고 값을 채워주세요.
    ```
    cp .env.example .env
    ```
-4. 의존성 설치 후 개발 서버 실행
+3. 의존성 설치 후 개발 서버 실행
    ```
    npm install
    npm run dev
@@ -29,13 +28,12 @@ GitHub 저장소 Settings > Secrets and variables > Actions에 아래 값들을 
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
-- `VITE_UNSPLASH_ACCESS_KEY`
 
 ## 주요 기능
 
 - 이메일/비밀번호 회원가입·로그인 (Supabase Auth)
 - 홈 피드 (검색, "오늘의 코디 올리기" 유도 배너)
 - 게시물 상세 (좋아요, 댓글)
-- 게시물 작성 (캡션 입력 → Unsplash 랜덤 이미지 중 선택)
+- 게시물 작성 (캡션 입력 + 사진 직접 업로드, Supabase Storage 저장)
 - 마이페이지 (프로필/소개글 편집, 내 게시물 그리드, 로그아웃)
 - 하단 내비게이션: 왼쪽 홈 · 가운데 작성 · 오른쪽 마이페이지·설정
