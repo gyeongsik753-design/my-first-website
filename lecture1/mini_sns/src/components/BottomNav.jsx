@@ -1,13 +1,11 @@
 import { Box, IconButton } from '@mui/material';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlineOutlined';
 
-// 홈/로그인은 화면 상단 우측(TopBarActions)으로 이동. 하단은 글쓰기(가운데)와 마이페이지(오른쪽)만 유지.
+// 홈/로그인은 화면 상단 우측(TopBarActions)으로 이동. 하단은 마이페이지만 유지.
 export default function BottomNav() {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const isMyPage = pathname === '/mypage';
 
   return (
@@ -30,23 +28,6 @@ export default function BottomNav() {
         zIndex: 10,
       }}
     >
-      <IconButton
-        onClick={() => navigate('/create')}
-        aria-label="게시물 작성"
-        sx={{
-          position: 'absolute',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 56,
-          height: 56,
-          bgcolor: 'secondary.main',
-          color: '#fff',
-          '&:hover': { bgcolor: 'secondary.main', opacity: 0.9 },
-        }}
-      >
-        <AddBoxIcon sx={{ fontSize: 28 }} />
-      </IconButton>
-
       <IconButton
         component={RouterLink}
         to="/mypage"
