@@ -6,6 +6,8 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,18 +23,34 @@ export function AuthProvider({ children }) {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  const loadProfile = (userId) => {
+    setProfileLoading(true);
+    setProfileError(null);
+    return supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single()
+      .then(({ data, error }) => {
+        setProfile(data ?? null);
+        // 회원가입 트리거가 아직 실행되지 않았거나(가입 직후) DB 설정이 안 된 경우를 구분해서 보여줌
+        if (error) setProfileError(error.message);
+      })
+      .catch((err) => {
+        setProfile(null);
+        setProfileError(err?.message ?? '프로필을 불러오지 못했습니다.');
+      })
+      .finally(() => setProfileLoading(false));
+  };
+
   useEffect(() => {
     if (!session?.user) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 로그아웃 시 프로필 초기화
       setProfile(null);
+      setProfileError(null);
       return;
     }
-    supabase
-      .from('users')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
-      .then(({ data }) => setProfile(data));
+    loadProfile(session.user.id);
   }, [session]);
 
   const signUp = async ({ email, password, username, displayName }) => {
@@ -57,14 +75,15 @@ export function AuthProvider({ children }) {
 
   const refreshProfile = async () => {
     if (!session?.user) return;
-    const { data } = await supabase.from('users').select('*').eq('id', session.user.id).single();
-    setProfile(data);
+    await loadProfile(session.user.id);
   };
 
   const value = {
     session,
     user: session?.user ?? null,
     profile,
+    profileLoading,
+    profileError,
     loading,
     signUp,
     signIn,

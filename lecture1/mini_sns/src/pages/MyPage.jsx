@@ -11,6 +11,7 @@ import {
   Grid,
   CircularProgress,
   IconButton,
+  Alert,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { supabase } from '../lib/supabaseClient';
@@ -18,7 +19,7 @@ import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';
 
 export default function MyPage() {
-  const { user, profile, signOut, refreshProfile } = useAuth();
+  const { user, profile, profileLoading, profileError, signOut, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,10 +61,46 @@ export default function MyPage() {
     setEditingBio(false);
   };
 
-  if (!profile) {
+  if (profileLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
         <CircularProgress color="secondary" />
+      </Box>
+    );
+  }
+
+  // 프로필 행이 없는 경우 (DB에 users 테이블/가입 트리거가 아직 설정되지 않았거나 조회 실패)
+  if (!profile) {
+    return (
+      <Box>
+        <AppBar position="sticky">
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Typography sx={{ fontWeight: 700 }}>마이페이지 · 설정</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <TopBarActions />
+              <IconButton onClick={handleLogout} aria-label="로그아웃" color="inherit">
+                <LogoutIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ p: 3, textAlign: 'center' }}>
+          <Alert severity="error" sx={{ mb: 2, textAlign: 'left' }}>
+            프로필 정보를 불러오지 못했습니다.
+            {profileError && (
+              <Typography variant="caption" component="div" sx={{ mt: 0.5, wordBreak: 'break-all' }}>
+                {profileError}
+              </Typography>
+            )}
+          </Alert>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Supabase 프로젝트에 users 테이블/회원가입 트리거가 설정되지 않았을 수 있습니다.
+            (supabase/schema.sql 실행 여부를 확인해주세요)
+          </Typography>
+          <Button variant="outlined" onClick={refreshProfile}>
+            다시 시도
+          </Button>
+        </Box>
       </Box>
     );
   }
