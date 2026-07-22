@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Signup() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: '', displayName: '', email: '', password: '' });
+  const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -32,7 +32,7 @@ export default function Signup() {
       email: form.email,
       password: form.password,
       username: form.username.trim(),
-      displayName: form.displayName.trim() || form.username.trim(),
+      displayName: form.username.trim(),
     });
     setSubmitting(false);
 
@@ -67,14 +67,13 @@ export default function Signup() {
 
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           <TextField
-            label="사용자명 (@아이디)"
+            label="사용자명"
             value={form.username}
             onChange={handleChange('username')}
             required
             fullWidth
             size="small"
           />
-          <TextField label="표시 이름" value={form.displayName} onChange={handleChange('displayName')} fullWidth size="small" />
           <TextField
             label="이메일"
             type="email"
