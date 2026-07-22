@@ -62,8 +62,8 @@ export default function PostCreate() {
       if (insertError) throw insertError;
 
       navigate(`/posts/${data.id}`);
-    } catch {
-      setError('게시물 등록에 실패했습니다.');
+    } catch (err) {
+      setError(`게시물 등록에 실패했습니다: ${err?.message ?? '알 수 없는 오류'}`);
     } finally {
       setSubmitting(false);
     }
