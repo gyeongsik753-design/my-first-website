@@ -57,7 +57,7 @@ export default function Home() {
   }, [posts, search]);
 
   return (
-    <Box sx={{ pb: 9 }}>
+    <Box sx={{ pb: 4 }}>
       <AppBar position="sticky">
         <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', py: 1, gap: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

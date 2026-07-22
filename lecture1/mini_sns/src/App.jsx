@@ -1,8 +1,7 @@
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import BottomNav from './components/BottomNav';
 import Home from './pages/Home';
 import PostDetail from './pages/PostDetail';
 import PostCreate from './pages/PostCreate';
@@ -10,12 +9,7 @@ import MyPage from './pages/MyPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
-const NAV_HIDDEN_PATHS = ['/login', '/signup', '/create'];
-
 function Layout() {
-  const { pathname } = useLocation();
-  const showNav = !NAV_HIDDEN_PATHS.includes(pathname) && !pathname.startsWith('/posts/');
-
   return (
     <Box sx={{ minHeight: '100vh', maxWidth: 480, mx: 'auto', bgcolor: 'background.default' }}>
       <Routes>
@@ -40,7 +34,6 @@ function Layout() {
           }
         />
       </Routes>
-      {showNav && <BottomNav />}
     </Box>
   );
 }

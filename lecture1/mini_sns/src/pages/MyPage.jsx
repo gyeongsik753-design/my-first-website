@@ -77,7 +77,7 @@ export default function MyPage() {
           <Toolbar sx={{ justifyContent: 'space-between' }}>
             <Typography sx={{ fontWeight: 700 }}>마이페이지 · 설정</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <TopBarActions />
+              <TopBarActions showProfile={false} />
               <IconButton onClick={handleLogout} aria-label="로그아웃" color="inherit">
                 <LogoutIcon />
               </IconButton>
@@ -106,7 +106,7 @@ export default function MyPage() {
   }
 
   return (
-    <Box sx={{ pb: 9 }}>
+    <Box sx={{ pb: 4 }}>
       <AppBar position="sticky">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography sx={{ fontWeight: 700 }}>마이페이지 · 설정</Typography>
