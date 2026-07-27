@@ -221,9 +221,57 @@ export default function Home() {
       )}
 
       {category === null && (
-        <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 8 }}>
-          위에서 카테고리를 선택하면 게시물을 볼 수 있어요.
-        </Typography>
+        <Box sx={{ px: 2, pt: 2.5 }}>
+          <Box
+            sx={{
+              position: 'relative',
+              borderRadius: 4,
+              overflow: 'hidden',
+              background: 'linear-gradient(155deg, #1a1a1a 0%, #111111 55%, #3d0d14 100%)',
+              color: '#fff',
+              px: 3,
+              py: 4.5,
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: -60,
+                right: -60,
+                width: 200,
+                height: 200,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(225,38,63,0.55) 0%, rgba(225,38,63,0) 70%)',
+              },
+            }}
+          >
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                bgcolor: 'secondary.main',
+                color: '#fff',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                px: 1.2,
+                py: 0.4,
+                borderRadius: 5,
+                mb: 2,
+                textTransform: 'uppercase',
+              }}
+            >
+              WITF LIVE
+            </Box>
+            <Typography sx={{ position: 'relative', fontWeight: 900, fontSize: '1.7rem', lineHeight: 1.32, mb: 1 }}>
+              오늘의 무드,
+              <br />
+              카테고리에서 찾아보세요
+            </Typography>
+            <Typography sx={{ position: 'relative', fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)' }}>
+              위에서 OOTD 또는 브랜드를 선택하면 시작돼요
+            </Typography>
+          </Box>
+        </Box>
       )}
 
       {category && category !== 'BRAND' && (
