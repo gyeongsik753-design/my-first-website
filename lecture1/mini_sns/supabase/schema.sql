@@ -31,9 +31,15 @@ create table if not exists public.posts (
   user_id uuid not null references public.users (id) on delete cascade,
   caption text not null,
   image_url text not null,
+  category text not null default 'OOTD',
   likes_count integer not null default 0,
   created_at timestamptz not null default now()
 );
+
+-- 기존에 이미 posts 테이블이 만들어져 있던 경우를 위한 컬럼 추가
+alter table public.posts add column if not exists category text not null default 'OOTD';
+
+create index if not exists posts_category_idx on public.posts (category);
 
 -- 3. comments (댓글) 테이블
 create table if not exists public.comments (

@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert, Chip, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
+import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
 
 export default function PostCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [caption, setCaption] = useState('');
+  const [category, setCategory] = useState(DEFAULT_CATEGORY);
   const [localFile, setLocalFile] = useState(null);
   const [localPreview, setLocalPreview] = useState('');
   const [error, setError] = useState('');
@@ -55,7 +57,7 @@ export default function PostCreate() {
 
       const { data, error: insertError } = await supabase
         .from('posts')
-        .insert({ caption: caption.trim(), image_url: publicUrlData.publicUrl, user_id: user.id })
+        .insert({ caption: caption.trim(), image_url: publicUrlData.publicUrl, category, user_id: user.id })
         .select('id')
         .single();
 
@@ -102,6 +104,20 @@ export default function PostCreate() {
           minRows={2}
           sx={{ mb: 3 }}
         />
+
+        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>카테고리</Typography>
+        <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+          {CATEGORIES.map((c) => (
+            <Chip
+              key={c.value}
+              label={c.label}
+              clickable
+              onClick={() => setCategory(c.value)}
+              color={category === c.value ? 'secondary' : 'default'}
+              variant={category === c.value ? 'filled' : 'outlined'}
+            />
+          ))}
+        </Stack>
 
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>사진 업로드</Typography>
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress, Chip, Stack } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,6 +7,9 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import TopBarActions from '../components/TopBarActions';
+import { CATEGORIES } from '../lib/categories';
+
+const ALL_CATEGORY = 'ALL';
 
 const isToday = (dateStr) => {
   const d = new Date(dateStr);
@@ -19,6 +22,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [category, setCategory] = useState(ALL_CATEGORY);
   const [postedToday, setPostedToday] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
 
@@ -29,7 +33,7 @@ export default function Home() {
 
     supabase
       .from('posts')
-      .select('id, caption, image_url, likes_count, created_at, user_id, users ( username, avatar_url )')
+      .select('id, caption, image_url, category, likes_count, created_at, user_id, users ( username, avatar_url )')
       .order('created_at', { ascending: false })
       .limit(30)
       .then(({ data, error }) => {
@@ -52,12 +56,18 @@ export default function Home() {
   const handleRefresh = () => setRefreshTick((tick) => tick + 1);
 
   const filteredPosts = useMemo(() => {
-    if (!search.trim()) return posts;
-    const q = search.trim().toLowerCase();
-    return posts.filter(
-      (p) => p.caption?.toLowerCase().includes(q) || p.users?.username?.toLowerCase().includes(q)
-    );
-  }, [posts, search]);
+    let result = posts;
+    if (category !== ALL_CATEGORY) {
+      result = result.filter((p) => p.category === category);
+    }
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      result = result.filter(
+        (p) => p.caption?.toLowerCase().includes(q) || p.users?.username?.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [posts, search, category]);
 
   return (
     <Box sx={{ pb: 4 }}>
@@ -89,6 +99,25 @@ export default function Home() {
             }}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#f5f5f5' } }}
           />
+          <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', pb: 0.5 }}>
+            <Chip
+              label="전체"
+              clickable
+              onClick={() => setCategory(ALL_CATEGORY)}
+              color={category === ALL_CATEGORY ? 'secondary' : 'default'}
+              variant={category === ALL_CATEGORY ? 'filled' : 'outlined'}
+            />
+            {CATEGORIES.map((c) => (
+              <Chip
+                key={c.value}
+                label={c.label}
+                clickable
+                onClick={() => setCategory(c.value)}
+                color={category === c.value ? 'secondary' : 'default'}
+                variant={category === c.value ? 'filled' : 'outlined'}
+              />
+            ))}
+          </Stack>
         </Toolbar>
       </AppBar>
 
