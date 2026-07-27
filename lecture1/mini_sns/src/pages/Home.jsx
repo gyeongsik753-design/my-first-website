@@ -4,12 +4,14 @@ import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import GridViewIcon from '@mui/icons-material/GridView';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import TopBarActions from '../components/TopBarActions';
 import CategoryTile from '../components/CategoryTile';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
+import { BRANDS } from '../lib/brands';
 
 const ALL_GRADIENT = 'linear-gradient(135deg, #6b6b6b, #1a1a1a)';
 
@@ -139,6 +141,44 @@ export default function Home() {
           </Stack>
         </Toolbar>
       </AppBar>
+
+      {category === 'BRAND' && (
+        <Stack
+          direction="row"
+          spacing={1.5}
+          sx={{ px: 2, pt: 2, overflowX: 'auto', '&::-webkit-scrollbar': { display: 'none' }, scrollbarWidth: 'none' }}
+        >
+          {BRANDS.map((b) => (
+            <Box
+              key={b.name}
+              component="a"
+              href={b.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                px: 2.5,
+                py: 1.2,
+                borderRadius: 5,
+                bgcolor: '#111111',
+                color: '#fff',
+                textDecoration: 'none',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+                transition: 'transform 0.2s ease',
+                '&:hover': { transform: 'translateY(-2px)' },
+              }}
+            >
+              {b.name} 공식 홈페이지
+              <OpenInNewIcon sx={{ fontSize: 16 }} />
+            </Box>
+          ))}
+        </Stack>
+      )}
 
       {!postedToday && (
         <Box
