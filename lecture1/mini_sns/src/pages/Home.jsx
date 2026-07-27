@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress, Chip, Stack } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress, Stack } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import GridViewIcon from '@mui/icons-material/GridView';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import TopBarActions from '../components/TopBarActions';
+import CategoryTile from '../components/CategoryTile';
 import { CATEGORIES } from '../lib/categories';
+
+const ALL_GRADIENT = 'linear-gradient(135deg, #6b6b6b, #1a1a1a)';
 
 const ALL_CATEGORY = 'ALL';
 
@@ -99,22 +103,33 @@ export default function Home() {
             }}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#f5f5f5' } }}
           />
-          <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', pb: 0.5 }}>
-            <Chip
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{
+              overflowX: 'auto',
+              px: 0.5,
+              pt: 0.5,
+              pb: 0.5,
+              '&::-webkit-scrollbar': { display: 'none' },
+              scrollbarWidth: 'none',
+            }}
+          >
+            <CategoryTile
+              icon={GridViewIcon}
               label="전체"
-              clickable
+              gradient={ALL_GRADIENT}
+              selected={category === ALL_CATEGORY}
               onClick={() => setCategory(ALL_CATEGORY)}
-              color={category === ALL_CATEGORY ? 'secondary' : 'default'}
-              variant={category === ALL_CATEGORY ? 'filled' : 'outlined'}
             />
             {CATEGORIES.map((c) => (
-              <Chip
+              <CategoryTile
                 key={c.value}
+                icon={c.icon}
                 label={c.label}
-                clickable
+                gradient={c.gradient}
+                selected={category === c.value}
                 onClick={() => setCategory(c.value)}
-                color={category === c.value ? 'secondary' : 'default'}
-                variant={category === c.value ? 'filled' : 'outlined'}
               />
             ))}
           </Stack>

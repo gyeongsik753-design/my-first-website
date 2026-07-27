@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert, Chip, Stack } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
+import CategoryTile from '../components/CategoryTile';
 
 export default function PostCreate() {
   const { user } = useAuth();
@@ -106,15 +107,15 @@ export default function PostCreate() {
         />
 
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>카테고리</Typography>
-        <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+        <Stack direction="row" spacing={1.5} sx={{ mb: 3 }}>
           {CATEGORIES.map((c) => (
-            <Chip
+            <CategoryTile
               key={c.value}
+              icon={c.icon}
               label={c.label}
-              clickable
+              gradient={c.gradient}
+              selected={category === c.value}
               onClick={() => setCategory(c.value)}
-              color={category === c.value ? 'secondary' : 'default'}
-              variant={category === c.value ? 'filled' : 'outlined'}
             />
           ))}
         </Stack>
