@@ -12,5 +12,5 @@ export const BRANDS = [
   { name: '리복', url: 'https://www.reebok.co.kr/', logoSlug: 'reebok' },
   { name: '휠라', url: 'https://www.fila.co.kr/', logoSlug: 'fila' },
   { name: '더노스페이스', url: 'https://www.thenorthfacekorea.co.kr/', logoSlug: 'thenorthface' },
-  { name: '파페치', url: 'https://www.farfetch.com/kr/', logoSlug: 'farfetch' },
+  { name: '디올', url: 'https://www.dior.com/ko_kr', logoSlug: 'dior' },
 ];
