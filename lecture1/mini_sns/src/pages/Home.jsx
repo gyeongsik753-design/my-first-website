@@ -60,12 +60,12 @@ export default function Home() {
   const handleRefresh = () => setRefreshTick((tick) => tick + 1);
 
   const filteredPosts = useMemo(() => {
-    let result = posts;
-    if (category !== ALL_CATEGORY) {
-      // 카테고리 컬럼이 없던 시절에 만들어진 게시물은 category가 비어있을 수 있어
-      // 기본 카테고리(OOTD)로 간주해서 필터링합니다.
-      result = result.filter((p) => (p.category ?? DEFAULT_CATEGORY) === category);
-    }
+    // "전체" 탭에서는 게시물을 보여주지 않고, 카테고리를 선택했을 때만 피드를 보여줍니다.
+    if (category === ALL_CATEGORY) return [];
+
+    // 카테고리 컬럼이 없던 시절에 만들어진 게시물은 category가 비어있을 수 있어
+    // 기본 카테고리(OOTD)로 간주해서 필터링합니다.
+    let result = posts.filter((p) => (p.category ?? DEFAULT_CATEGORY) === category);
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       result = result.filter(
@@ -176,7 +176,11 @@ export default function Home() {
         </Box>
       ) : filteredPosts.length === 0 ? (
         <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 8 }}>
-          {search ? '검색 결과가 없습니다.' : '아직 게시물이 없습니다. 첫 OOTD를 공유해보세요!'}
+          {category === ALL_CATEGORY
+            ? '위에서 카테고리를 선택하면 게시물을 볼 수 있어요.'
+            : search
+              ? '검색 결과가 없습니다.'
+              : '아직 게시물이 없습니다. 첫 OOTD를 공유해보세요!'}
         </Typography>
       ) : (
         <Box sx={{ pt: 1 }}>
