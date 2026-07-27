@@ -59,6 +59,8 @@ export default function Home() {
 
   const handleRefresh = () => setRefreshTick((tick) => tick + 1);
 
+  const currentCategoryLabel = CATEGORIES.find((c) => c.value === category)?.label ?? category;
+
   const filteredPosts = useMemo(() => {
     // "전체" 탭에서는 게시물을 보여주지 않고, 카테고리를 선택했을 때만 피드를 보여줍니다.
     if (category === ALL_CATEGORY) return [];
@@ -180,7 +182,7 @@ export default function Home() {
             ? '위에서 카테고리를 선택하면 게시물을 볼 수 있어요.'
             : search
               ? '검색 결과가 없습니다.'
-              : '아직 게시물이 없습니다. 첫 OOTD를 공유해보세요!'}
+              : `아직 게시물이 없습니다. 첫 ${currentCategoryLabel} 게시물을 공유해보세요!`}
         </Typography>
       ) : (
         <Box sx={{ pt: 1 }}>
