@@ -4,7 +4,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import GridViewIcon from '@mui/icons-material/GridView';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
@@ -16,6 +15,8 @@ import { BRANDS } from '../lib/brands';
 const ALL_GRADIENT = 'linear-gradient(135deg, #6b6b6b, #1a1a1a)';
 
 const ALL_CATEGORY = 'ALL';
+
+const BRAND_PALETTE = ['#111111', '#26313a', '#5c1a1a', '#1f2d3d', '#3a2a4a'];
 
 const isToday = (dateStr) => {
   const d = new Date(dateStr);
@@ -143,44 +144,64 @@ export default function Home() {
       </AppBar>
 
       {category === 'BRAND' && (
-        <Stack
-          direction="row"
-          spacing={1.5}
-          sx={{ px: 2, pt: 2, overflowX: 'auto', '&::-webkit-scrollbar': { display: 'none' }, scrollbarWidth: 'none' }}
-        >
-          {BRANDS.map((b) => (
-            <Box
-              key={b.name}
-              component="a"
-              href={b.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.75,
-                px: 2.5,
-                py: 1.2,
-                borderRadius: 5,
-                bgcolor: '#111111',
-                color: '#fff',
-                textDecoration: 'none',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                flexShrink: 0,
-                whiteSpace: 'nowrap',
-                transition: 'transform 0.2s ease',
-                '&:hover': { transform: 'translateY(-2px)' },
-              }}
-            >
-              {b.name} 공식 홈페이지
-              <OpenInNewIcon sx={{ fontSize: 16 }} />
-            </Box>
-          ))}
-        </Stack>
+        <Box sx={{ px: 3, pt: 3, pb: 1 }}>
+          <Typography
+            sx={{
+              fontWeight: 800,
+              fontSize: '0.78rem',
+              color: 'text.secondary',
+              textAlign: 'center',
+              letterSpacing: '0.06em',
+              mb: 2.5,
+            }}
+          >
+            브랜드 공식 홈페이지 바로가기
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 2.5 }}>
+            {BRANDS.map((b, i) => (
+              <Box
+                key={b.name}
+                component="a"
+                href={b.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 0.8,
+                  width: 76,
+                  textDecoration: 'none',
+                  transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  '&:hover': { transform: 'translateY(-3px)' },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    bgcolor: BRAND_PALETTE[i % BRAND_PALETTE.length],
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(17,17,17,0.18)',
+                  }}
+                >
+                  <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.3rem' }}>{b.name[0]}</Typography>
+                </Box>
+                <Typography
+                  sx={{ fontSize: '0.72rem', fontWeight: 700, color: 'text.primary', textAlign: 'center', lineHeight: 1.25 }}
+                >
+                  {b.name}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
       )}
 
-      {!postedToday && (
+      {!postedToday && category !== 'BRAND' && (
         <Box
           sx={{
             m: 2,
@@ -212,7 +233,7 @@ export default function Home() {
         </Box>
       )}
 
-      {loading ? (
+      {category === 'BRAND' ? null : loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
           <CircularProgress color="secondary" />
         </Box>
