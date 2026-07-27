@@ -24,7 +24,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState(DEFAULT_CATEGORY);
+  const [category, setCategory] = useState(null);
   const [postedToday, setPostedToday] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
 
@@ -162,7 +162,16 @@ export default function Home() {
                     boxShadow: '0 4px 12px rgba(17,17,17,0.18)',
                   }}
                 >
-                  <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.3rem' }}>{b.name[0]}</Typography>
+                  {b.logoSlug ? (
+                    <Box
+                      component="img"
+                      src={`https://cdn.simpleicons.org/${b.logoSlug}/ffffff`}
+                      alt={b.name}
+                      sx={{ width: 30, height: 30, objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.3rem' }}>{b.name[0]}</Typography>
+                  )}
                 </Box>
                 <Typography
                   sx={{ fontSize: '0.72rem', fontWeight: 700, color: 'text.primary', textAlign: 'center', lineHeight: 1.25 }}
@@ -175,7 +184,7 @@ export default function Home() {
         </Box>
       )}
 
-      {!postedToday && category !== 'BRAND' && (
+      {!postedToday && category === 'OOTD' && (
         <Box
           sx={{
             m: 2,
@@ -207,20 +216,28 @@ export default function Home() {
         </Box>
       )}
 
-      {category === 'BRAND' ? null : loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-          <CircularProgress color="secondary" />
-        </Box>
-      ) : filteredPosts.length === 0 ? (
+      {category === null && (
         <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 8 }}>
-          {search ? '검색 결과가 없습니다.' : `아직 게시물이 없습니다. 첫 ${currentCategoryLabel} 게시물을 공유해보세요!`}
+          위에서 카테고리를 선택하면 게시물을 볼 수 있어요.
         </Typography>
-      ) : (
-        <Box sx={{ pt: 1 }}>
-          {filteredPosts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </Box>
+      )}
+
+      {category && category !== 'BRAND' && (
+        loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress color="secondary" />
+          </Box>
+        ) : filteredPosts.length === 0 ? (
+          <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 8 }}>
+            {search ? '검색 결과가 없습니다.' : `아직 게시물이 없습니다. 첫 ${currentCategoryLabel} 게시물을 공유해보세요!`}
+          </Typography>
+        ) : (
+          <Box sx={{ pt: 1 }}>
+            {filteredPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </Box>
+        )
       )}
     </Box>
   );
