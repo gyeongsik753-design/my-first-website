@@ -69,9 +69,7 @@ export default function Home() {
     let result = posts.filter((p) => (p.category ?? DEFAULT_CATEGORY) === category);
     if (search.trim()) {
       const q = search.trim().toLowerCase();
-      result = result.filter(
-        (p) => p.caption?.toLowerCase().includes(q) || p.users?.username?.toLowerCase().includes(q)
-      );
+      result = result.filter((p) => p.users?.username?.toLowerCase().includes(q));
     }
     return result;
   }, [posts, search, category]);
@@ -89,23 +87,6 @@ export default function Home() {
             </Typography>
             <TopBarActions showHome={false} />
           </Box>
-          <TextField
-            placeholder="캡션 또는 사용자명 검색"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            size="small"
-            fullWidth
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon fontSize="small" sx={{ color: 'text.secondary' }} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#f5f5f5' } }}
-          />
           <Stack direction="row" spacing={3.5} justifyContent="center" sx={{ pt: 1, pb: 0.5 }}>
             {CATEGORIES.map((c) => (
               <CategoryTile
@@ -118,6 +99,25 @@ export default function Home() {
               />
             ))}
           </Stack>
+          {category === 'OOTD' && (
+            <TextField
+              placeholder="사용자명 검색"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              size="small"
+              fullWidth
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#f5f5f5' } }}
+            />
+          )}
         </Toolbar>
       </AppBar>
 
