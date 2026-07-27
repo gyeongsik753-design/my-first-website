@@ -55,7 +55,11 @@ export default function Home() {
     };
   }, [user, refreshTick]);
 
-  const handleRefresh = () => setRefreshTick((tick) => tick + 1);
+  const handleGoHome = () => {
+    setCategory(null);
+    setSearch('');
+    setRefreshTick((tick) => tick + 1);
+  };
 
   const currentCategoryLabel = CATEGORIES.find((c) => c.value === category)?.label ?? category;
 
@@ -78,7 +82,7 @@ export default function Home() {
         <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', py: 1, gap: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography
-              onClick={handleRefresh}
+              onClick={handleGoHome}
               sx={{ fontWeight: 900, fontSize: '1.3rem', letterSpacing: '0.02em', cursor: 'pointer', userSelect: 'none' }}
             >
               WITF
