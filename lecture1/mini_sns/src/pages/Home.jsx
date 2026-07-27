@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import TopBarActions from '../components/TopBarActions';
 import CategoryTile from '../components/CategoryTile';
-import { CATEGORIES } from '../lib/categories';
+import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
 
 const ALL_GRADIENT = 'linear-gradient(135deg, #6b6b6b, #1a1a1a)';
 
@@ -62,7 +62,9 @@ export default function Home() {
   const filteredPosts = useMemo(() => {
     let result = posts;
     if (category !== ALL_CATEGORY) {
-      result = result.filter((p) => p.category === category);
+      // 카테고리 컬럼이 없던 시절에 만들어진 게시물은 category가 비어있을 수 있어
+      // 기본 카테고리(OOTD)로 간주해서 필터링합니다.
+      result = result.filter((p) => (p.category ?? DEFAULT_CATEGORY) === category);
     }
     if (search.trim()) {
       const q = search.trim().toLowerCase();
