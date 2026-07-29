@@ -54,7 +54,7 @@ export default function Login() {
           WITF
         </Typography>
         <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 4, fontSize: '0.85rem' }}>
-          What Is Today's Fashion? — 오늘의 OOTD를 공유해보세요
+          What Is That Fit? — 오늘의 OOTD를 공유해보세요
         </Typography>
 
         {error && (
