@@ -241,6 +241,99 @@ export default function Home() {
         </Box>
       )}
 
+      {category === 'MUSINSA' && (
+        <Box sx={{ px: 2, pt: 3, pb: 1 }}>
+          <Box
+            component="a"
+            href="https://www.musinsa.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              display: 'block',
+              textDecoration: 'none',
+              borderRadius: 3,
+              overflow: 'hidden',
+              background: 'linear-gradient(135deg, #FF6B35, #C9302C)',
+              color: '#fff',
+              px: 2.5,
+              py: 2.5,
+              mb: 3,
+              transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              '&:hover': { transform: 'translateY(-2px)' },
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '0.68rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                opacity: 0.85,
+                mb: 0.5,
+                textTransform: 'uppercase',
+              }}
+            >
+              MUSINSA SALE
+            </Typography>
+            <Typography sx={{ fontWeight: 900, fontSize: '1.15rem', lineHeight: 1.3 }}>
+              지금 할인 중인 상품 보러가기
+            </Typography>
+            <Typography sx={{ fontSize: '0.75rem', opacity: 0.85, mt: 0.5 }}>
+              musinsa.com에서 실시간 세일 상품을 확인하세요
+            </Typography>
+          </Box>
+
+          <Typography
+            sx={{
+              fontWeight: 800,
+              fontSize: '0.78rem',
+              color: 'text.secondary',
+              letterSpacing: '0.04em',
+              mb: 1.5,
+            }}
+          >
+            인기 브랜드 미리보기
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
+            {BRANDS.map((b, i) => (
+              <Box
+                key={b.name}
+                component="a"
+                href={b.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1,
+                  width: 'calc(50% - 6px)',
+                  height: 92,
+                  borderRadius: 2.5,
+                  textDecoration: 'none',
+                  background: BRAND_PALETTE[i % BRAND_PALETTE.length],
+                  boxShadow: '0 4px 12px rgba(17,17,17,0.18)',
+                  transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  '&:hover': { transform: 'translateY(-3px)' },
+                }}
+              >
+                {b.logoSlug ? (
+                  <Box
+                    component="img"
+                    src={`https://cdn.simpleicons.org/${b.logoSlug}/ffffff`}
+                    alt={b.name}
+                    sx={{ width: 32, height: 32, objectFit: 'contain' }}
+                  />
+                ) : (
+                  <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.4rem' }}>{b.name[0]}</Typography>
+                )}
+                <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.75rem' }}>{b.name}</Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      )}
+
       {!postedToday && category === 'OOTD' && (
         <Box
           sx={{
@@ -273,7 +366,7 @@ export default function Home() {
         </Box>
       )}
 
-      {category && category !== 'BRAND' && (
+      {category && category !== 'BRAND' && category !== 'MUSINSA' && (
         loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
             <CircularProgress color="secondary" />
