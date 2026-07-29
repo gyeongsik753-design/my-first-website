@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import TopBarActions from '../components/TopBarActions';
 import CategoryTile from '../components/CategoryTile';
+import HipCharacter from '../components/HipCharacter';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
 import { BRANDS } from '../lib/brands';
 
@@ -110,33 +111,30 @@ export default function Home() {
                 },
               }}
             >
-              <Box
-                sx={{
-                  position: 'relative',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  bgcolor: 'secondary.main',
-                  color: '#fff',
-                  fontSize: '0.65rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.08em',
-                  px: 1.2,
-                  py: 0.4,
-                  borderRadius: 5,
-                  mb: 2,
-                  textTransform: 'uppercase',
-                }}
-              >
-                WITF LIVE
+              <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography
+                    sx={{
+                      fontWeight: 900,
+                      fontSize: '1.5rem',
+                      letterSpacing: '0.02em',
+                      fontFamily: '"Roboto", cursive',
+                      mb: 0.5,
+                    }}
+                  >
+                    WITF
+                  </Typography>
+                  <Typography sx={{ fontWeight: 900, fontSize: '1.35rem', lineHeight: 1.32, mb: 1 }}>
+                    What Is That Fit?
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)' }}>
+                    위에서 OOTD 또는 브랜드를 선택하면 시작돼요
+                  </Typography>
+                </Box>
+                <Box sx={{ width: 92, height: 126, flexShrink: 0 }}>
+                  <HipCharacter />
+                </Box>
               </Box>
-              <Typography sx={{ position: 'relative', fontWeight: 900, fontSize: '1.7rem', lineHeight: 1.32, mb: 1 }}>
-                오늘의 무드,
-                <br />
-                카테고리에서 찾아보세요
-              </Typography>
-              <Typography sx={{ position: 'relative', fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)' }}>
-                위에서 OOTD 또는 브랜드를 선택하면 시작돼요
-              </Typography>
             </Box>
           )}
 
