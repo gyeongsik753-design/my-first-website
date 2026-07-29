@@ -368,11 +368,15 @@ export default function Home() {
                     borderRadius: 2.5,
                     overflow: 'hidden',
                     background: BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                   }}
                 >
+                  <Box
+                    component="img"
+                    src={p.image}
+                    alt={p.name}
+                    loading="lazy"
+                    sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
                   <Typography
                     sx={{
                       position: 'absolute',
@@ -388,11 +392,6 @@ export default function Home() {
                     }}
                   >
                     {p.discount}
-                  </Typography>
-                  <Typography
-                    sx={{ color: 'rgba(255,255,255,0.3)', fontWeight: 900, fontSize: '0.9rem', letterSpacing: '0.1em' }}
-                  >
-                    AAKAM
                   </Typography>
                 </Box>
                 <Typography
