@@ -145,7 +145,9 @@ export default function Home() {
             direction="row"
             spacing={2.5}
             justifyContent="center"
-            sx={{ pt: 1, pb: 0.5, overflowX: 'auto', '&::-webkit-scrollbar': { display: 'none' } }}
+            flexWrap="wrap"
+            useFlexGap
+            sx={{ pt: 1, pb: 0.5, rowGap: 1.5 }}
           >
             {CATEGORIES.map((c) => (
               <CategoryTile
@@ -174,7 +176,7 @@ export default function Home() {
                   ),
                 },
               }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#f5f5f5' } }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: 'rgba(255,255,255,0.06)' } }}
             />
           )}
         </Toolbar>
@@ -325,7 +327,7 @@ export default function Home() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            bgcolor: '#fafafa',
+            bgcolor: 'background.paper',
           }}
         >
           <Box>

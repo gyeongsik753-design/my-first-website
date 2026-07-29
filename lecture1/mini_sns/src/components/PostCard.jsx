@@ -92,7 +92,7 @@ export default function PostCard({ post }) {
         >
           <Avatar
             src={post.users?.avatar_url || undefined}
-            sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14, border: '2px solid #fff' }}
+            sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14, border: '2px solid', borderColor: 'background.default' }}
           >
             {post.users?.username?.[0]?.toUpperCase() ?? '?'}
           </Avatar>
@@ -119,7 +119,7 @@ export default function PostCard({ post }) {
             component="img"
             src={post.image_url}
             alt={post.caption}
-            sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: '#f0f0f0', display: 'block' }}
+            sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }}
           />
         </Box>
         {burst && (

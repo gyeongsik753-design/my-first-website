@@ -164,7 +164,7 @@ export default function PostDetail() {
             flexShrink: 0,
           }}
         >
-          <Avatar src={post.users?.avatar_url || undefined} sx={{ width: 40, height: 40, bgcolor: 'primary.main', border: '2px solid #fff' }}>
+          <Avatar src={post.users?.avatar_url || undefined} sx={{ width: 40, height: 40, bgcolor: 'primary.main', border: '2px solid', borderColor: 'background.default' }}>
             {post.users?.username?.[0]?.toUpperCase() ?? '?'}
           </Avatar>
         </Box>
@@ -177,7 +177,7 @@ export default function PostDetail() {
       </Stack>
 
       <Box sx={{ position: 'relative', mx: 2, borderRadius: 3, overflow: 'hidden' }} onDoubleClick={handleDoubleClickImage}>
-        <Box component="img" src={post.image_url} alt={post.caption} sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: '#f0f0f0', display: 'block' }} />
+        <Box component="img" src={post.image_url} alt={post.caption} sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }} />
         {burst && (
           <FavoriteIcon
             sx={{
@@ -232,7 +232,7 @@ export default function PostDetail() {
 
         <Stack spacing={1.5} sx={{ mb: 2 }}>
           {comments.map((c) => (
-            <Box key={c.id} sx={{ p: 1.25, borderRadius: 2, bgcolor: '#f7f7f7' }}>
+            <Box key={c.id} sx={{ p: 1.25, borderRadius: 2, bgcolor: 'background.paper' }}>
               <Typography sx={{ fontSize: '0.85rem' }}>
                 <Box component="span" sx={{ fontWeight: 800, mr: 0.7 }}>
                   @{c.users?.username ?? '알 수 없음'}
