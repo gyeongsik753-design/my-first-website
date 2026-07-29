@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress, Stack } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -141,12 +141,18 @@ export default function Home() {
             </Box>
           )}
 
-          <Stack
-            direction="row"
-            spacing={2.5}
-            justifyContent="center"
-            useFlexGap
-            sx={{ pt: 1, pb: 0.5, flexWrap: 'wrap', rowGap: 1.5 }}
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              width: '100%',
+              columnGap: 2.5,
+              rowGap: 1.5,
+              pt: 1,
+              pb: 0.5,
+            }}
           >
             {CATEGORIES.map((c) => (
               <CategoryTile
@@ -158,7 +164,7 @@ export default function Home() {
                 onClick={() => setCategory(c.value)}
               />
             ))}
-          </Stack>
+          </Box>
           {category === 'OOTD' && (
             <TextField
               placeholder="사용자명 검색"
