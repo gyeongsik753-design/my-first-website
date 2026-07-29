@@ -124,11 +124,8 @@ export default function Home() {
                   >
                     WITF
                   </Typography>
-                  <Typography sx={{ fontWeight: 900, fontSize: '1.35rem', lineHeight: 1.32, mb: 1 }}>
+                  <Typography sx={{ fontWeight: 900, fontSize: '1.35rem', lineHeight: 1.32 }}>
                     What Is That Fit?
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)' }}>
-                    위에서 OOTD 또는 브랜드를 선택하면 시작돼요
                   </Typography>
                 </Box>
                 <Box sx={{ width: 92, height: 126, flexShrink: 0 }}>

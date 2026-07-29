@@ -9,66 +9,106 @@ export default function HipCharacter({ sx }) {
       aria-label="스트릿 패션 캐릭터"
       sx={{ width: '100%', height: '100%', display: 'block', ...sx }}
     >
-      <ellipse cx="110" cy="288" rx="66" ry="9" fill="rgba(0,0,0,0.35)" />
+      <defs>
+        <linearGradient id="hc-jacket" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ff5470" />
+          <stop offset="100%" stopColor="#7a1130" />
+        </linearGradient>
+        <linearGradient id="hc-pants" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#454f63" />
+          <stop offset="100%" stopColor="#232a38" />
+        </linearGradient>
+        <linearGradient id="hc-hair" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#4a2f20" />
+          <stop offset="100%" stopColor="#1c110a" />
+        </linearGradient>
+      </defs>
 
-      {/* back arm */}
-      <path d="M62 148 Q36 172 42 208 Q45 224 60 220 Q68 217 65 202 Q62 178 80 158 Z" fill="#c81f36" />
+      <ellipse cx="110" cy="288" rx="64" ry="9" fill="rgba(0,0,0,0.35)" />
 
-      {/* legs */}
-      <path d="M78 205 L74 275 Q74 285 85 285 L100 285 Q106 285 105 275 L104 205 Z" fill="#cfcfcf" />
-      <path d="M116 205 L114 275 Q113 285 124 285 L139 285 Q145 285 144 275 L142 205 Z" fill="#b9b9b9" />
+      {/* hair flowing behind */}
+      <path
+        d="M76 46 Q60 70 66 110 Q70 132 60 150 Q78 148 82 122 Q86 150 76 172 Q94 162 96 128 L96 60 Z"
+        fill="url(#hc-hair)"
+      />
+      <path
+        d="M144 46 Q160 70 154 110 Q150 132 160 150 Q142 148 138 122 Q134 150 144 172 Q126 162 124 128 L124 60 Z"
+        fill="url(#hc-hair)"
+      />
+
+      {/* back arm holding bag strap */}
+      <path d="M64 148 Q40 168 44 202 Q46 216 60 213 Q68 211 65 198 Q63 176 82 158 Z" fill="#7a1130" />
+      <path d="M50 150 L96 260" stroke="#c9942f" strokeWidth="4" strokeLinecap="round" />
+      <rect x="64" y="222" width="34" height="26" rx="6" fill="#111318" stroke="#3a3f4d" strokeWidth="1.5" />
+
+      {/* legs, hip-popped stance */}
+      <path d="M80 208 Q70 240 76 275 Q77 285 88 285 L100 285 Q106 285 104 275 L102 210 Z" fill="url(#hc-pants)" />
+      <path d="M118 208 Q132 236 128 272 Q127 285 138 285 L149 285 Q155 285 152 273 L138 210 Z" fill="url(#hc-pants)" />
 
       {/* sneakers */}
-      <path d="M72 275 L108 275 L110 288 Q110 294 100 294 L66 294 Q60 294 62 286 Z" fill="#f5f5f5" stroke="#111" strokeWidth="2" />
-      <path d="M111 275 L147 275 L149 288 Q149 294 139 294 L105 294 Q99 294 101 286 Z" fill="#f5f5f5" stroke="#111" strokeWidth="2" />
-      <rect x="62" y="289" width="48" height="6" rx="3" fill="#111" />
-      <rect x="101" y="289" width="48" height="6" rx="3" fill="#111" />
+      <path d="M72 274 L106 274 L109 288 Q109 294 99 294 L64 294 Q58 294 61 285 Z" fill="#fbfbfb" stroke="#111" strokeWidth="2" />
+      <path d="M124 273 L160 273 L163 287 Q163 293 153 293 L119 293 Q113 293 115 284 Z" fill="#fbfbfb" stroke="#111" strokeWidth="2" />
+      <rect x="61" y="288" width="48" height="6" rx="3" fill="#ff5470" />
+      <rect x="115" y="287" width="48" height="6" rx="3" fill="#ff5470" />
 
-      {/* hoodie body */}
-      <path d="M62 130 Q58 190 66 215 Q110 232 154 215 Q162 190 158 130 Q160 108 140 96 Q110 84 80 96 Q60 108 62 130 Z" fill="#242424" />
+      {/* crop top peek */}
+      <path d="M92 150 Q110 162 128 150 L126 190 Q110 200 94 190 Z" fill="#ffe3e8" />
 
-      {/* pocket */}
-      <path d="M85 175 Q110 190 135 175 L135 195 Q110 208 85 195 Z" fill="#181818" />
+      {/* jacket / body */}
+      <path
+        d="M64 128 Q58 172 66 206 Q88 220 132 206 Q140 172 156 138 Q160 116 138 100 Q118 88 82 100 Q62 112 64 128 Z"
+        fill="url(#hc-jacket)"
+      />
+      {/* jacket lapel split */}
+      <path d="M110 100 L96 206 L102 208 L112 104 Z" fill="rgba(0,0,0,0.18)" />
 
-      {/* zipper */}
-      <line x1="110" y1="98" x2="110" y2="212" stroke="#3a3a3a" strokeWidth="2" />
+      {/* front arm on hip */}
+      <path
+        d="M138 108 Q168 118 166 152 Q165 172 148 172 Q136 172 138 156 Q140 138 122 126 Z"
+        fill="url(#hc-jacket)"
+      />
+      <path d="M150 155 Q168 158 170 178 Q171 190 158 190 Q148 189 150 176 Z" fill="#e0a877" />
 
-      {/* shirt peek */}
-      <path d="M92 98 Q110 112 128 98 L124 88 Q110 96 96 88 Z" fill="#e1263f" />
-
-      {/* hood strings */}
-      <line x1="103" y1="100" x2="100" y2="130" stroke="#111" strokeWidth="3" strokeLinecap="round" />
-      <line x1="117" y1="100" x2="120" y2="130" stroke="#111" strokeWidth="3" strokeLinecap="round" />
-
-      {/* front arm crossed */}
-      <path d="M150 140 Q178 155 172 190 Q168 208 150 202 Q140 198 145 182 Q150 165 132 150 Z" fill="#e1263f" />
-      <circle cx="152" cy="200" r="10" fill="#e0a877" />
+      {/* crossbody bag strap + bag */}
+      <path d="M92 100 L146 210" stroke="#f4d35e" strokeWidth="3" opacity="0.9" />
+      <rect x="132" y="188" width="30" height="24" rx="6" fill="#111318" stroke="#f4d35e" strokeWidth="1.5" />
 
       {/* neck */}
       <rect x="100" y="80" width="20" height="18" rx="6" fill="#e0a877" />
 
       {/* head */}
-      <circle cx="110" cy="62" r="34" fill="#e0a877" />
-      <circle cx="76" cy="64" r="6" fill="#e0a877" />
+      <circle cx="110" cy="62" r="33" fill="#e0a877" />
+
+      {/* earring */}
+      <circle cx="79" cy="76" r="4" fill="#f4d35e" stroke="#c9942f" strokeWidth="1" />
+
+      {/* fringe / bangs */}
+      <path d="M78 46 Q92 30 110 32 Q128 30 142 46 Q124 40 110 42 Q96 40 78 46 Z" fill="url(#hc-hair)" />
 
       {/* chain */}
       <path d="M96 92 Q110 102 124 92" stroke="#f4d35e" strokeWidth="3" fill="none" />
-      <circle cx="110" cy="100" r="5" fill="#f4d35e" stroke="#c9a227" strokeWidth="1.5" />
+      <circle cx="110" cy="100" r="5" fill="#f4d35e" stroke="#c9942f" strokeWidth="1.5" />
 
-      {/* sunglasses */}
-      <rect x="82" y="54" width="56" height="16" rx="8" fill="#0c0c0c" />
-      <circle cx="96" cy="62" r="9" fill="#1c1c1c" stroke="#333" strokeWidth="1" />
-      <circle cx="124" cy="62" r="9" fill="#1c1c1c" stroke="#333" strokeWidth="1" />
-      <rect x="102" y="59" width="16" height="4" fill="#0c0c0c" />
-      <path d="M96 56 Q92 50 84 52" stroke="#fff" strokeWidth="2" opacity="0.5" fill="none" />
+      {/* cat-eye sunglasses */}
+      <path
+        d="M80 56 Q80 50 88 50 L104 50 Q110 50 110 56 L110 62 Q110 68 102 68 L90 68 Q80 68 80 60 Z"
+        fill="#0c0c0c"
+      />
+      <path
+        d="M110 56 Q110 50 118 50 L134 50 Q142 50 142 56 L142 60 Q142 68 132 68 L120 68 Q110 68 110 62 Z"
+        fill="#0c0c0c"
+      />
+      <path d="M110 55 Q116 51 122 55" stroke="#0c0c0c" strokeWidth="4" fill="none" />
+      <path d="M78 54 Q84 46 94 48" stroke="#fff" strokeWidth="2" opacity="0.55" fill="none" />
 
-      {/* cap */}
-      <path d="M74 46 Q78 16 110 14 Q142 16 146 46 Q124 38 110 38 Q96 38 74 46 Z" fill="#e1263f" />
-      <path d="M74 46 Q60 48 52 58 Q64 60 78 52 Z" fill="#c81f36" />
-      <circle cx="110" cy="20" r="4" fill="#fff" />
+      {/* bucket cap, tilted back */}
+      <path d="M78 44 Q80 16 110 14 Q140 16 142 44 Q122 34 110 34 Q98 34 78 44 Z" fill="#ff5470" />
+      <path d="M78 44 Q64 46 56 56 Q68 58 82 50 Z" fill="#c9315a" />
 
       {/* smirk */}
-      <path d="M100 78 Q110 84 120 78" stroke="#7a4a2a" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <path d="M99 78 Q110 85 121 78" stroke="#9a5a35" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <circle cx="94" cy="70" r="1.6" fill="#3a2418" />
+      <circle cx="126" cy="70" r="1.6" fill="#3a2418" />
     </Box>
   );
 }
