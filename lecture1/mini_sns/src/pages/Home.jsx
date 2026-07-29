@@ -145,9 +145,8 @@ export default function Home() {
             direction="row"
             spacing={2.5}
             justifyContent="center"
-            flexWrap="wrap"
             useFlexGap
-            sx={{ pt: 1, pb: 0.5, rowGap: 1.5 }}
+            sx={{ pt: 1, pb: 0.5, flexWrap: 'wrap', rowGap: 1.5 }}
           >
             {CATEGORIES.map((c) => (
               <CategoryTile
