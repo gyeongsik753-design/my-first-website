@@ -293,8 +293,8 @@ export default function Home() {
           >
             인기 브랜드 미리보기
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
-            {BRANDS.map((b, i) => (
+          <Box sx={{ display: 'flex', gap: 1.5 }}>
+            {BRANDS.slice(0, 3).map((b, i) => (
               <Box
                 key={b.name}
                 component="a"
@@ -307,7 +307,7 @@ export default function Home() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 1,
-                  width: 'calc(50% - 6px)',
+                  flex: '1 1 0',
                   height: 92,
                   borderRadius: 2.5,
                   textDecoration: 'none',
@@ -331,6 +331,16 @@ export default function Home() {
               </Box>
             ))}
           </Box>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            color="secondary"
+            onClick={() => setCategory('BRAND')}
+            sx={{ mt: 2, borderRadius: 5 }}
+          >
+            브랜드 전체 보기 →
+          </Button>
         </Box>
       )}
 
