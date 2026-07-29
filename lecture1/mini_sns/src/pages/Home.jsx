@@ -85,6 +85,11 @@ export default function Home() {
     return result;
   }, [posts, search, category]);
 
+  const recentOotdPosts = useMemo(
+    () => posts.filter((p) => (p.category ?? DEFAULT_CATEGORY) === 'OOTD'),
+    [posts]
+  );
+
   return (
     <Box sx={{ pb: 4 }}>
       <AppBar position="sticky">
@@ -190,6 +195,29 @@ export default function Home() {
           )}
         </Toolbar>
       </AppBar>
+
+      {category === null && (
+        <Box sx={{ pt: 3 }}>
+          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.95rem', mb: 1.5 }}>
+            최근 게시물
+          </Typography>
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+              <CircularProgress color="secondary" />
+            </Box>
+          ) : recentOotdPosts.length === 0 ? (
+            <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 8 }}>
+              아직 게시물이 없습니다. 첫 OOTD 게시물을 공유해보세요!
+            </Typography>
+          ) : (
+            <Box>
+              {recentOotdPosts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </Box>
+          )}
+        </Box>
+      )}
 
       {category === 'BRAND' && (
         <Box sx={{ px: 2.5, pt: 3, pb: 1 }}>
