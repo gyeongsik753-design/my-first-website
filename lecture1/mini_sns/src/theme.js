@@ -1,13 +1,13 @@
 import { createTheme } from '@mui/material/styles';
 
 // WITF mini_sns — 힙하고 개성있는 패션 SNS 테마
-// 메인: 차콜/화이트 · 보조: 빨강 (스트릿 다크 테마)
+// 메인: 그레이/화이트 · 보조: 빨강 (스트릿 다크 테마)
 const theme = createTheme({
   palette: {
     mode: 'dark',
     background: {
-      default: '#1c1c1e',
-      paper: '#242428',
+      default: '#333333',
+      paper: '#3d3d3d',
     },
     primary: {
       main: '#f5f5f5',
@@ -40,7 +40,7 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#1c1c1e',
+          backgroundColor: '#333333',
           color: '#f2f2f2',
           boxShadow: 'none',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
