@@ -135,7 +135,12 @@ export default function Home() {
             </Box>
           )}
 
-          <Stack direction="row" spacing={3.5} justifyContent="center" sx={{ pt: 1, pb: 0.5 }}>
+          <Stack
+            direction="row"
+            spacing={2.5}
+            justifyContent="center"
+            sx={{ pt: 1, pb: 0.5, overflowX: 'auto', '&::-webkit-scrollbar': { display: 'none' } }}
+          >
             {CATEGORIES.map((c) => (
               <CategoryTile
                 key={c.value}
