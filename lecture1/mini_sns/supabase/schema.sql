@@ -54,6 +54,87 @@ create index if not exists posts_user_id_idx on public.posts (user_id);
 create index if not exists posts_created_at_idx on public.posts (created_at desc);
 create index if not exists comments_post_id_idx on public.comments (post_id);
 
+-- 4. conversations (1:1 DM 대화방) 테이블
+-- user_a < user_b로 항상 정렬해서 저장 -> 두 사람 사이의 대화방이 중복 생성되지 않도록 함
+create table if not exists public.conversations (
+  id bigint generated always as identity primary key,
+  user_a uuid not null references public.users (id) on delete cascade,
+  user_b uuid not null references public.users (id) on delete cascade,
+  last_message_at timestamptz not null default now(),
+  created_at timestamptz not null default now(),
+  constraint conversations_user_order check (user_a < user_b),
+  constraint conversations_unique_pair unique (user_a, user_b)
+);
+
+create index if not exists conversations_user_a_idx on public.conversations (user_a);
+create index if not exists conversations_user_b_idx on public.conversations (user_b);
+
+-- 5. messages (DM 메시지) 테이블
+create table if not exists public.messages (
+  id bigint generated always as identity primary key,
+  conversation_id bigint not null references public.conversations (id) on delete cascade,
+  sender_id uuid not null references public.users (id) on delete cascade,
+  content text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists messages_conversation_id_idx on public.messages (conversation_id);
+create index if not exists messages_created_at_idx on public.messages (created_at);
+
+-- 두 사용자 사이의 대화방을 찾거나 없으면 새로 만드는 RPC.
+-- user_a/user_b 정렬 및 "본인끼리 대화 금지"를 서버에서 강제하기 위해
+-- 클라이언트가 conversations 테이블에 직접 insert하지 않고 이 함수를 통해서만 생성합니다.
+create or replace function public.get_or_create_conversation(other_user_id uuid)
+returns bigint
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  me uuid := auth.uid();
+  ua uuid;
+  ub uuid;
+  conv_id bigint;
+begin
+  if me is null then
+    raise exception '로그인이 필요합니다';
+  end if;
+  if me = other_user_id then
+    raise exception '자기 자신과는 대화할 수 없습니다';
+  end if;
+
+  if me < other_user_id then
+    ua := me; ub := other_user_id;
+  else
+    ua := other_user_id; ub := me;
+  end if;
+
+  select id into conv_id from public.conversations where user_a = ua and user_b = ub;
+
+  if conv_id is null then
+    insert into public.conversations (user_a, user_b) values (ua, ub) returning id into conv_id;
+  end if;
+
+  return conv_id;
+end;
+$$;
+
+-- 메시지가 새로 생기면 대화방의 last_message_at을 갱신 (목록 정렬용)
+create or replace function public.touch_conversation_on_message()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update public.conversations set last_message_at = new.created_at where id = new.conversation_id;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_message_inserted on public.messages;
+create trigger on_message_inserted
+  after insert on public.messages
+  for each row execute procedure public.touch_conversation_on_message();
+
 -- ============================================================
 -- 회원가입 시 auth.users -> public.users 자동 동기화 트리거
 -- (회원가입 화면에서 입력한 username/display_name을 auth metadata로 넘기면
@@ -114,6 +195,8 @@ $$;
 alter table public.users enable row level security;
 alter table public.posts enable row level security;
 alter table public.comments enable row level security;
+alter table public.conversations enable row level security;
+alter table public.messages enable row level security;
 
 -- users: 누구나 프로필 조회 가능(피드에 작성자 표시), 본인 행만 수정 가능
 create policy "users_select_all" on public.users for select using (true);
@@ -129,6 +212,34 @@ create policy "posts_delete_own" on public.posts for delete using (auth.uid() = 
 create policy "comments_select_all" on public.comments for select using (true);
 create policy "comments_insert_own" on public.comments for insert with check (auth.uid() = author_id);
 create policy "comments_delete_own" on public.comments for delete using (auth.uid() = author_id);
+
+-- conversations: 본인이 참여한 대화방만 조회 가능. 생성은 get_or_create_conversation
+-- RPC(security definer)를 통해서만 이뤄지므로 별도의 insert 정책은 두지 않습니다.
+create policy "conversations_select_own" on public.conversations
+  for select using (auth.uid() = user_a or auth.uid() = user_b);
+
+-- messages: 본인이 참여한 대화방의 메시지만 조회/작성 가능
+create policy "messages_select_own" on public.messages
+  for select using (
+    exists (
+      select 1 from public.conversations c
+      where c.id = messages.conversation_id
+        and (c.user_a = auth.uid() or c.user_b = auth.uid())
+    )
+  );
+
+create policy "messages_insert_own" on public.messages
+  for insert with check (
+    auth.uid() = sender_id
+    and exists (
+      select 1 from public.conversations c
+      where c.id = messages.conversation_id
+        and (c.user_a = auth.uid() or c.user_b = auth.uid())
+    )
+  );
+
+-- 실시간 채팅을 위해 messages 테이블 변경 사항을 Realtime에 브로드캐스트
+alter publication supabase_realtime add table public.messages;
 
 -- ============================================================
 -- Storage: 게시물 사진 직접 업로드용 public 버킷
