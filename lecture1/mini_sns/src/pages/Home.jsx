@@ -124,26 +124,75 @@ export default function Home() {
                   borderRadius: '50%',
                   background: 'radial-gradient(circle, rgba(225,38,63,0.55) 0%, rgba(225,38,63,0) 70%)',
                 },
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  inset: 0,
+                  backgroundImage: 'radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1.4px)',
+                  backgroundSize: '14px 14px',
+                  opacity: 0.5,
+                  pointerEvents: 'none',
+                },
               }}
             >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 12,
+                  right: 96,
+                  bgcolor: '#F4D35E',
+                  color: '#111',
+                  fontSize: '0.62rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.05em',
+                  px: 1,
+                  py: 0.3,
+                  borderRadius: '4px',
+                  transform: 'rotate(-8deg)',
+                  boxShadow: '0 3px 8px rgba(0,0,0,0.35)',
+                  zIndex: 2,
+                }}
+              >
+                STREET FIT
+              </Box>
+
               <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography
                     sx={{
                       fontWeight: 900,
-                      fontSize: '1.5rem',
-                      letterSpacing: '0.02em',
+                      fontSize: '1.7rem',
+                      letterSpacing: '0.03em',
                       fontFamily: '"Roboto", cursive',
                       mb: 0.5,
+                      color: '#fff',
+                      WebkitTextStroke: '1px rgba(0,0,0,0.4)',
+                      textShadow: '3px 3px 0 #E1263F, 3px 3px 10px rgba(225,38,63,0.4)',
                     }}
                   >
                     WITF
                   </Typography>
-                  <Typography sx={{ fontWeight: 900, fontSize: '1.35rem', lineHeight: 1.32 }}>
+                  <Typography
+                    sx={{
+                      display: 'inline',
+                      fontWeight: 900,
+                      fontSize: '1.35rem',
+                      lineHeight: 1.32,
+                      background: 'linear-gradient(180deg, transparent 62%, rgba(225,38,63,0.55) 62%)',
+                    }}
+                  >
                     What Is That Fit?
                   </Typography>
                 </Box>
-                <Box sx={{ width: 92, height: 126, flexShrink: 0 }}>
+                <Box
+                  sx={{
+                    width: 92,
+                    height: 126,
+                    flexShrink: 0,
+                    transform: 'rotate(-4deg)',
+                    filter: 'drop-shadow(0 8px 14px rgba(0,0,0,0.45))',
+                  }}
+                >
                   <HipCharacter />
                 </Box>
               </Box>
