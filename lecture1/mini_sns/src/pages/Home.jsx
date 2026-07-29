@@ -14,6 +14,7 @@ import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
 import { BRANDS } from '../lib/brands';
 import { AAKAM_BRAND_URL, AAKAM_PRODUCTS } from '../lib/aakamProducts';
 import { ARCHIVE9999_BRAND_URL, ARCHIVE9999_PRODUCTS } from '../lib/archive9999Products';
+import { OY_BRAND_URL, OY_PRODUCTS } from '../lib/oyProducts';
 
 const BRAND_GRADIENTS = [
   'linear-gradient(150deg, #2c2c2c 0%, #0d0d0d 100%)',
@@ -328,6 +329,7 @@ export default function Home() {
             brandUrl={ARCHIVE9999_BRAND_URL}
             products={ARCHIVE9999_PRODUCTS}
           />
+          <BrandProductRow label="OPENYARD(OY) PICK" brandUrl={OY_BRAND_URL} products={OY_PRODUCTS} />
         </Box>
       )}
 
