@@ -12,7 +12,13 @@ import HipCharacter from '../components/HipCharacter';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
 import { BRANDS } from '../lib/brands';
 
-const BRAND_PALETTE = ['#111111', '#26313a', '#5c1a1a', '#1f2d3d', '#3a2a4a'];
+const BRAND_GRADIENTS = [
+  'linear-gradient(150deg, #2c2c2c 0%, #0d0d0d 100%)',
+  'linear-gradient(150deg, #34495e 0%, #16202a 100%)',
+  'linear-gradient(150deg, #7a2036 0%, #1a1010 100%)',
+  'linear-gradient(150deg, #2d4356 0%, #0e1a26 100%)',
+  'linear-gradient(150deg, #4a2f5e 0%, #17101f 100%)',
+];
 
 const isToday = (dateStr) => {
   const d = new Date(dateStr);
@@ -175,20 +181,19 @@ export default function Home() {
       </AppBar>
 
       {category === 'BRAND' && (
-        <Box sx={{ px: 3, pt: 3, pb: 1 }}>
+        <Box sx={{ px: 2.5, pt: 3, pb: 1 }}>
           <Typography
             sx={{
               fontWeight: 800,
               fontSize: '0.78rem',
               color: 'text.secondary',
-              textAlign: 'center',
               letterSpacing: '0.06em',
-              mb: 2.5,
+              mb: 2,
             }}
           >
             브랜드 공식 홈페이지 바로가기
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 2.5 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
             {BRANDS.map((b, i) => (
               <Box
                 key={b.name}
@@ -197,26 +202,44 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
+                  position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: 0.8,
-                  width: 76,
+                  justifyContent: 'center',
+                  gap: 1,
+                  width: 'calc(33.333% - 8px)',
+                  height: 106,
+                  borderRadius: 3,
+                  overflow: 'hidden',
                   textDecoration: 'none',
-                  transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&:hover': { transform: 'translateY(-3px)' },
+                  background: BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 4px 14px rgba(17,17,17,0.22)',
+                  transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease',
+                  '&:hover': { transform: 'translateY(-4px) scale(1.02)', boxShadow: '0 10px 22px rgba(17,17,17,0.32)' },
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: -28,
+                    right: -28,
+                    width: 80,
+                    height: 80,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 70%)',
+                  },
                 }}
               >
                 <Box
                   sx={{
-                    width: 64,
-                    height: 64,
+                    position: 'relative',
+                    width: 46,
+                    height: 46,
                     borderRadius: '50%',
-                    bgcolor: BRAND_PALETTE[i % BRAND_PALETTE.length],
+                    bgcolor: 'rgba(255,255,255,0.14)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 4px 12px rgba(17,17,17,0.18)',
                   }}
                 >
                   {b.logoSlug ? (
@@ -224,14 +247,21 @@ export default function Home() {
                       component="img"
                       src={`https://cdn.simpleicons.org/${b.logoSlug}/ffffff`}
                       alt={b.name}
-                      sx={{ width: 30, height: 30, objectFit: 'contain' }}
+                      sx={{ width: 25, height: 25, objectFit: 'contain' }}
                     />
                   ) : (
-                    <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.3rem' }}>{b.name[0]}</Typography>
+                    <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.1rem' }}>{b.name[0]}</Typography>
                   )}
                 </Box>
                 <Typography
-                  sx={{ fontSize: '0.72rem', fontWeight: 700, color: 'text.primary', textAlign: 'center', lineHeight: 1.25 }}
+                  sx={{
+                    position: 'relative',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    color: '#fff',
+                    textAlign: 'center',
+                    lineHeight: 1.2,
+                  }}
                 >
                   {b.name}
                 </Typography>
@@ -281,66 +311,6 @@ export default function Home() {
               musinsa.com에서 실시간 세일 상품을 확인하세요
             </Typography>
           </Box>
-
-          <Typography
-            sx={{
-              fontWeight: 800,
-              fontSize: '0.78rem',
-              color: 'text.secondary',
-              letterSpacing: '0.04em',
-              mb: 1.5,
-            }}
-          >
-            인기 브랜드 미리보기
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
-            {BRANDS.slice(0, 3).map((b, i) => (
-              <Box
-                key={b.name}
-                component="a"
-                href={b.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 1,
-                  flex: '1 1 0',
-                  height: 92,
-                  borderRadius: 2.5,
-                  textDecoration: 'none',
-                  background: BRAND_PALETTE[i % BRAND_PALETTE.length],
-                  boxShadow: '0 4px 12px rgba(17,17,17,0.18)',
-                  transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&:hover': { transform: 'translateY(-3px)' },
-                }}
-              >
-                {b.logoSlug ? (
-                  <Box
-                    component="img"
-                    src={`https://cdn.simpleicons.org/${b.logoSlug}/ffffff`}
-                    alt={b.name}
-                    sx={{ width: 32, height: 32, objectFit: 'contain' }}
-                  />
-                ) : (
-                  <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.4rem' }}>{b.name[0]}</Typography>
-                )}
-                <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.75rem' }}>{b.name}</Typography>
-              </Box>
-            ))}
-          </Box>
-
-          <Button
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            onClick={() => setCategory('BRAND')}
-            sx={{ mt: 2, borderRadius: 5 }}
-          >
-            브랜드 전체 보기 →
-          </Button>
         </Box>
       )}
 
