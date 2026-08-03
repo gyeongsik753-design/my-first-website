@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import TopBarActions from '../components/TopBarActions';
 import CategoryTile from '../components/CategoryTile';
-import HipCharacter from '../components/HipCharacter';
+import bannerCharacter from '../assets/banner-character.png';
 import BrandProductRow from '../components/BrandProductRow';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
 import { BRANDS } from '../lib/brands';
@@ -189,11 +189,19 @@ export default function Home() {
                     width: 92,
                     height: 126,
                     flexShrink: 0,
+                    bgcolor: '#fff',
+                    borderRadius: 2,
+                    p: 0.5,
                     transform: 'rotate(-4deg)',
-                    filter: 'drop-shadow(0 8px 14px rgba(0,0,0,0.45))',
+                    boxShadow: '0 8px 14px rgba(0,0,0,0.45)',
                   }}
                 >
-                  <HipCharacter />
+                  <Box
+                    component="img"
+                    src={bannerCharacter}
+                    alt="배너 캐릭터"
+                    sx={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', borderRadius: 1.5 }}
+                  />
                 </Box>
               </Box>
             </Box>
