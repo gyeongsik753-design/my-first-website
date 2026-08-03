@@ -112,8 +112,8 @@ export default function Home() {
                 overflow: 'hidden',
                 background: 'linear-gradient(155deg, #1a1a1a 0%, #111111 55%, #3d0d14 100%)',
                 color: '#fff',
-                px: 2.5,
-                py: 2,
+                px: 2,
+                py: 1.4,
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -138,8 +138,8 @@ export default function Home() {
               <Box
                 sx={{
                   position: 'absolute',
-                  top: 8,
-                  right: 74,
+                  top: 6,
+                  right: 62,
                   bgcolor: '#F4D35E',
                   color: '#111',
                   fontSize: '0.58rem',
@@ -161,10 +161,10 @@ export default function Home() {
                   <Typography
                     sx={{
                       fontWeight: 900,
-                      fontSize: '1.3rem',
+                      fontSize: '1.1rem',
                       letterSpacing: '0.03em',
                       fontFamily: '"Roboto", cursive',
-                      mb: 0.3,
+                      mb: 0.2,
                       color: '#fff',
                       WebkitTextStroke: '1px rgba(0,0,0,0.4)',
                       textShadow: '2px 2px 0 #E1263F, 2px 2px 8px rgba(225,38,63,0.4)',
@@ -176,8 +176,8 @@ export default function Home() {
                     sx={{
                       display: 'inline',
                       fontWeight: 900,
-                      fontSize: '1.05rem',
-                      lineHeight: 1.28,
+                      fontSize: '0.9rem',
+                      lineHeight: 1.25,
                       background: 'linear-gradient(180deg, transparent 62%, rgba(225,38,63,0.55) 62%)',
                     }}
                   >
@@ -186,14 +186,14 @@ export default function Home() {
                 </Box>
                 <Box
                   sx={{
-                    width: 66,
-                    height: 90,
+                    width: 54,
+                    height: 74,
                     flexShrink: 0,
                     bgcolor: '#fff',
                     borderRadius: 1.5,
-                    p: 0.4,
+                    p: 0.35,
                     transform: 'rotate(-4deg)',
-                    boxShadow: '0 6px 10px rgba(0,0,0,0.45)',
+                    boxShadow: '0 5px 9px rgba(0,0,0,0.45)',
                   }}
                 >
                   <Box
@@ -254,22 +254,49 @@ export default function Home() {
       </AppBar>
 
       {category === null && (
-        <Box sx={{ pt: 1.5 }}>
-          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.9rem', mb: 1 }}>
+        <Box sx={{ pt: 1.5, pb: 1 }}>
+          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.85rem', mb: 1 }}>
             최근 게시물
           </Typography>
           {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-              <CircularProgress color="secondary" />
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+              <CircularProgress size={22} color="secondary" />
             </Box>
           ) : recentOotdPosts.length === 0 ? (
-            <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 8 }}>
+            <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 3, fontSize: '0.82rem' }}>
               아직 게시물이 없습니다. 첫 OOTD 게시물을 공유해보세요!
             </Typography>
           ) : (
-            <Box>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 1,
+                overflowX: 'auto',
+                px: 2,
+                '&::-webkit-scrollbar': { display: 'none' },
+              }}
+            >
               {recentOotdPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <Box
+                  key={post.id}
+                  component={RouterLink}
+                  to={`/posts/${post.id}`}
+                  sx={{
+                    flex: '0 0 auto',
+                    width: 88,
+                    height: 88,
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    display: 'block',
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={post.image_url}
+                    alt={post.caption}
+                    sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                </Box>
               ))}
             </Box>
           )}
