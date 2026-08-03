@@ -11,7 +11,7 @@ import CategoryTile from '../components/CategoryTile';
 import bannerCharacter from '../assets/banner-character.png';
 import BrandProductRow from '../components/BrandProductRow';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
-import { BRANDS, BRAND_SLOTS } from '../lib/brands';
+import { BRANDS } from '../lib/brands';
 import { AAKAM_BRAND_URL, AAKAM_PRODUCTS } from '../lib/aakamProducts';
 import { ARCHIVE9999_BRAND_URL, ARCHIVE9999_PRODUCTS } from '../lib/archive9999Products';
 import { OY_BRAND_URL, OY_PRODUCTS } from '../lib/oyProducts';
@@ -46,9 +46,7 @@ export default function Home() {
 
     supabase
       .from('posts')
-      .select(
-        `id, caption, image_url, category, likes_count, created_at, user_id, users ( username, avatar_url ), ${BRAND_SLOTS.map((s) => s.key).join(', ')}`
-      )
+      .select('id, caption, image_url, category, likes_count, created_at, user_id, users ( username, avatar_url )')
       .order('created_at', { ascending: false })
       .limit(30)
       .then(({ data, error }) => {

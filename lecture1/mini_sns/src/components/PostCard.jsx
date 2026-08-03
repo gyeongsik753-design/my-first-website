@@ -7,7 +7,6 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getLikedIds, saveLikedIds } from '../lib/likes';
-import { BRAND_SLOTS } from '../lib/brands';
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
@@ -177,27 +176,6 @@ export default function PostCard({ post }) {
           </Box>
           {post.caption}
         </Typography>
-        {BRAND_SLOTS.some(({ key }) => post[key]) && (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 1 }}>
-            {BRAND_SLOTS.filter(({ key }) => post[key]).map(({ key, label }) => (
-              <Box
-                key={key}
-                sx={{
-                  fontSize: '0.7rem',
-                  fontWeight: 700,
-                  color: 'secondary.main',
-                  border: '1px solid',
-                  borderColor: 'secondary.main',
-                  borderRadius: 4,
-                  px: 1,
-                  py: 0.2,
-                }}
-              >
-                {label} · {post[key]}
-              </Box>
-            ))}
-          </Box>
-        )}
       </Box>
     </Box>
   );
