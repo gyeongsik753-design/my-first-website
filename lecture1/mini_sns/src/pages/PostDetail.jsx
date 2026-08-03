@@ -192,7 +192,7 @@ export default function PostDetail() {
       >
         <Box component="img" src={post.image_url} alt={post.caption} sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }} />
         {showBrands &&
-          BRAND_SLOTS.filter(({ key }) => post[key] && post.brand_positions?.[key]).map(({ key, label }) => {
+          BRAND_SLOTS.filter(({ key }) => post[key] && post.brand_positions?.[key]).map(({ key }) => {
             const { x, y } = post.brand_positions[key];
             return (
               <Box
@@ -212,7 +212,7 @@ export default function PostDetail() {
                   py: 0.4,
                 }}
               >
-                {label} · {post[key]}
+                {post[key]}
               </Box>
             );
           })}
@@ -263,7 +263,7 @@ export default function PostDetail() {
         </Typography>
         {showBrands && BRAND_SLOTS.some(({ key }) => post[key] && !post.brand_positions?.[key]) && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 1.2 }}>
-            {BRAND_SLOTS.filter(({ key }) => post[key] && !post.brand_positions?.[key]).map(({ key, label }) => (
+            {BRAND_SLOTS.filter(({ key }) => post[key] && !post.brand_positions?.[key]).map(({ key }) => (
               <Box
                 key={key}
                 sx={{
@@ -277,7 +277,7 @@ export default function PostDetail() {
                   py: 0.25,
                 }}
               >
-                {label} · {post[key]}
+                {post[key]}
               </Box>
             ))}
           </Box>
