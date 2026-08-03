@@ -32,14 +32,21 @@ create table if not exists public.posts (
   caption text not null,
   image_url text not null,
   category text not null default 'OOTD',
-  brands text[] not null default '{}',
+  brand_hat text,
+  brand_top text,
+  brand_bottom text,
+  brand_shoes text,
   likes_count integer not null default 0,
   created_at timestamptz not null default now()
 );
 
 -- 기존에 이미 posts 테이블이 만들어져 있던 경우를 위한 컬럼 추가
 alter table public.posts add column if not exists category text not null default 'OOTD';
-alter table public.posts add column if not exists brands text[] not null default '{}';
+alter table public.posts add column if not exists brand_hat text;
+alter table public.posts add column if not exists brand_top text;
+alter table public.posts add column if not exists brand_bottom text;
+alter table public.posts add column if not exists brand_shoes text;
+alter table public.posts drop column if exists brands;
 
 create index if not exists posts_category_idx on public.posts (category);
 

@@ -14,3 +14,12 @@ export const BRANDS = [
   { name: '더노스페이스', url: 'https://www.thenorthfacekorea.co.kr/', logoSlug: 'thenorthface' },
   { name: '헬리한센', url: 'https://www.hellyhansen.com/', logoSlug: 'hellyhansen' },
 ];
+
+// 게시물 작성/수정 시 착장을 부위별로 나눠 브랜드를 입력받기 위한 슬롯 정의.
+// key는 posts 테이블의 컬럼명과 1:1로 대응됩니다.
+export const BRAND_SLOTS = [
+  { key: 'brand_hat', label: '모자' },
+  { key: 'brand_top', label: '상의' },
+  { key: 'brand_bottom', label: '하의' },
+  { key: 'brand_shoes', label: '신발' },
+];

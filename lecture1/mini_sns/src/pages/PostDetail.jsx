@@ -19,6 +19,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';
 import { getLikedIds, saveLikedIds } from '../lib/likes';
+import { BRAND_SLOTS } from '../lib/brands';
 
 function formatDateTime(dateStr) {
   const d = new Date(dateStr);
@@ -230,11 +231,11 @@ export default function PostDetail() {
           </Box>
           {post.caption}
         </Typography>
-        {post.brands?.length > 0 && (
+        {BRAND_SLOTS.some(({ key }) => post[key]) && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 1.2 }}>
-            {post.brands.map((brand) => (
+            {BRAND_SLOTS.filter(({ key }) => post[key]).map(({ key, label }) => (
               <Box
-                key={brand}
+                key={key}
                 sx={{
                   fontSize: '0.72rem',
                   fontWeight: 700,
@@ -246,7 +247,7 @@ export default function PostDetail() {
                   py: 0.25,
                 }}
               >
-                {brand}
+                {label} · {post[key]}
               </Box>
             ))}
           </Box>

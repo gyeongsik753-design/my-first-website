@@ -18,7 +18,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
-import { BRANDS } from '../lib/brands';
+import { BRANDS, BRAND_SLOTS } from '../lib/brands';
 import CategoryTile from '../components/CategoryTile';
 
 const BRAND_NAMES = BRANDS.map((b) => b.name);
@@ -32,7 +32,9 @@ export default function PostEdit() {
   const [notFound, setNotFound] = useState(false);
   const [caption, setCaption] = useState('');
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
-  const [brands, setBrands] = useState([]);
+  const [brandInputs, setBrandInputs] = useState(() =>
+    Object.fromEntries(BRAND_SLOTS.map((slot) => [slot.key, '']))
+  );
   const [imageUrl, setImageUrl] = useState('');
   const [localFile, setLocalFile] = useState(null);
   const [localPreview, setLocalPreview] = useState('');
@@ -43,7 +45,7 @@ export default function PostEdit() {
     let ignore = false;
     supabase
       .from('posts')
-      .select('id, user_id, caption, category, brands, image_url')
+      .select(`id, user_id, caption, category, image_url, ${BRAND_SLOTS.map((s) => s.key).join(', ')}`)
       .eq('id', id)
       .single()
       .then(({ data, error: fetchError }) => {
@@ -55,7 +57,7 @@ export default function PostEdit() {
         }
         setCaption(data.caption ?? '');
         setCategory(data.category ?? DEFAULT_CATEGORY);
-        setBrands(data.brands ?? []);
+        setBrandInputs(Object.fromEntries(BRAND_SLOTS.map(({ key }) => [key, data[key] ?? ''])));
         setImageUrl(data.image_url ?? '');
         setLoading(false);
       });
@@ -102,7 +104,7 @@ export default function PostEdit() {
         .update({
           caption: caption.trim(),
           category,
-          brands: brands.map((b) => b.trim()).filter(Boolean),
+          ...Object.fromEntries(BRAND_SLOTS.map(({ key }) => [key, brandInputs[key].trim() || null])),
           image_url: nextImageUrl,
         })
         .eq('id', id)
@@ -183,17 +185,21 @@ export default function PostEdit() {
         </Stack>
 
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>브랜드</Typography>
-        <Autocomplete
-          multiple
-          freeSolo
-          options={BRAND_NAMES}
-          value={brands}
-          onChange={(_e, newValue) => setBrands(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} placeholder="착장에 사용한 브랜드를 입력해주세요 (예: 나이키)" />
-          )}
-          sx={{ mb: 3 }}
-        />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
+          {BRAND_SLOTS.map(({ key, label }) => (
+            <Autocomplete
+              key={key}
+              freeSolo
+              options={BRAND_NAMES}
+              value={brandInputs[key]}
+              onChange={(_e, newValue) => setBrandInputs((prev) => ({ ...prev, [key]: newValue ?? '' }))}
+              onInputChange={(_e, newInputValue) =>
+                setBrandInputs((prev) => ({ ...prev, [key]: newInputValue }))
+              }
+              renderInput={(params) => <TextField {...params} label={label} size="small" placeholder="브랜드 입력" />}
+            />
+          ))}
+        </Box>
 
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>사진</Typography>
         <Box sx={{ width: '100%', maxWidth: 240, mb: 1.5 }}>
