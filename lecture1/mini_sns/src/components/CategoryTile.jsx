@@ -8,17 +8,17 @@ export default function CategoryTile({ icon: Icon, label, selected, onClick, gra
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 0.6,
+        gap: 0.4,
         cursor: 'pointer',
         flexShrink: 0,
-        width: 60,
+        width: 52,
         userSelect: 'none',
       }}
     >
       <Box
         sx={{
-          width: 56,
-          height: 56,
+          width: 48,
+          height: 48,
           borderRadius: 2.5,
           background: gradient,
           display: 'flex',
@@ -31,11 +31,11 @@ export default function CategoryTile({ icon: Icon, label, selected, onClick, gra
           transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease',
         }}
       >
-        <Icon sx={{ color: '#fff', fontSize: 26 }} />
+        <Icon sx={{ color: '#fff', fontSize: 22 }} />
       </Box>
       <Typography
         sx={{
-          fontSize: '0.7rem',
+          fontSize: '0.64rem',
           fontWeight: selected ? 800 : 600,
           color: selected ? 'text.primary' : 'text.secondary',
           whiteSpace: 'nowrap',

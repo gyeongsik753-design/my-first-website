@@ -93,7 +93,7 @@ export default function Home() {
   return (
     <Box sx={{ pb: 4 }}>
       <AppBar position="sticky">
-        <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', py: 1, gap: 1 }}>
+        <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', py: 0.75, gap: 0.75 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography
               onClick={handleGoHome}
@@ -112,8 +112,8 @@ export default function Home() {
                 overflow: 'hidden',
                 background: 'linear-gradient(155deg, #1a1a1a 0%, #111111 55%, #3d0d14 100%)',
                 color: '#fff',
-                px: 3,
-                py: 4.5,
+                px: 2.5,
+                py: 2,
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -138,15 +138,15 @@ export default function Home() {
               <Box
                 sx={{
                   position: 'absolute',
-                  top: 12,
-                  right: 96,
+                  top: 8,
+                  right: 74,
                   bgcolor: '#F4D35E',
                   color: '#111',
-                  fontSize: '0.62rem',
+                  fontSize: '0.58rem',
                   fontWeight: 900,
                   letterSpacing: '0.05em',
-                  px: 1,
-                  py: 0.3,
+                  px: 0.9,
+                  py: 0.25,
                   borderRadius: '4px',
                   transform: 'rotate(-8deg)',
                   boxShadow: '0 3px 8px rgba(0,0,0,0.35)',
@@ -156,18 +156,18 @@ export default function Home() {
                 STREET FIT
               </Box>
 
-              <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography
                     sx={{
                       fontWeight: 900,
-                      fontSize: '1.7rem',
+                      fontSize: '1.3rem',
                       letterSpacing: '0.03em',
                       fontFamily: '"Roboto", cursive',
-                      mb: 0.5,
+                      mb: 0.3,
                       color: '#fff',
                       WebkitTextStroke: '1px rgba(0,0,0,0.4)',
-                      textShadow: '3px 3px 0 #E1263F, 3px 3px 10px rgba(225,38,63,0.4)',
+                      textShadow: '2px 2px 0 #E1263F, 2px 2px 8px rgba(225,38,63,0.4)',
                     }}
                   >
                     WITF
@@ -176,8 +176,8 @@ export default function Home() {
                     sx={{
                       display: 'inline',
                       fontWeight: 900,
-                      fontSize: '1.35rem',
-                      lineHeight: 1.32,
+                      fontSize: '1.05rem',
+                      lineHeight: 1.28,
                       background: 'linear-gradient(180deg, transparent 62%, rgba(225,38,63,0.55) 62%)',
                     }}
                   >
@@ -186,21 +186,21 @@ export default function Home() {
                 </Box>
                 <Box
                   sx={{
-                    width: 92,
-                    height: 126,
+                    width: 66,
+                    height: 90,
                     flexShrink: 0,
                     bgcolor: '#fff',
-                    borderRadius: 2,
-                    p: 0.5,
+                    borderRadius: 1.5,
+                    p: 0.4,
                     transform: 'rotate(-4deg)',
-                    boxShadow: '0 8px 14px rgba(0,0,0,0.45)',
+                    boxShadow: '0 6px 10px rgba(0,0,0,0.45)',
                   }}
                 >
                   <Box
                     component="img"
                     src={bannerCharacter}
                     alt="배너 캐릭터"
-                    sx={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', borderRadius: 1.5 }}
+                    sx={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', borderRadius: 1 }}
                   />
                 </Box>
               </Box>
@@ -215,9 +215,9 @@ export default function Home() {
               alignItems: 'flex-start',
               width: '100%',
               columnGap: 2.5,
-              rowGap: 1.5,
-              pt: 1,
-              pb: 0.5,
+              rowGap: 1,
+              pt: 0.5,
+              pb: 0.25,
             }}
           >
             {CATEGORIES.map((c) => (
@@ -254,8 +254,8 @@ export default function Home() {
       </AppBar>
 
       {category === null && (
-        <Box sx={{ pt: 3 }}>
-          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.95rem', mb: 1.5 }}>
+        <Box sx={{ pt: 1.5 }}>
+          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.9rem', mb: 1 }}>
             최근 게시물
           </Typography>
           {loading ? (
