@@ -15,7 +15,6 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';
@@ -40,7 +39,6 @@ export default function PostDetail() {
   const [posting, setPosting] = useState(false);
   const [burst, setBurst] = useState(false);
   const [showBrands, setShowBrands] = useState(false);
-  const [activePinKey, setActivePinKey] = useState(null);
 
   const loadPost = useCallback(async () => {
     setLoading(true);
@@ -187,88 +185,37 @@ export default function PostDetail() {
         </Box>
       </Stack>
 
-      <Box sx={{ position: 'relative', mx: 2, borderRadius: 3, overflow: 'hidden' }} onDoubleClick={handleDoubleClickImage}>
+      <Box
+        sx={{ position: 'relative', mx: 2, borderRadius: 3, overflow: 'hidden' }}
+        onClick={() => setShowBrands((v) => !v)}
+        onDoubleClick={handleDoubleClickImage}
+      >
         <Box component="img" src={post.image_url} alt={post.caption} sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }} />
-        {BRAND_SLOTS.filter(({ key }) => post[key] && post.brand_positions?.[key]).map(({ key, label }) => {
-          const { x, y } = post.brand_positions[key];
-          const isActive = activePinKey === key;
-          return (
-            <Box key={key} sx={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}>
+        {showBrands &&
+          BRAND_SLOTS.filter(({ key }) => post[key] && post.brand_positions?.[key]).map(({ key, label }) => {
+            const { x, y } = post.brand_positions[key];
+            return (
               <Box
-                component="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActivePinKey((prev) => (prev === key ? null : key));
-                }}
+                key={key}
                 sx={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: '50%',
-                  bgcolor: 'secondary.main',
-                  border: '2px solid #fff',
-                  boxShadow: '0 0 0 3px rgba(0,0,0,0.35)',
-                  cursor: 'pointer',
-                  p: 0,
-                  animation: isActive ? 'none' : 'pinPulse 1.8s ease-in-out infinite',
-                  '@keyframes pinPulse': {
-                    '0%, 100%': { boxShadow: '0 0 0 3px rgba(0,0,0,0.35)' },
-                    '50%': { boxShadow: '0 0 0 7px rgba(225,38,63,0.25)' },
-                  },
+                  position: 'absolute',
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  whiteSpace: 'nowrap',
+                  bgcolor: 'rgba(0,0,0,0.75)',
+                  color: '#fff',
+                  fontSize: '0.7rem',
+                  fontWeight: 700,
+                  borderRadius: 4,
+                  px: 1,
+                  py: 0.4,
                 }}
-              />
-              {isActive && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: y > 50 ? 'auto' : '130%',
-                    bottom: y > 50 ? '130%' : 'auto',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    whiteSpace: 'nowrap',
-                    bgcolor: 'rgba(0,0,0,0.75)',
-                    color: '#fff',
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    borderRadius: 4,
-                    px: 1,
-                    py: 0.4,
-                  }}
-                >
-                  {label} · {post[key]}
-                </Box>
-              )}
-            </Box>
-          );
-        })}
-        {BRAND_SLOTS.some(({ key }) => post[key] && !post.brand_positions?.[key]) && (
-          <Box
-            component="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowBrands((v) => !v);
-            }}
-            sx={{
-              position: 'absolute',
-              bottom: 10,
-              left: 10,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              bgcolor: 'rgba(0,0,0,0.6)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 5,
-              px: 1.2,
-              py: 0.5,
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            <LocalOfferIcon sx={{ fontSize: 14 }} />
-            브랜드 보기
-          </Box>
-        )}
+              >
+                {label} · {post[key]}
+              </Box>
+            );
+          })}
         {burst && (
           <FavoriteIcon
             sx={{
