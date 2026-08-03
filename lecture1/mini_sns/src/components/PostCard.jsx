@@ -176,6 +176,27 @@ export default function PostCard({ post }) {
           </Box>
           {post.caption}
         </Typography>
+        {post.brands?.length > 0 && (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 1 }}>
+            {post.brands.map((brand) => (
+              <Box
+                key={brand}
+                sx={{
+                  fontSize: '0.7rem',
+                  fontWeight: 700,
+                  color: 'secondary.main',
+                  border: '1px solid',
+                  borderColor: 'secondary.main',
+                  borderRadius: 4,
+                  px: 1,
+                  py: 0.2,
+                }}
+              >
+                {brand}
+              </Box>
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );

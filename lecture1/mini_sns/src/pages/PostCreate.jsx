@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert, Stack } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert, Stack, Autocomplete } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';
+import { BRANDS } from '../lib/brands';
 import CategoryTile from '../components/CategoryTile';
+
+const BRAND_NAMES = BRANDS.map((b) => b.name);
 
 export default function PostCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [caption, setCaption] = useState('');
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
+  const [brands, setBrands] = useState([]);
   const [localFile, setLocalFile] = useState(null);
   const [localPreview, setLocalPreview] = useState('');
   const [error, setError] = useState('');
@@ -58,7 +62,13 @@ export default function PostCreate() {
 
       const { data, error: insertError } = await supabase
         .from('posts')
-        .insert({ caption: caption.trim(), image_url: publicUrlData.publicUrl, category, user_id: user.id })
+        .insert({
+          caption: caption.trim(),
+          image_url: publicUrlData.publicUrl,
+          category,
+          brands: brands.map((b) => b.trim()).filter(Boolean),
+          user_id: user.id,
+        })
         .select('id')
         .single();
 
@@ -119,6 +129,19 @@ export default function PostCreate() {
             />
           ))}
         </Stack>
+
+        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>브랜드</Typography>
+        <Autocomplete
+          multiple
+          freeSolo
+          options={BRAND_NAMES}
+          value={brands}
+          onChange={(_e, newValue) => setBrands(newValue)}
+          renderInput={(params) => (
+            <TextField {...params} placeholder="착장에 사용한 브랜드를 입력해주세요 (예: 나이키)" />
+          )}
+          sx={{ mb: 3 }}
+        />
 
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>사진 업로드</Typography>
 
