@@ -35,6 +35,8 @@ export default function PostEdit() {
   const [brandInputs, setBrandInputs] = useState(() =>
     Object.fromEntries(BRAND_SLOTS.map((slot) => [slot.key, '']))
   );
+  const [brandPositions, setBrandPositions] = useState({});
+  const [activeSlotKey, setActiveSlotKey] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
   const [localFile, setLocalFile] = useState(null);
   const [localPreview, setLocalPreview] = useState('');
@@ -45,7 +47,9 @@ export default function PostEdit() {
     let ignore = false;
     supabase
       .from('posts')
-      .select(`id, user_id, caption, category, image_url, ${BRAND_SLOTS.map((s) => s.key).join(', ')}`)
+      .select(
+        `id, user_id, caption, category, image_url, brand_positions, ${BRAND_SLOTS.map((s) => s.key).join(', ')}`
+      )
       .eq('id', id)
       .single()
       .then(({ data, error: fetchError }) => {
@@ -58,6 +62,7 @@ export default function PostEdit() {
         setCaption(data.caption ?? '');
         setCategory(data.category ?? DEFAULT_CATEGORY);
         setBrandInputs(Object.fromEntries(BRAND_SLOTS.map(({ key }) => [key, data[key] ?? ''])));
+        setBrandPositions(data.brand_positions ?? {});
         setImageUrl(data.image_url ?? '');
         setLoading(false);
       });
@@ -77,6 +82,17 @@ export default function PostEdit() {
     if (!file) return;
     setLocalFile(file);
     setLocalPreview(URL.createObjectURL(file));
+    setBrandPositions({});
+    setActiveSlotKey(null);
+  };
+
+  const handleImageClick = (e) => {
+    if (!activeSlotKey) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setBrandPositions((prev) => ({ ...prev, [activeSlotKey]: { x, y } }));
+    setActiveSlotKey(null);
   };
 
   const handleSubmit = async () => {
@@ -99,12 +115,20 @@ export default function PostEdit() {
         nextImageUrl = publicUrlData.publicUrl;
       }
 
+      const filledPositions = Object.fromEntries(
+        BRAND_SLOTS.filter(({ key }) => brandInputs[key].trim() && brandPositions[key]).map(({ key }) => [
+          key,
+          brandPositions[key],
+        ])
+      );
+
       const { error: updateError } = await supabase
         .from('posts')
         .update({
           caption: caption.trim(),
           category,
           ...Object.fromEntries(BRAND_SLOTS.map(({ key }) => [key, brandInputs[key].trim() || null])),
+          brand_positions: filledPositions,
           image_url: nextImageUrl,
         })
         .eq('id', id)
@@ -184,36 +208,82 @@ export default function PostEdit() {
           ))}
         </Stack>
 
-        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>브랜드</Typography>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
-          {BRAND_SLOTS.map(({ key, label }) => (
-            <Autocomplete
-              key={key}
-              freeSolo
-              options={BRAND_NAMES}
-              value={brandInputs[key]}
-              onChange={(_e, newValue) => setBrandInputs((prev) => ({ ...prev, [key]: newValue ?? '' }))}
-              onInputChange={(_e, newInputValue) =>
-                setBrandInputs((prev) => ({ ...prev, [key]: newInputValue }))
-              }
-              renderInput={(params) => <TextField {...params} label={label} size="small" placeholder="브랜드 입력" />}
-            />
-          ))}
-        </Box>
-
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>사진</Typography>
         <Box sx={{ width: '100%', maxWidth: 240, mb: 1.5 }}>
           <Box
-            component="img"
-            src={localPreview || imageUrl}
-            alt="게시물 사진"
-            sx={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: 1, border: '3px solid', borderColor: 'secondary.main' }}
-          />
+            onClick={handleImageClick}
+            sx={{
+              position: 'relative',
+              cursor: activeSlotKey ? 'crosshair' : 'default',
+              borderRadius: 1,
+              overflow: 'hidden',
+              border: '3px solid',
+              borderColor: 'secondary.main',
+            }}
+          >
+            <Box
+              component="img"
+              src={localPreview || imageUrl}
+              alt="게시물 사진"
+              sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', display: 'block' }}
+            />
+            {BRAND_SLOTS.filter(({ key }) => brandInputs[key].trim() && brandPositions[key]).map(({ key }) => (
+              <Box
+                key={key}
+                sx={{
+                  position: 'absolute',
+                  left: `${brandPositions[key].x}%`,
+                  top: `${brandPositions[key].y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  width: 16,
+                  height: 16,
+                  borderRadius: '50%',
+                  bgcolor: 'secondary.main',
+                  border: '2px solid #fff',
+                  boxShadow: '0 0 0 2px rgba(0,0,0,0.4)',
+                }}
+              />
+            ))}
+          </Box>
         </Box>
         <Button variant="outlined" component="label" color="primary" startIcon={<UploadIcon />}>
           사진 교체
           <input type="file" accept="image/*" hidden onChange={handleFileChange} />
         </Button>
+
+        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mt: 3, mb: 1.5 }}>브랜드</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
+          {BRAND_SLOTS.map(({ key, label }) => {
+            const hasName = brandInputs[key].trim().length > 0;
+            const hasPosition = Boolean(brandPositions[key]);
+            return (
+              <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Autocomplete
+                  freeSolo
+                  options={BRAND_NAMES}
+                  value={brandInputs[key]}
+                  onChange={(_e, newValue) => setBrandInputs((prev) => ({ ...prev, [key]: newValue ?? '' }))}
+                  onInputChange={(_e, newInputValue) =>
+                    setBrandInputs((prev) => ({ ...prev, [key]: newInputValue }))
+                  }
+                  renderInput={(params) => <TextField {...params} label={label} size="small" placeholder="브랜드 입력" />}
+                  sx={{ flex: 1 }}
+                />
+                {hasName && (
+                  <Button
+                    size="small"
+                    variant={activeSlotKey === key ? 'contained' : 'outlined'}
+                    color="secondary"
+                    onClick={() => setActiveSlotKey(key)}
+                    sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                  >
+                    {activeSlotKey === key ? '사진을 클릭하세요' : hasPosition ? '위치 재지정' : '위치 지정'}
+                  </Button>
+                )}
+              </Box>
+            );
+          })}
+        </Box>
       </Box>
     </Box>
   );
