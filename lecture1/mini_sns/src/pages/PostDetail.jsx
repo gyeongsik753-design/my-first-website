@@ -15,6 +15,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';
@@ -38,6 +39,7 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
   const [burst, setBurst] = useState(false);
+  const [showBrands, setShowBrands] = useState(false);
 
   const loadPost = useCallback(async () => {
     setLoading(true);
@@ -186,6 +188,35 @@ export default function PostDetail() {
 
       <Box sx={{ position: 'relative', mx: 2, borderRadius: 3, overflow: 'hidden' }} onDoubleClick={handleDoubleClickImage}>
         <Box component="img" src={post.image_url} alt={post.caption} sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }} />
+        {BRAND_SLOTS.some(({ key }) => post[key]) && (
+          <Box
+            component="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowBrands((v) => !v);
+            }}
+            sx={{
+              position: 'absolute',
+              bottom: 10,
+              left: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+              bgcolor: 'rgba(0,0,0,0.6)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 5,
+              px: 1.2,
+              py: 0.5,
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            <LocalOfferIcon sx={{ fontSize: 14 }} />
+            브랜드 보기
+          </Box>
+        )}
         {burst && (
           <FavoriteIcon
             sx={{
@@ -231,7 +262,7 @@ export default function PostDetail() {
           </Box>
           {post.caption}
         </Typography>
-        {BRAND_SLOTS.some(({ key }) => post[key]) && (
+        {showBrands && BRAND_SLOTS.some(({ key }) => post[key]) && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 1.2 }}>
             {BRAND_SLOTS.filter(({ key }) => post[key]).map(({ key, label }) => (
               <Box
