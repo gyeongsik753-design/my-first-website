@@ -43,7 +43,7 @@ const theme = createTheme({
           backgroundColor: '#333333',
           color: '#f2f2f2',
           boxShadow: 'none',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          borderBottom: 'none',
         },
       },
     },
