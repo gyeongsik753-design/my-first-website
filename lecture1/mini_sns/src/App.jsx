@@ -6,6 +6,7 @@ import BottomNav from './components/BottomNav';
 import Home from './pages/Home';
 import PostDetail from './pages/PostDetail';
 import PostCreate from './pages/PostCreate';
+import PostEdit from './pages/PostEdit';
 import MyPage from './pages/MyPage';
 import Messages from './pages/Messages';
 import ChatRoom from './pages/ChatRoom';
@@ -29,6 +30,14 @@ function Layout() {
           element={
             <ProtectedRoute>
               <PostCreate />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/posts/:id/edit"
+          element={
+            <ProtectedRoute>
+              <PostEdit />
             </ProtectedRoute>
           }
         />

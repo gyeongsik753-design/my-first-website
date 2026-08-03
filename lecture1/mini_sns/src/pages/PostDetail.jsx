@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -147,7 +147,14 @@ export default function PostDetail() {
             </IconButton>
             <Typography sx={{ fontWeight: 700 }}>게시물</Typography>
           </Box>
-          <TopBarActions />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {user?.id === post.user_id && (
+              <Button component={RouterLink} to={`/posts/${id}/edit`} size="small" color="secondary">
+                수정
+              </Button>
+            )}
+            <TopBarActions />
+          </Box>
         </Toolbar>
       </AppBar>
 
