@@ -164,7 +164,7 @@ export default function ChatRoom() {
           placeholder="메시지 보내기..."
           size="small"
           fullWidth
-          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 5, bgcolor: 'rgba(255,255,255,0.06)' } }}
+          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 5, bgcolor: 'rgba(0,0,0,0.04)' } }}
         />
         <IconButton onClick={handleSend} disabled={!draft.trim() || sending} color="secondary" aria-label="보내기">
           <SendIcon />

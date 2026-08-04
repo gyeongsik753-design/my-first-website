@@ -247,7 +247,7 @@ export default function Home() {
                   ),
                 },
               }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: 'rgba(255,255,255,0.06)' } }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: 'rgba(0,0,0,0.04)' } }}
             />
           )}
         </Toolbar>
