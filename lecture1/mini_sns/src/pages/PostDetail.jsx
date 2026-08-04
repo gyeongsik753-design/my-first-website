@@ -15,6 +15,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';
@@ -254,6 +255,12 @@ export default function PostDetail() {
             {liked ? <FavoriteIcon sx={{ fontSize: 26 }} /> : <FavoriteBorderIcon sx={{ fontSize: 26 }} />}
           </IconButton>
           <Typography sx={{ fontWeight: 800, fontSize: '0.9rem' }}>좋아요 {post.likes_count ?? 0}개</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', ml: 1 }}>
+            <ChatBubbleOutlineIcon sx={{ fontSize: 19 }} />
+            <Typography sx={{ fontWeight: 800, fontSize: '0.9rem', color: 'text.primary' }}>
+              {comments.length}
+            </Typography>
+          </Box>
         </Stack>
         <Typography sx={{ fontSize: '0.9rem', lineHeight: 1.6 }}>
           <Box component="span" sx={{ fontWeight: 800, mr: 0.7 }}>
