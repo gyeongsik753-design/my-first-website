@@ -246,7 +246,7 @@ export default function PostDetail() {
             size="small"
             disableRipple
             sx={{
-              pl: 0,
+              p: 0,
               color: liked ? 'secondary.main' : 'text.secondary',
               transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
               '&:active': { transform: 'scale(1.35)' },
@@ -256,7 +256,7 @@ export default function PostDetail() {
           </IconButton>
           <Typography sx={{ fontWeight: 800, fontSize: '0.9rem' }}>좋아요 {post.likes_count ?? 0}개</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', ml: 1 }}>
-            <ChatBubbleOutlineIcon sx={{ fontSize: 19 }} />
+            <ChatBubbleOutlineIcon sx={{ fontSize: 24 }} />
             <Typography sx={{ fontWeight: 800, fontSize: '0.9rem', color: 'text.primary' }}>
               {comments.length}
             </Typography>
@@ -293,7 +293,7 @@ export default function PostDetail() {
 
       <Box sx={{ px: 2 }}>
         <Typography sx={{ fontWeight: 800, fontSize: '0.85rem', mb: 1.5, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-          댓글 {comments.length}개
+          댓글
         </Typography>
 
         <Stack spacing={1.5} sx={{ mb: 2 }}>
