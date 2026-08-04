@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Box, Typography, Avatar, IconButton } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Box, Typography, Avatar, IconButton, TextField, Button, CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getLikedIds, saveLikedIds } from '../lib/likes';
+import { BRAND_SLOTS } from '../lib/brands';
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
@@ -19,6 +20,14 @@ export default function PostCard({ post }) {
   const [liked, setLiked] = useState(() => getLikedIds().has(post.id));
   const [likesCount, setLikesCount] = useState(post.likes_count ?? 0);
   const [burst, setBurst] = useState(false);
+  const [showBrands, setShowBrands] = useState(false);
+
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [posting, setPosting] = useState(false);
 
   const like = () => {
     if (!user) {
@@ -56,6 +65,49 @@ export default function PostCard({ post }) {
     }
   };
 
+  const handleToggleComments = async () => {
+    const next = !showComments;
+    setShowComments(next);
+    if (next && !commentsLoaded) {
+      setLoadingComments(true);
+      const { data } = await supabase
+        .from('comments')
+        .select('id, content, users ( username )')
+        .eq('post_id', post.id)
+        .order('created_at', { ascending: true });
+      setComments(data ?? []);
+      setCommentsLoaded(true);
+      setLoadingComments(false);
+    }
+  };
+
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!commentText.trim()) return;
+
+    setPosting(true);
+    const { data, error } = await supabase
+      .from('comments')
+      .insert({ content: commentText.trim(), post_id: post.id, author_id: user.id })
+      .select('id, content, users ( username )')
+      .single();
+    setPosting(false);
+
+    if (!error && data) {
+      setComments((prev) => [...prev, data]);
+      setCommentsLoaded(true);
+      setCommentText('');
+    }
+  };
+
+  const displayedCommentsCount = commentsLoaded ? comments.length : post.comments_count ?? 0;
+  const pinnedBrands = BRAND_SLOTS.filter(({ key }) => post[key] && post.brand_positions?.[key]);
+  const looseBrands = BRAND_SLOTS.filter(({ key }) => post[key] && !post.brand_positions?.[key]);
+
   return (
     <Box
       sx={{
@@ -66,18 +118,9 @@ export default function PostCard({ post }) {
         borderColor: 'divider',
         overflow: 'hidden',
         bgcolor: 'background.paper',
-        transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease',
-        '&:hover': {
-          transform: 'translateY(-3px)',
-          boxShadow: '0 12px 24px rgba(17,17,17,0.1)',
-        },
       }}
     >
-      <Box
-        component={RouterLink}
-        to={`/posts/${post.id}`}
-        sx={{ display: 'flex', alignItems: 'center', gap: 1.2, px: 1.75, py: 1.25, textDecoration: 'none', color: 'inherit' }}
-      >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, px: 1.75, py: 1.25 }}>
         <Box
           sx={{
             width: 38,
@@ -105,23 +148,42 @@ export default function PostCard({ post }) {
         </Typography>
       </Box>
 
-      <Box sx={{ position: 'relative' }} onDoubleClick={handleDoubleClick}>
+      <Box
+        sx={{ position: 'relative', cursor: 'pointer' }}
+        onClick={() => setShowBrands((v) => !v)}
+        onDoubleClick={handleDoubleClick}
+      >
         <Box
-          component={RouterLink}
-          to={`/posts/${post.id}`}
-          sx={{ display: 'block' }}
-          onClick={(e) => {
-            // 더블클릭의 첫 클릭이 즉시 라우팅되지 않도록 살짝 지연 처리
-            if (e.detail > 1) e.preventDefault();
-          }}
-        >
-          <Box
-            component="img"
-            src={post.image_url}
-            alt={post.caption}
-            sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }}
-          />
-        </Box>
+          component="img"
+          src={post.image_url}
+          alt={post.caption}
+          sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }}
+        />
+        {showBrands &&
+          pinnedBrands.map(({ key }) => {
+            const { x, y } = post.brand_positions[key];
+            return (
+              <Box
+                key={key}
+                sx={{
+                  position: 'absolute',
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  whiteSpace: 'nowrap',
+                  bgcolor: 'rgba(0,0,0,0.75)',
+                  color: '#fff',
+                  fontSize: '0.7rem',
+                  fontWeight: 700,
+                  borderRadius: 4,
+                  px: 1,
+                  py: 0.4,
+                }}
+              >
+                {post[key]}
+              </Box>
+            );
+          })}
         {burst && (
           <FavoriteIcon
             sx={{
@@ -163,13 +225,12 @@ export default function PostCard({ post }) {
             <Typography sx={{ fontSize: '0.82rem', fontWeight: 800 }}>{likesCount}</Typography>
           </Box>
           <Box
-            component={RouterLink}
-            to={`/posts/${post.id}`}
-            sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', textDecoration: 'none' }}
+            onClick={handleToggleComments}
+            sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', cursor: 'pointer' }}
           >
             <ChatBubbleOutlineIcon sx={{ fontSize: 19 }} />
             <Typography sx={{ fontSize: '0.82rem', fontWeight: 800, color: 'text.primary' }}>
-              {post.comments_count ?? 0}
+              {displayedCommentsCount}
             </Typography>
           </Box>
         </Box>
@@ -179,6 +240,70 @@ export default function PostCard({ post }) {
           </Box>
           {post.caption}
         </Typography>
+
+        {showBrands && looseBrands.length > 0 && (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 1 }}>
+            {looseBrands.map(({ key }) => (
+              <Box
+                key={key}
+                sx={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  color: 'secondary.main',
+                  border: '1px solid',
+                  borderColor: 'secondary.main',
+                  borderRadius: 4,
+                  px: 1,
+                  py: 0.25,
+                }}
+              >
+                {post[key]}
+              </Box>
+            ))}
+          </Box>
+        )}
+
+        {showComments && (
+          <Box sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+            {loadingComments ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                <CircularProgress size={18} color="secondary" />
+              </Box>
+            ) : (
+              <>
+                {comments.length === 0 ? (
+                  <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary', mb: 1 }}>
+                    첫 댓글을 남겨보세요.
+                  </Typography>
+                ) : (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mb: 1.25 }}>
+                    {comments.map((c) => (
+                      <Typography key={c.id} sx={{ fontSize: '0.83rem' }}>
+                        <Box component="span" sx={{ fontWeight: 800, mr: 0.6 }}>
+                          @{c.users?.username ?? '알 수 없음'}
+                        </Box>
+                        {c.content}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+                <Box component="form" onSubmit={handleAddComment} sx={{ display: 'flex', gap: 1 }}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder={user ? '댓글을 입력하세요' : '로그인 후 댓글을 작성할 수 있습니다'}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    disabled={!user}
+                  />
+                  <Button type="submit" variant="contained" color="secondary" size="small" disabled={posting || !user}>
+                    등록
+                  </Button>
+                </Box>
+              </>
+            )}
+          </Box>
+        )}
       </Box>
     </Box>
   );
