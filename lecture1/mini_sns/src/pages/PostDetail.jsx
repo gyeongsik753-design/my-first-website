@@ -240,22 +240,24 @@ export default function PostDetail() {
       </Box>
 
       <Box sx={{ px: 2, py: 1.5 }}>
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-          <IconButton
-            onClick={handleToggleLike}
-            size="small"
-            disableRipple
-            sx={{
-              p: 0,
-              color: liked ? 'secondary.main' : 'text.secondary',
-              transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              '&:active': { transform: 'scale(1.35)' },
-            }}
-          >
-            {liked ? <FavoriteIcon sx={{ fontSize: 26 }} /> : <FavoriteBorderIcon sx={{ fontSize: 26 }} />}
-          </IconButton>
-          <Typography sx={{ fontWeight: 800, fontSize: '0.9rem' }}>좋아요 {post.likes_count ?? 0}개</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', ml: 1 }}>
+        <Stack direction="row" alignItems="center" spacing={2.5} sx={{ mb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton
+              onClick={handleToggleLike}
+              size="small"
+              disableRipple
+              sx={{
+                p: 0,
+                color: liked ? 'secondary.main' : 'text.secondary',
+                transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                '&:active': { transform: 'scale(1.35)' },
+              }}
+            >
+              {liked ? <FavoriteIcon sx={{ fontSize: 24 }} /> : <FavoriteBorderIcon sx={{ fontSize: 24 }} />}
+            </IconButton>
+            <Typography sx={{ fontWeight: 800, fontSize: '0.9rem' }}>{post.likes_count ?? 0}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
             <ChatBubbleOutlineIcon sx={{ fontSize: 24 }} />
             <Typography sx={{ fontWeight: 800, fontSize: '0.9rem', color: 'text.primary' }}>
               {comments.length}
