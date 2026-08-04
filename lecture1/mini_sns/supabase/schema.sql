@@ -40,6 +40,7 @@ create table if not exists public.posts (
   -- x/y는 사진(4:5 비율 렌더링 기준) 가로/세로에 대한 % 위치
   brand_positions jsonb not null default '{}'::jsonb,
   likes_count integer not null default 0,
+  comments_count integer not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -50,6 +51,7 @@ alter table public.posts add column if not exists brand_top text;
 alter table public.posts add column if not exists brand_bottom text;
 alter table public.posts add column if not exists brand_shoes text;
 alter table public.posts add column if not exists brand_positions jsonb not null default '{}'::jsonb;
+alter table public.posts add column if not exists comments_count integer not null default 0;
 alter table public.posts drop column if exists brands;
 
 create index if not exists posts_category_idx on public.posts (category);
@@ -66,6 +68,34 @@ create table if not exists public.comments (
 create index if not exists posts_user_id_idx on public.posts (user_id);
 create index if not exists posts_created_at_idx on public.posts (created_at desc);
 create index if not exists comments_post_id_idx on public.comments (post_id);
+
+-- 댓글이 달리거나 삭제될 때 게시물의 comments_count를 자동으로 맞춰주는 트리거
+create or replace function public.bump_post_comments_count()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    update public.posts set comments_count = comments_count + 1 where id = new.post_id;
+    return new;
+  elsif tg_op = 'DELETE' then
+    update public.posts set comments_count = greatest(comments_count - 1, 0) where id = old.post_id;
+    return old;
+  end if;
+  return null;
+end;
+$$;
+
+drop trigger if exists on_comment_inserted on public.comments;
+create trigger on_comment_inserted
+  after insert on public.comments
+  for each row execute procedure public.bump_post_comments_count();
+
+drop trigger if exists on_comment_deleted on public.comments;
+create trigger on_comment_deleted
+  after delete on public.comments
+  for each row execute procedure public.bump_post_comments_count();
 
 -- 4. conversations (1:1 DM 대화방) 테이블
 -- user_a < user_b로 항상 정렬해서 저장 -> 두 사람 사이의 대화방이 중복 생성되지 않도록 함

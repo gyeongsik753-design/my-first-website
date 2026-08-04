@@ -168,6 +168,9 @@ export default function PostCard({ post }) {
             sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', textDecoration: 'none' }}
           >
             <ChatBubbleOutlineIcon sx={{ fontSize: 19 }} />
+            <Typography sx={{ fontSize: '0.82rem', fontWeight: 800, color: 'text.primary' }}>
+              {post.comments_count ?? 0}
+            </Typography>
           </Box>
         </Box>
         <Typography sx={{ fontSize: '0.87rem', lineHeight: 1.5 }}>

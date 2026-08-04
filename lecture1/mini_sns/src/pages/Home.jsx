@@ -46,7 +46,7 @@ export default function Home() {
 
     supabase
       .from('posts')
-      .select('id, caption, image_url, category, likes_count, created_at, user_id, users ( username, avatar_url )')
+      .select('id, caption, image_url, category, likes_count, comments_count, created_at, user_id, users ( username, avatar_url )')
       .order('created_at', { ascending: false })
       .limit(30)
       .then(({ data, error }) => {
