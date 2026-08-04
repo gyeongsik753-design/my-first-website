@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getLikedIds, saveLikedIds } from '../lib/likes';
@@ -148,17 +149,42 @@ export default function PostCard({ post }) {
         </Typography>
       </Box>
 
-      <Box
-        sx={{ position: 'relative', cursor: 'pointer' }}
-        onClick={() => setShowBrands((v) => !v)}
-        onDoubleClick={handleDoubleClick}
-      >
+      <Box sx={{ position: 'relative' }} onDoubleClick={handleDoubleClick}>
         <Box
           component="img"
           src={post.image_url}
           alt={post.caption}
           sx={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', bgcolor: 'background.paper', display: 'block' }}
         />
+        {(pinnedBrands.length > 0 || looseBrands.length > 0) && (
+          <Box
+            component="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowBrands((v) => !v);
+            }}
+            sx={{
+              position: 'absolute',
+              bottom: 10,
+              left: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+              bgcolor: 'rgba(0,0,0,0.6)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 5,
+              px: 1.2,
+              py: 0.5,
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            <LocalOfferIcon sx={{ fontSize: 14 }} />
+            브랜드 보기
+          </Box>
+        )}
         {showBrands &&
           pinnedBrands.map(({ key }) => {
             const { x, y } = post.brand_positions[key];
