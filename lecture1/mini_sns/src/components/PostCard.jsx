@@ -163,6 +163,7 @@ export default function PostCard({ post }) {
               e.stopPropagation();
               setShowBrands((v) => !v);
             }}
+            onDoubleClick={(e) => e.stopPropagation()}
             sx={{
               position: 'absolute',
               bottom: 10,
