@@ -7,7 +7,7 @@ export default function CreateFab() {
     <Box
       sx={{
         position: 'fixed',
-        bottom: 76,
+        bottom: 84,
         left: '50%',
         transform: 'translateX(-50%)',
         width: '100%',
@@ -23,6 +23,7 @@ export default function CreateFab() {
         aria-label="새 게시물 작성"
         sx={{
           position: 'absolute',
+          bottom: 0,
           left: '50%',
           transform: 'translateX(-50%)',
           pointerEvents: 'auto',
