@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import BottomNav from './components/BottomNav';
+import CreateFab from './components/CreateFab';
 import Home from './pages/Home';
 import PostDetail from './pages/PostDetail';
 import PostCreate from './pages/PostCreate';
@@ -16,7 +17,9 @@ import Signup from './pages/Signup';
 function Layout() {
   const { pathname } = useLocation();
   const isChatRoom = /^\/messages\/[^/]+$/.test(pathname);
+  const isEditPost = /^\/posts\/[^/]+\/edit$/.test(pathname);
   const hideNav = pathname === '/login' || pathname === '/signup' || isChatRoom;
+  const hideFab = hideNav || pathname === '/create' || isEditPost;
 
   return (
     <Box sx={{ minHeight: '100vh', maxWidth: 480, mx: 'auto', bgcolor: 'background.default', pb: hideNav ? 0 : 8 }}>
@@ -66,6 +69,7 @@ function Layout() {
           }
         />
       </Routes>
+      {!hideFab && <CreateFab />}
       {!hideNav && <BottomNav />}
     </Box>
   );
