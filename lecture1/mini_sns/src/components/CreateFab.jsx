@@ -21,7 +21,13 @@ export default function CreateFab() {
         to="/create"
         color="secondary"
         aria-label="새 게시물 작성"
-        sx={{ position: 'absolute', right: 16, pointerEvents: 'auto', boxShadow: '0 6px 16px rgba(225,38,63,0.4)' }}
+        sx={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          pointerEvents: 'auto',
+          boxShadow: '0 6px 16px rgba(225,38,63,0.4)',
+        }}
       >
         <AddIcon />
       </Fab>
