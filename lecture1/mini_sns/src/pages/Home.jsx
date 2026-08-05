@@ -479,7 +479,7 @@ export default function Home() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 20,
+            zIndex: 1400,
             p: 3,
           }}
         >
