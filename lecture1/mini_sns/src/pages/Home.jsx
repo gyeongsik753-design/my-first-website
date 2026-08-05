@@ -3,6 +3,7 @@ import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, Ci
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
@@ -93,6 +94,14 @@ export default function Home() {
     () => posts.filter((p) => (p.category ?? DEFAULT_CATEGORY) === 'OOTD'),
     [posts]
   );
+
+  const weeklyHotPosts = useMemo(() => {
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return posts
+      .filter((p) => (p.category ?? DEFAULT_CATEGORY) === 'OOTD' && new Date(p.created_at).getTime() >= weekAgo)
+      .sort((a, b) => (b.likes_count ?? 0) - (a.likes_count ?? 0))
+      .slice(0, 8);
+  }, [posts]);
 
   return (
     <Box sx={{ pb: 4 }}>
@@ -256,6 +265,82 @@ export default function Home() {
           )}
         </Toolbar>
       </AppBar>
+
+      {category === null && weeklyHotPosts.length > 0 && (
+        <Box sx={{ pt: 2, pb: 0.5 }}>
+          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.9rem', mb: 1.2 }}>
+            🔥 이번주 HOT룩
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1.5,
+              overflowX: 'auto',
+              px: 2,
+              pb: 0.5,
+              '&::-webkit-scrollbar': { display: 'none' },
+            }}
+          >
+            {weeklyHotPosts.map((post, i) => {
+              const rank = i + 1;
+              const rankColor = rank === 1 ? '#F4D35E' : rank === 2 ? '#C9C9C9' : rank === 3 ? '#CD7F32' : '#111111';
+              return (
+                <Box
+                  key={post.id}
+                  component={RouterLink}
+                  to={`/posts/${post.id}`}
+                  sx={{
+                    flex: '0 0 auto',
+                    width: 108,
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 0.6,
+                  }}
+                >
+                  <Box sx={{ position: 'relative', borderRadius: 1.5, overflow: 'hidden' }}>
+                    <Box
+                      component="img"
+                      src={post.image_url}
+                      alt={post.caption}
+                      sx={{ width: '100%', aspectRatio: '3 / 4', objectFit: 'cover', display: 'block' }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        minWidth: 20,
+                        height: 20,
+                        px: 0.6,
+                        borderRadius: '50%',
+                        bgcolor: rankColor,
+                        color: rank <= 3 ? '#111' : '#fff',
+                        fontSize: '0.68rem',
+                        fontWeight: 900,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                      }}
+                    >
+                      {rank}
+                    </Box>
+                  </Box>
+                  <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: 'text.secondary' }} noWrap>
+                    @{post.users?.username ?? 'unknown'}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
+                    <FavoriteIcon sx={{ fontSize: 12, color: 'secondary.main' }} />
+                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 800 }}>{post.likes_count ?? 0}</Typography>
+                  </Box>
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      )}
 
       {category === null && (
         <Box sx={{ pt: 1.5 }}>
