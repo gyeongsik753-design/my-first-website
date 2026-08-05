@@ -7,7 +7,7 @@ export default function CreateFab() {
     <Box
       sx={{
         position: 'fixed',
-        bottom: 84,
+        bottom: 58,
         left: '50%',
         transform: 'translateX(-50%)',
         width: '100%',
