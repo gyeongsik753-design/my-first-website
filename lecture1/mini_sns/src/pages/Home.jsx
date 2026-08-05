@@ -274,16 +274,22 @@ export default function Home() {
           <Box
             sx={{
               display: 'flex',
+              alignItems: 'flex-end',
               gap: 1.5,
               overflowX: 'auto',
               px: 2,
-              pb: 0.5,
+              pb: 1,
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              WebkitOverflowScrolling: 'touch',
               '&::-webkit-scrollbar': { display: 'none' },
             }}
           >
             {weeklyHotPosts.map((post, i) => {
               const rank = i + 1;
+              const top3 = rank <= 3;
               const rankColor = rank === 1 ? '#F4D35E' : rank === 2 ? '#C9C9C9' : rank === 3 ? '#CD7F32' : '#111111';
+              const cardWidth = top3 ? 138 : 102;
               return (
                 <Box
                   key={post.id}
@@ -291,7 +297,8 @@ export default function Home() {
                   to={`/posts/${post.id}`}
                   sx={{
                     flex: '0 0 auto',
-                    width: 108,
+                    width: cardWidth,
+                    scrollSnapAlign: 'start',
                     textDecoration: 'none',
                     color: 'inherit',
                     display: 'flex',
@@ -299,7 +306,16 @@ export default function Home() {
                     gap: 0.6,
                   }}
                 >
-                  <Box sx={{ position: 'relative', borderRadius: 1.5, overflow: 'hidden' }}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      ...(top3 && {
+                        boxShadow: `0 0 0 2.5px ${rankColor}, 0 6px 16px rgba(17,17,17,0.25)`,
+                      }),
+                    }}
+                  >
                     <Box
                       component="img"
                       src={post.image_url}
@@ -309,32 +325,51 @@ export default function Home() {
                     <Box
                       sx={{
                         position: 'absolute',
-                        top: 6,
-                        left: 6,
-                        minWidth: 20,
-                        height: 20,
+                        inset: 0,
+                        background: 'linear-gradient(0deg, rgba(0,0,0,0.55) 0%, transparent 38%)',
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 8,
+                        left: 8,
+                        minWidth: top3 ? 26 : 20,
+                        height: top3 ? 26 : 20,
                         px: 0.6,
                         borderRadius: '50%',
                         bgcolor: rankColor,
-                        color: rank <= 3 ? '#111' : '#fff',
-                        fontSize: '0.68rem',
+                        color: top3 ? '#111' : '#fff',
+                        fontSize: top3 ? '0.8rem' : '0.68rem',
                         fontWeight: 900,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
                       }}
                     >
                       {rank}
+                    </Box>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        bottom: 6,
+                        left: 8,
+                        right: 8,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.4,
+                      }}
+                    >
+                      <FavoriteIcon sx={{ fontSize: 12, color: '#fff' }} />
+                      <Typography sx={{ fontSize: '0.7rem', fontWeight: 800, color: '#fff' }}>
+                        {post.likes_count ?? 0}
+                      </Typography>
                     </Box>
                   </Box>
                   <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: 'text.secondary' }} noWrap>
                     @{post.users?.username ?? 'unknown'}
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
-                    <FavoriteIcon sx={{ fontSize: 12, color: 'secondary.main' }} />
-                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 800 }}>{post.likes_count ?? 0}</Typography>
-                  </Box>
                 </Box>
               );
             })}
