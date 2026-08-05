@@ -15,6 +15,7 @@ import { BRANDS, BRAND_SLOTS } from '../lib/brands';
 import { AAKAM_BRAND_URL, AAKAM_PRODUCTS } from '../lib/aakamProducts';
 import { ARCHIVE9999_BRAND_URL, ARCHIVE9999_PRODUCTS } from '../lib/archive9999Products';
 import { OY_BRAND_URL, OY_PRODUCTS } from '../lib/oyProducts';
+import { COORDI_LOOKS } from '../lib/coordiLooks';
 
 const BRAND_GRADIENTS = [
   'linear-gradient(150deg, #2c2c2c 0%, #0d0d0d 100%)',
@@ -38,6 +39,7 @@ export default function Home() {
   const [category, setCategory] = useState(null);
   const [postedToday, setPostedToday] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -420,6 +422,76 @@ export default function Home() {
         </Box>
       )}
 
+      {category === 'COORDI' && (
+        <Box sx={{ px: 2, pt: 3, pb: 1 }}>
+          <Typography
+            sx={{
+              fontWeight: 800,
+              fontSize: '0.78rem',
+              color: 'text.secondary',
+              letterSpacing: '0.06em',
+              mb: 2,
+            }}
+          >
+            코디 스타일 참고
+          </Typography>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 1.5,
+            }}
+          >
+            {COORDI_LOOKS.map((src, i) => (
+              <Box
+                key={src}
+                onClick={() => setLightboxIndex(i)}
+                sx={{
+                  borderRadius: 2.5,
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  aspectRatio: '3 / 4',
+                  boxShadow: '0 3px 10px rgba(17,17,17,0.12)',
+                  transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  '&:hover': { transform: 'translateY(-3px)' },
+                }}
+              >
+                <Box
+                  component="img"
+                  src={src}
+                  alt={`코디 스타일 ${i + 1}`}
+                  loading="lazy"
+                  sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      {lightboxIndex !== null && (
+        <Box
+          onClick={() => setLightboxIndex(null)}
+          sx={{
+            position: 'fixed',
+            inset: 0,
+            bgcolor: 'rgba(0,0,0,0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 20,
+            p: 3,
+          }}
+        >
+          <Box
+            component="img"
+            src={COORDI_LOOKS[lightboxIndex]}
+            alt={`코디 스타일 ${lightboxIndex + 1}`}
+            sx={{ maxWidth: '100%', maxHeight: '100%', borderRadius: 2, display: 'block' }}
+          />
+        </Box>
+      )}
+
       {!postedToday && category === 'OOTD' && (
         <Box
           sx={{
@@ -452,7 +524,7 @@ export default function Home() {
         </Box>
       )}
 
-      {category && category !== 'BRAND' && category !== 'MUSINSA' && (
+      {category && category !== 'BRAND' && category !== 'MUSINSA' && category !== 'COORDI' && (
         loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
             <CircularProgress color="secondary" />
