@@ -187,7 +187,7 @@ export default function PostDetail() {
       </Stack>
 
       <Box
-        sx={{ position: 'relative', mx: 2, borderRadius: 3, overflow: 'hidden' }}
+        sx={{ position: 'relative', mx: 2, borderRadius: 1.5, overflow: 'hidden' }}
         onClick={() => setShowBrands((v) => !v)}
         onDoubleClick={handleDoubleClickImage}
       >

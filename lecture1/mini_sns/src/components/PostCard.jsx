@@ -114,7 +114,7 @@ export default function PostCard({ post }) {
       sx={{
         mx: 2,
         mb: 3,
-        borderRadius: 3,
+        borderRadius: 1.5,
         border: '1px solid',
         borderColor: 'divider',
         overflow: 'hidden',

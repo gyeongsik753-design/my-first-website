@@ -112,7 +112,7 @@ export default function Home() {
             <Box
               sx={{
                 position: 'relative',
-                borderRadius: 4,
+                borderRadius: 1.5,
                 overflow: 'hidden',
                 background: 'linear-gradient(155deg, #1a1a1a 0%, #111111 55%, #3d0d14 100%)',
                 color: '#fff',
@@ -259,9 +259,6 @@ export default function Home() {
 
       {category === null && (
         <Box sx={{ pt: 1.5 }}>
-          <Typography sx={{ px: 2, fontWeight: 800, fontSize: '0.9rem', mb: 1 }}>
-            최근 게시물
-          </Typography>
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
               <CircularProgress color="secondary" />
