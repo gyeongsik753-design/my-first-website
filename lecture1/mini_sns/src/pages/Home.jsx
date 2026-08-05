@@ -329,6 +329,20 @@ export default function Home() {
                         background: 'linear-gradient(0deg, rgba(0,0,0,0.55) 0%, transparent 38%)',
                       }}
                     />
+                    {rank === 1 && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: -4,
+                          right: 2,
+                          fontSize: '1.6rem',
+                          transform: 'rotate(18deg)',
+                          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.45))',
+                        }}
+                      >
+                        👑
+                      </Box>
+                    )}
                     <Box
                       sx={{
                         position: 'absolute',
