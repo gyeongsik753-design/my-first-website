@@ -260,7 +260,29 @@ export default function Home() {
                   ),
                 },
               }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: 'rgba(0,0,0,0.04)' } }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  bgcolor: 'rgba(0,0,0,0.035)',
+                  transition: 'background-color 0.15s ease, box-shadow 0.15s ease',
+                  '& fieldset': {
+                    borderWidth: '1px',
+                    borderColor: 'rgba(0,0,0,0.14)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(0,0,0,0.24)',
+                  },
+                  '&.Mui-focused': {
+                    bgcolor: 'background.paper',
+                    boxShadow: '0 0 0 3px rgba(225,38,63,0.14)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderWidth: '1px',
+                    borderColor: 'secondary.main',
+                  },
+                },
+                '& .MuiInputAdornment-root': { mr: 1 },
+              }}
             />
           )}
         </Toolbar>
