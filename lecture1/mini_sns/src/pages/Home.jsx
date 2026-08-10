@@ -277,8 +277,11 @@ export default function Home() {
               width: '100%',
               columnGap: 2.5,
               rowGap: 1,
-              pt: 0.5,
-              pb: 0.25,
+              pt: 1,
+              pb: 0.75,
+              px: 1,
+              borderRadius: 1.5,
+              bgcolor: '#0a0a0a',
             }}
           >
             {CATEGORIES.map((c) => (
@@ -286,7 +289,7 @@ export default function Home() {
                 key={c.value}
                 icon={c.icon}
                 label={c.label}
-                gradient={c.gradient}
+                color={c.color}
                 selected={category === c.value}
                 onClick={() => setCategory(c.value)}
               />

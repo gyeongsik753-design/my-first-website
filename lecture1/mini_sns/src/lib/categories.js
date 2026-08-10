@@ -10,25 +10,25 @@ export const CATEGORIES = [
     value: 'OOTD',
     label: 'OOTD',
     icon: CheckroomIcon,
-    gradient: 'linear-gradient(135deg, #E1263F, #111111)',
+    color: '#FF3399',
   },
   {
     value: 'BRAND',
     label: '브랜드',
     icon: SellIcon,
-    gradient: 'linear-gradient(135deg, #C9A227, #111111)',
+    color: '#FFD400',
   },
   {
     value: 'MUSINSA',
     label: '무신사',
     icon: ShoppingBagIcon,
-    gradient: 'linear-gradient(135deg, #444444, #111111)',
+    color: '#4ADE80',
   },
   {
     value: 'COORDI',
     label: '코디',
     icon: DryCleaningIcon,
-    gradient: 'linear-gradient(135deg, #FF6B35, #C9302C)',
+    color: '#4FC3F7',
   },
 ];
 

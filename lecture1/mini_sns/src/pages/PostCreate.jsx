@@ -140,13 +140,13 @@ export default function PostCreate() {
         />
 
         <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', mb: 1.5 }}>카테고리</Typography>
-        <Stack direction="row" spacing={1.5} sx={{ mb: 3 }}>
+        <Stack direction="row" spacing={1.5} sx={{ mb: 3, p: 1.5, borderRadius: 1.5, bgcolor: '#0a0a0a' }}>
           {CATEGORIES.map((c) => (
             <CategoryTile
               key={c.value}
               icon={c.icon}
               label={c.label}
-              gradient={c.gradient}
+              color={c.color}
               selected={category === c.value}
               onClick={() => setCategory(c.value)}
             />
