@@ -194,12 +194,12 @@ export default function Home() {
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography
                     sx={{
-                      fontSize: '2rem',
+                      fontSize: '1.7rem',
                       letterSpacing: '0.02em',
-                      fontFamily: '"Luckiest Guy", cursive',
+                      fontFamily: '"Permanent Marker", cursive',
                       mb: 0.2,
                       color: '#FF3399',
-                      WebkitTextStroke: '1.5px #111111',
+                      WebkitTextStroke: '1px #111111',
                       textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
                     }}
                   >
@@ -208,9 +208,9 @@ export default function Home() {
                   <Typography
                     sx={{
                       display: 'block',
-                      fontSize: '1rem',
-                      lineHeight: 1.2,
-                      fontFamily: '"Permanent Marker", cursive',
+                      fontSize: '1.15rem',
+                      lineHeight: 1.25,
+                      fontFamily: '"Luckiest Guy", cursive',
                       color: '#FF3399',
                     }}
                   >
