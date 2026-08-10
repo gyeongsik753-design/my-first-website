@@ -194,25 +194,24 @@ export default function Home() {
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography
                     sx={{
-                      fontWeight: 900,
-                      fontSize: '1.3rem',
-                      letterSpacing: '-0.02em',
-                      fontFamily: '"Arial Narrow", "Helvetica Neue", Arial, sans-serif',
-                      mb: 0.3,
-                      color: '#fff',
-                      WebkitTextStroke: '1px rgba(0,0,0,0.4)',
-                      textShadow: '2px 2px 0 #E1263F, 2px 2px 8px rgba(225,38,63,0.4)',
+                      fontSize: '2rem',
+                      letterSpacing: '0.02em',
+                      fontFamily: '"Luckiest Guy", cursive',
+                      mb: 0.2,
+                      color: '#FF3399',
+                      WebkitTextStroke: '1.5px #111111',
+                      textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
                     }}
                   >
                     WITF
                   </Typography>
                   <Typography
                     sx={{
-                      display: 'inline',
-                      fontWeight: 900,
-                      fontSize: '1.05rem',
-                      lineHeight: 1.28,
-                      background: 'linear-gradient(180deg, transparent 62%, rgba(225,38,63,0.55) 62%)',
+                      display: 'block',
+                      fontSize: '1rem',
+                      lineHeight: 1.2,
+                      fontFamily: '"Permanent Marker", cursive',
+                      color: '#FF3399',
                     }}
                   >
                     What Is That Fit?
