@@ -18,7 +18,7 @@ import { BRANDS, BRAND_SLOTS } from '../lib/brands';
 import { AAKAM_BRAND_URL, AAKAM_PRODUCTS } from '../lib/aakamProducts';
 import { ARCHIVE9999_BRAND_URL, ARCHIVE9999_PRODUCTS } from '../lib/archive9999Products';
 import { OY_BRAND_URL, OY_PRODUCTS } from '../lib/oyProducts';
-import { COORDI_LOOKS } from '../lib/coordiLooks';
+import { COORDI_LOOKS, COORDI_CAPTIONS } from '../lib/coordiLooks';
 import { getBookmarkedCoordiIds, saveBookmarkedCoordiIds } from '../lib/coordiBookmarks';
 
 const BRAND_GRADIENTS = [
@@ -664,9 +664,9 @@ export default function Home() {
                     sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 0.2 }}>
-                  <Typography sx={{ fontSize: '0.68rem', fontWeight: 600, color: 'text.secondary' }}>
-                    코디 {i + 1}
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 0.5, px: 0.2 }}>
+                  <Typography sx={{ flex: 1, minWidth: 0, fontSize: '0.68rem', fontWeight: 600, color: 'text.secondary', lineHeight: 1.3 }}>
+                    {COORDI_CAPTIONS[i] ?? `코디 ${i + 1}`}
                   </Typography>
                   <IconButton
                     onClick={(e) => {
@@ -674,7 +674,7 @@ export default function Home() {
                       handleToggleCoordiBookmark(i);
                     }}
                     size="small"
-                    sx={{ p: 0.25, color: bookmarkedCoordi.has(i) ? 'secondary.main' : 'text.secondary' }}
+                    sx={{ p: 0.25, flexShrink: 0, color: bookmarkedCoordi.has(i) ? 'secondary.main' : 'text.secondary' }}
                     aria-label="코디 저장"
                   >
                     {bookmarkedCoordi.has(i) ? (
