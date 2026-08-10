@@ -20,6 +20,7 @@ export default function CreateFab() {
         component={RouterLink}
         to="/create"
         color="secondary"
+        size="small"
         aria-label="새 게시물 작성"
         sx={{
           position: 'absolute',
@@ -30,7 +31,7 @@ export default function CreateFab() {
           boxShadow: '0 6px 16px rgba(225,38,63,0.4)',
         }}
       >
-        <AddIcon />
+        <AddIcon fontSize="small" />
       </Fab>
     </Box>
   );
