@@ -161,7 +161,14 @@ export default function PostDetail() {
         </Toolbar>
       </AppBar>
 
-      <Stack direction="row" spacing={1.2} alignItems="center" sx={{ px: 2, py: 1.5 }}>
+      <Stack
+        component={post.users?.username ? RouterLink : 'div'}
+        to={post.users?.username ? `/u/${post.users.username}` : undefined}
+        direction="row"
+        spacing={1.2}
+        alignItems="center"
+        sx={{ px: 2, py: 1.5, textDecoration: 'none', color: 'inherit' }}
+      >
         <Box
           sx={{
             width: 46,
@@ -265,7 +272,11 @@ export default function PostDetail() {
           </Box>
         </Stack>
         <Typography sx={{ fontSize: '0.9rem', lineHeight: 1.6 }}>
-          <Box component="span" sx={{ fontWeight: 800, mr: 0.7 }}>
+          <Box
+            component={post.users?.username ? RouterLink : 'span'}
+            to={post.users?.username ? `/u/${post.users.username}` : undefined}
+            sx={{ fontWeight: 800, mr: 0.7, textDecoration: 'none', color: 'inherit' }}
+          >
             @{post.users?.username}
           </Box>
           {post.caption}
@@ -302,7 +313,11 @@ export default function PostDetail() {
           {comments.map((c) => (
             <Box key={c.id} sx={{ p: 1.25, borderRadius: 2, bgcolor: 'background.paper' }}>
               <Typography sx={{ fontSize: '0.85rem' }}>
-                <Box component="span" sx={{ fontWeight: 800, mr: 0.7 }}>
+                <Box
+                  component={c.users?.username ? RouterLink : 'span'}
+                  to={c.users?.username ? `/u/${c.users.username}` : undefined}
+                  sx={{ fontWeight: 800, mr: 0.7, textDecoration: 'none', color: 'inherit' }}
+                >
                   @{c.users?.username ?? '알 수 없음'}
                 </Box>
                 {c.content}

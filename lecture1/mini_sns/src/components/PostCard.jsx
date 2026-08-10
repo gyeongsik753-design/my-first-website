@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Typography, Avatar, IconButton, TextField, Button, CircularProgress } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
@@ -123,27 +123,39 @@ export default function PostCard({ post }) {
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, px: 1.75, py: 1.25 }}>
         <Box
+          component={post.users?.username ? RouterLink : 'div'}
+          to={post.users?.username ? `/u/${post.users.username}` : undefined}
           sx={{
-            width: 38,
-            height: 38,
-            borderRadius: '50%',
-            background: 'conic-gradient(from 220deg, #E1263F, #111111, #E1263F)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
+            gap: 1.2,
+            textDecoration: 'none',
+            color: 'inherit',
           }}
         >
-          <Avatar
-            src={post.users?.avatar_url || undefined}
-            sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14, border: '2px solid', borderColor: 'background.default' }}
+          <Box
+            sx={{
+              width: 38,
+              height: 38,
+              borderRadius: '50%',
+              background: 'conic-gradient(from 220deg, #E1263F, #111111, #E1263F)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
           >
-            {post.users?.username?.[0]?.toUpperCase() ?? '?'}
-          </Avatar>
+            <Avatar
+              src={post.users?.avatar_url || undefined}
+              sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14, border: '2px solid', borderColor: 'background.default' }}
+            >
+              {post.users?.username?.[0]?.toUpperCase() ?? '?'}
+            </Avatar>
+          </Box>
+          <Typography sx={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '0.01em' }}>
+            @{post.users?.username ?? 'unknown'}
+          </Typography>
         </Box>
-        <Typography sx={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '0.01em' }}>
-          @{post.users?.username ?? 'unknown'}
-        </Typography>
         <Typography sx={{ fontSize: '0.7rem', color: 'text.secondary', ml: 'auto', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {formatDate(post.created_at)}
         </Typography>
@@ -262,7 +274,11 @@ export default function PostCard({ post }) {
           </Box>
         </Box>
         <Typography sx={{ fontSize: '0.87rem', lineHeight: 1.5 }}>
-          <Box component="span" sx={{ fontWeight: 800, mr: 0.7 }}>
+          <Box
+            component={post.users?.username ? RouterLink : 'span'}
+            to={post.users?.username ? `/u/${post.users.username}` : undefined}
+            sx={{ fontWeight: 800, mr: 0.7, textDecoration: 'none', color: 'inherit' }}
+          >
             @{post.users?.username ?? 'unknown'}
           </Box>
           {post.caption}
@@ -306,7 +322,11 @@ export default function PostCard({ post }) {
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mb: 1.25 }}>
                     {comments.map((c) => (
                       <Typography key={c.id} sx={{ fontSize: '0.83rem' }}>
-                        <Box component="span" sx={{ fontWeight: 800, mr: 0.6 }}>
+                        <Box
+                          component={c.users?.username ? RouterLink : 'span'}
+                          to={c.users?.username ? `/u/${c.users.username}` : undefined}
+                          sx={{ fontWeight: 800, mr: 0.6, textDecoration: 'none', color: 'inherit' }}
+                        >
                           @{c.users?.username ?? '알 수 없음'}
                         </Box>
                         {c.content}

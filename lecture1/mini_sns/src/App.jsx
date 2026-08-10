@@ -9,6 +9,7 @@ import PostDetail from './pages/PostDetail';
 import PostCreate from './pages/PostCreate';
 import PostEdit from './pages/PostEdit';
 import MyPage from './pages/MyPage';
+import UserProfile from './pages/UserProfile';
 import Messages from './pages/Messages';
 import ChatRoom from './pages/ChatRoom';
 import Login from './pages/Login';
@@ -44,6 +45,7 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+        <Route path="/u/:username" element={<UserProfile />} />
         <Route
           path="/mypage"
           element={
