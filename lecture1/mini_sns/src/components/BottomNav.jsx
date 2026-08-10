@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
 import PersonIcon from '@mui/icons-material/Person';
@@ -10,7 +9,6 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutlineOutlined';
 
 const TABS = [
   { to: '/', match: (p) => p === '/', Icon: HomeOutlinedIcon, ActiveIcon: HomeIcon, label: '홈' },
-  { to: '/create', isCreate: true },
   {
     to: '/messages',
     match: (p) => p.startsWith('/messages'),
@@ -40,34 +38,7 @@ export default function BottomNav() {
         zIndex: 10,
       }}
     >
-      {TABS.map((tab) => {
-        if (tab.isCreate) {
-          return (
-            <Box
-              key={tab.to}
-              component={RouterLink}
-              to={tab.to}
-              aria-label="새 게시물 작성"
-              sx={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 0.3,
-                py: 1.2,
-                textDecoration: 'none',
-                color: 'secondary.main',
-              }}
-            >
-              <AddOutlinedIcon fontSize="small" />
-              <Box component="span" sx={{ fontSize: '0.65rem', visibility: 'hidden' }}>
-                +
-              </Box>
-            </Box>
-          );
-        }
-
-        const { to, match, Icon, ActiveIcon, label } = tab;
+      {TABS.map(({ to, match, Icon, ActiveIcon, label }) => {
         const active = match(pathname);
         const IconComp = active ? ActiveIcon : Icon;
         return (
