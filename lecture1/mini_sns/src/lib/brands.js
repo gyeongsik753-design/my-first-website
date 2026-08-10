@@ -22,4 +22,6 @@ export const BRAND_SLOTS = [
   { key: 'brand_top', label: '상의' },
   { key: 'brand_bottom', label: '하의' },
   { key: 'brand_shoes', label: '신발' },
+  { key: 'brand_bag', label: '가방' },
+  { key: 'brand_accessory', label: '악세' },
 ];

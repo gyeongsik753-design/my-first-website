@@ -36,6 +36,8 @@ create table if not exists public.posts (
   brand_top text,
   brand_bottom text,
   brand_shoes text,
+  brand_bag text,
+  brand_accessory text,
   -- 사진 위 브랜드 핀 좌표. 예: {"brand_top": {"x": 42.5, "y": 30.1}}
   -- x/y는 사진(4:5 비율 렌더링 기준) 가로/세로에 대한 % 위치
   brand_positions jsonb not null default '{}'::jsonb,
@@ -50,6 +52,8 @@ alter table public.posts add column if not exists brand_hat text;
 alter table public.posts add column if not exists brand_top text;
 alter table public.posts add column if not exists brand_bottom text;
 alter table public.posts add column if not exists brand_shoes text;
+alter table public.posts add column if not exists brand_bag text;
+alter table public.posts add column if not exists brand_accessory text;
 alter table public.posts add column if not exists brand_positions jsonb not null default '{}'::jsonb;
 alter table public.posts add column if not exists comments_count integer not null default 0;
 alter table public.posts drop column if exists brands;
