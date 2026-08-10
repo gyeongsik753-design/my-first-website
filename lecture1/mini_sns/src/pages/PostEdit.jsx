@@ -13,8 +13,8 @@ import {
   Autocomplete,
   CircularProgress,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import UploadIcon from '@mui/icons-material/Upload';
+import ArrowBackIcon from '@mui/icons-material/ArrowBackOutlined';
+import UploadIcon from '@mui/icons-material/UploadOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';

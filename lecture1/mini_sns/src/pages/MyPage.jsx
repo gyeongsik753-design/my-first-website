@@ -13,8 +13,8 @@ import {
   IconButton,
   Alert,
 } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCameraOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import TopBarActions from '../components/TopBarActions';

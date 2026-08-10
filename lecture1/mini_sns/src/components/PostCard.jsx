@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutlined';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import LocalOfferIcon from '@mui/icons-material/LocalOfferOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getLikedIds, saveLikedIds } from '../lib/likes';

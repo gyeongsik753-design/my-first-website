@@ -1,6 +1,6 @@
 import { Box, Fab } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@mui/icons-material/AddOutlined';
 
 export default function CreateFab() {
   return (

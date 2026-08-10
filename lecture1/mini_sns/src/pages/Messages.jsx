@@ -10,7 +10,7 @@ import {
   CircularProgress,
   Avatar,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@mui/icons-material/SearchOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 
@@ -140,7 +140,16 @@ export default function Messages() {
                 ),
               },
             }}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: 'rgba(0,0,0,0.04)' } }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                bgcolor: 'transparent',
+                '& fieldset': { borderWidth: '1.5px', borderColor: 'rgba(0,0,0,0.2)' },
+                '&:hover fieldset': { borderColor: 'rgba(0,0,0,0.35)' },
+                '&.Mui-focused': { boxShadow: '0 0 0 3px rgba(225,38,63,0.14)' },
+                '&.Mui-focused fieldset': { borderWidth: '1.5px', borderColor: 'secondary.main' },
+              },
+            }}
           />
         </Toolbar>
       </AppBar>

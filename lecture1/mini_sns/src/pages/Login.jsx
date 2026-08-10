@@ -44,9 +44,9 @@ export default function Login() {
             textAlign: 'center',
             fontWeight: 900,
             fontSize: '2.2rem',
-            letterSpacing: '0.02em',
+            letterSpacing: '-0.03em',
             mb: 0.5,
-            fontFamily: '"Roboto", cursive',
+            fontFamily: '"Arial Narrow", "Helvetica Neue", Arial, sans-serif',
             color: 'inherit',
             textDecoration: 'none',
           }}

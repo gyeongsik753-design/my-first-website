@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, AppBar, Toolbar, IconButton, Typography, TextField, Button, Alert, Stack, Autocomplete } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import UploadIcon from '@mui/icons-material/Upload';
-import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBackOutlined';
+import UploadIcon from '@mui/icons-material/UploadOutlined';
+import CloseIcon from '@mui/icons-material/CloseOutlined';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { CATEGORIES, DEFAULT_CATEGORY } from '../lib/categories';

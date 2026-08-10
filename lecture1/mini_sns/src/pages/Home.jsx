@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress, IconButton } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/SearchOutlined';
+import AddIcon from '@mui/icons-material/AddOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
@@ -124,7 +124,14 @@ export default function Home() {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography
               onClick={handleGoHome}
-              sx={{ fontWeight: 900, fontSize: '1.3rem', letterSpacing: '0.02em', cursor: 'pointer', userSelect: 'none' }}
+              sx={{
+                fontWeight: 900,
+                fontSize: '1.35rem',
+                fontFamily: '"Arial Narrow", "Helvetica Neue", Arial, sans-serif',
+                letterSpacing: '-0.02em',
+                cursor: 'pointer',
+                userSelect: 'none',
+              }}
             >
               WITF
             </Typography>
@@ -189,8 +196,8 @@ export default function Home() {
                     sx={{
                       fontWeight: 900,
                       fontSize: '1.3rem',
-                      letterSpacing: '0.03em',
-                      fontFamily: '"Roboto", cursive',
+                      letterSpacing: '-0.02em',
+                      fontFamily: '"Arial Narrow", "Helvetica Neue", Arial, sans-serif',
                       mb: 0.3,
                       color: '#fff',
                       WebkitTextStroke: '1px rgba(0,0,0,0.4)',
@@ -230,6 +237,38 @@ export default function Home() {
                     sx={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', borderRadius: 1 }}
                   />
                 </Box>
+              </Box>
+            </Box>
+          )}
+
+          {category === null && (
+            <Box sx={{ overflow: 'hidden', bgcolor: '#111111', borderRadius: 1.5, py: 0.55 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  width: 'max-content',
+                  animation: 'witf-marquee 16s linear infinite',
+                  '@keyframes witf-marquee': {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(-50%)' },
+                  },
+                }}
+              >
+                {[0, 1].map((i) => (
+                  <Typography
+                    key={i}
+                    sx={{
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap',
+                      fontWeight: 800,
+                      fontSize: '0.72rem',
+                      letterSpacing: '0.06em',
+                      color: '#fff',
+                    }}
+                  >
+                    {'WITF - WHAT IS THAT FIT? - TREND IS HERE - '.repeat(4)}
+                  </Typography>
+                ))}
               </Box>
             </Box>
           )}
@@ -276,22 +315,21 @@ export default function Home() {
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  bgcolor: 'rgba(0,0,0,0.035)',
-                  transition: 'background-color 0.15s ease, box-shadow 0.15s ease',
+                  borderRadius: 2,
+                  bgcolor: 'transparent',
+                  transition: 'box-shadow 0.15s ease',
                   '& fieldset': {
-                    borderWidth: '1px',
-                    borderColor: 'rgba(0,0,0,0.14)',
+                    borderWidth: '1.5px',
+                    borderColor: 'rgba(0,0,0,0.2)',
                   },
                   '&:hover fieldset': {
-                    borderColor: 'rgba(0,0,0,0.24)',
+                    borderColor: 'rgba(0,0,0,0.35)',
                   },
                   '&.Mui-focused': {
-                    bgcolor: 'background.paper',
                     boxShadow: '0 0 0 3px rgba(225,38,63,0.14)',
                   },
                   '&.Mui-focused fieldset': {
-                    borderWidth: '1px',
+                    borderWidth: '1.5px',
                     borderColor: 'secondary.main',
                   },
                 },
