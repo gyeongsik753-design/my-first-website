@@ -138,8 +138,7 @@ export default function Home() {
             <TopBarActions showHome={false} />
           </Box>
 
-          {category === null && (
-            <Box
+          <Box
               sx={{
                 position: 'relative',
                 borderRadius: 1.5,
@@ -238,10 +237,8 @@ export default function Home() {
                 </Box>
               </Box>
             </Box>
-          )}
 
-          {category === null && (
-            <Box sx={{ overflow: 'hidden', bgcolor: '#111111', borderRadius: 1.5, py: 0.55 }}>
+          <Box sx={{ overflow: 'hidden', bgcolor: '#111111', borderRadius: 1.5, py: 0.55 }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -270,7 +267,6 @@ export default function Home() {
                 ))}
               </Box>
             </Box>
-          )}
 
           <Box
             sx={{
