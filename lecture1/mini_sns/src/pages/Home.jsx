@@ -515,7 +515,7 @@ export default function Home() {
                   gap: 1,
                   width: 'calc(33.333% - 8px)',
                   height: 106,
-                  borderRadius: 3,
+                  borderRadius: 1.2,
                   overflow: 'hidden',
                   textDecoration: 'none',
                   background: BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
