@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, TextField, InputAdornment, Button, CircularProgress, IconButton } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
@@ -17,6 +19,7 @@ import { AAKAM_BRAND_URL, AAKAM_PRODUCTS } from '../lib/aakamProducts';
 import { ARCHIVE9999_BRAND_URL, ARCHIVE9999_PRODUCTS } from '../lib/archive9999Products';
 import { OY_BRAND_URL, OY_PRODUCTS } from '../lib/oyProducts';
 import { COORDI_LOOKS } from '../lib/coordiLooks';
+import { getBookmarkedCoordiIds, saveBookmarkedCoordiIds } from '../lib/coordiBookmarks';
 
 const BRAND_GRADIENTS = [
   'linear-gradient(150deg, #2c2c2c 0%, #0d0d0d 100%)',
@@ -41,6 +44,17 @@ export default function Home() {
   const [postedToday, setPostedToday] = useState(true);
   const [refreshTick, setRefreshTick] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [bookmarkedCoordi, setBookmarkedCoordi] = useState(() => getBookmarkedCoordiIds());
+
+  const handleToggleCoordiBookmark = (i) => {
+    setBookmarkedCoordi((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      saveBookmarkedCoordiIds(next);
+      return next;
+    });
+  };
 
   useEffect(() => {
     let ignore = false;
@@ -596,26 +610,47 @@ export default function Home() {
             }}
           >
             {COORDI_LOOKS.map((src, i) => (
-              <Box
-                key={src}
-                onClick={() => setLightboxIndex(i)}
-                sx={{
-                  borderRadius: 2.5,
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                  aspectRatio: '3 / 4',
-                  boxShadow: '0 3px 10px rgba(17,17,17,0.12)',
-                  transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&:hover': { transform: 'translateY(-3px)' },
-                }}
-              >
+              <Box key={src} sx={{ display: 'flex', flexDirection: 'column', gap: 0.4 }}>
                 <Box
-                  component="img"
-                  src={src}
-                  alt={`코디 스타일 ${i + 1}`}
-                  loading="lazy"
-                  sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
+                  onClick={() => setLightboxIndex(i)}
+                  sx={{
+                    borderRadius: 2.5,
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    aspectRatio: '3 / 4',
+                    boxShadow: '0 3px 10px rgba(17,17,17,0.12)',
+                    transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    '&:hover': { transform: 'translateY(-3px)' },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={src}
+                    alt={`코디 스타일 ${i + 1}`}
+                    loading="lazy"
+                    sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 0.2 }}>
+                  <Typography sx={{ fontSize: '0.68rem', fontWeight: 600, color: 'text.secondary' }}>
+                    코디 {i + 1}
+                  </Typography>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleCoordiBookmark(i);
+                    }}
+                    size="small"
+                    sx={{ p: 0.25, color: bookmarkedCoordi.has(i) ? 'secondary.main' : 'text.secondary' }}
+                    aria-label="코디 저장"
+                  >
+                    {bookmarkedCoordi.has(i) ? (
+                      <BookmarkIcon sx={{ fontSize: 16 }} />
+                    ) : (
+                      <BookmarkBorderIcon sx={{ fontSize: 16 }} />
+                    )}
+                  </IconButton>
+                </Box>
               </Box>
             ))}
           </Box>
