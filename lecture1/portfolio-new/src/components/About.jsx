@@ -12,12 +12,9 @@ const About = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.intersectionRatio >= 0.4);
       },
-      { threshold: 0.4 }
+      { threshold: [0, 0.4] }
     );
     observer.observe(el);
 
