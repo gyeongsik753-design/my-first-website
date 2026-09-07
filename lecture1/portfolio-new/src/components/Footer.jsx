@@ -1,8 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import profilePhoto from '../assets/profile.jpg';
+
+const TITLE_TEXT = 'Portfolio';
+const NAME_TEXT = 'GyeongSik Shin';
+
+const randomBetween = (min, max) => Math.random() * (max - min) + min;
 
 const Footer = () => {
   const [showTopBtn, setShowTopBtn] = useState(false);
+  const [inView, setInView] = useState(false);
+  const titleRef = useRef(null);
+
+  const { titleLetters, nameLetters } = useMemo(() => {
+    let i = 0;
+    const makeLetters = (str) =>
+      Array.from(str).map((ch) => ({
+        ch: ch === ' ' ? ' ' : ch,
+        i: i++,
+        tx: randomBetween(-260, 260),
+        ty: randomBetween(-180, 180),
+        tr: randomBetween(-70, 70),
+      }));
+    return {
+      titleLetters: makeLetters(TITLE_TEXT),
+      nameLetters: makeLetters(NAME_TEXT),
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -11,6 +34,21 @@ const Footer = () => {
     handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.intersectionRatio >= 0.3);
+      },
+      { threshold: [0, 0.3] }
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
   }, []);
 
   const scrollToTop = () => {
@@ -33,8 +71,31 @@ const Footer = () => {
       </div>
 
       <div className="footer__content">
-        <h2 className="footer__title">Portfolio</h2>
-        <h3 className="footer__name">GyeongSik Shin</h3>
+        <h2
+          ref={titleRef}
+          className={`footer__title${inView ? ' footer__title--in' : ''}`}
+        >
+          {titleLetters.map(({ ch, i, tx, ty, tr }) => (
+            <span
+              key={i}
+              className="footer__letter"
+              style={{ '--i': i, '--tx': `${tx}px`, '--ty': `${ty}px`, '--tr': `${tr}deg` }}
+            >
+              {ch}
+            </span>
+          ))}
+        </h2>
+        <h3 className={`footer__name${inView ? ' footer__name--in' : ''}`}>
+          {nameLetters.map(({ ch, i, tx, ty, tr }) => (
+            <span
+              key={i}
+              className="footer__letter"
+              style={{ '--i': i, '--tx': `${tx}px`, '--ty': `${ty}px`, '--tr': `${tr}deg` }}
+            >
+              {ch}
+            </span>
+          ))}
+        </h3>
         <p className="footer__contact">gyeongsik5694@naver.com</p>
         <p className="footer__contact">010-9822-5694</p>
       </div>

@@ -1041,6 +1041,40 @@
   -webkit-text-stroke: 1.5px var(--white);
 }
 
+.footer__letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translate(var(--tx), var(--ty)) rotate(var(--tr));
+}
+
+.footer__title--in .footer__letter,
+.footer__name--in .footer__letter {
+  animation: footer-letter-assemble 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i) * 0.03s);
+}
+
+@keyframes footer-letter-assemble {
+  0% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) rotate(var(--tr));
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__letter {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
 .footer__contact {
   margin: 0 0 10px;
   font-size: 20px;
