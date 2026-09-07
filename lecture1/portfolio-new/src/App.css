@@ -570,6 +570,32 @@
   margin: 0;
 }
 
+.about__word {
+  color: rgba(207, 207, 207, 0.22);
+  transition: none;
+}
+
+.about__text--in .about__word {
+  animation: about-word-wave 0.5s ease-out forwards;
+  animation-delay: calc(var(--i) * 0.045s);
+}
+
+@keyframes about-word-wave {
+  0% {
+    color: rgba(207, 207, 207, 0.22);
+  }
+  100% {
+    color: var(--gray-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about__word {
+    color: var(--gray-text);
+    animation: none;
+  }
+}
+
 /* Profile */
 .profile {
   min-height: 100vh;
