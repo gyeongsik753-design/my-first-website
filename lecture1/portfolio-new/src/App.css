@@ -981,19 +981,19 @@
 
 @keyframes footer-ring-spin-a {
   from {
-    transform: rotateX(78deg) rotateZ(0deg);
+    transform: rotateZ(-20deg) rotateX(72deg) rotateZ(0deg);
   }
   to {
-    transform: rotateX(78deg) rotateZ(360deg);
+    transform: rotateZ(-20deg) rotateX(72deg) rotateZ(360deg);
   }
 }
 
 @keyframes footer-ring-spin-b {
   from {
-    transform: rotateX(74deg) rotateZ(360deg);
+    transform: rotateZ(16deg) rotateX(68deg) rotateZ(360deg);
   }
   to {
-    transform: rotateX(74deg) rotateZ(0deg);
+    transform: rotateZ(16deg) rotateX(68deg) rotateZ(0deg);
   }
 }
 

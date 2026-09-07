@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import profilePhoto from '../assets/profile.jpg';
-import witfPhoto from '../assets/project-witf-1.png';
 
 const Footer = () => {
   const [showTopBtn, setShowTopBtn] = useState(false);
@@ -28,7 +27,7 @@ const Footer = () => {
         </div>
         <div className="footer__ring footer__ring--b">
           <div className="footer__ring-frame">
-            <img src={witfPhoto} alt="" />
+            <img src={profilePhoto} alt="" />
           </div>
         </div>
       </div>
