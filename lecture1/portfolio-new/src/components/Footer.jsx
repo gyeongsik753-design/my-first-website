@@ -3,6 +3,8 @@ import profilePhoto from '../assets/profile.jpg';
 
 const TITLE_TEXT = 'Portfolio';
 const NAME_TEXT = 'GyeongSik Shin';
+const EMAIL_TEXT = 'gyeongsik5694@naver.com';
+const PHONE_TEXT = '010-9822-5694';
 
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 
@@ -11,7 +13,7 @@ const Footer = () => {
   const [inView, setInView] = useState(false);
   const titleRef = useRef(null);
 
-  const { titleLetters, nameLetters } = useMemo(() => {
+  const { titleLetters, nameLetters, emailLetters, phoneLetters } = useMemo(() => {
     let i = 0;
     const makeLetters = (str) =>
       Array.from(str).map((ch) => ({
@@ -24,6 +26,8 @@ const Footer = () => {
     return {
       titleLetters: makeLetters(TITLE_TEXT),
       nameLetters: makeLetters(NAME_TEXT),
+      emailLetters: makeLetters(EMAIL_TEXT),
+      phoneLetters: makeLetters(PHONE_TEXT),
     };
   }, []);
 
@@ -96,8 +100,28 @@ const Footer = () => {
             </span>
           ))}
         </h3>
-        <p className="footer__contact">gyeongsik5694@naver.com</p>
-        <p className="footer__contact">010-9822-5694</p>
+        <p className={`footer__contact${inView ? ' footer__contact--in' : ''}`}>
+          {emailLetters.map(({ ch, i, tx, ty, tr }) => (
+            <span
+              key={i}
+              className="footer__letter"
+              style={{ '--i': i, '--tx': `${tx}px`, '--ty': `${ty}px`, '--tr': `${tr}deg` }}
+            >
+              {ch}
+            </span>
+          ))}
+        </p>
+        <p className={`footer__contact${inView ? ' footer__contact--in' : ''}`}>
+          {phoneLetters.map(({ ch, i, tx, ty, tr }) => (
+            <span
+              key={i}
+              className="footer__letter"
+              style={{ '--i': i, '--tx': `${tx}px`, '--ty': `${ty}px`, '--tr': `${tr}deg` }}
+            >
+              {ch}
+            </span>
+          ))}
+        </p>
       </div>
 
       <button

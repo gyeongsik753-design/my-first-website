@@ -1048,7 +1048,8 @@
 }
 
 .footer__title--in .footer__letter,
-.footer__name--in .footer__letter {
+.footer__name--in .footer__letter,
+.footer__contact--in .footer__letter {
   animation: footer-letter-assemble 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(var(--i) * 0.03s);
 }
