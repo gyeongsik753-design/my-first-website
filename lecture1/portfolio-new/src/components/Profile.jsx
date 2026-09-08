@@ -85,7 +85,7 @@ const Profile = () => {
               <span className="profile__photo-glare" aria-hidden="true" />
             </div>
           </div>
-          <div className="profile__meta">
+          <div className={`profile__meta${listInView ? ' profile__meta--in' : ''}`}>
             <span>Gyeong Sik Shin</span>
             <span>1998 . 09 . 03</span>
           </div>

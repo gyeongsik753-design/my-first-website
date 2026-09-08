@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { SiClaude } from 'react-icons/si';
 
 const LetterBadge = ({ text, background }) => (
@@ -48,12 +49,33 @@ const SKILLS = [
 ];
 
 const Skills = () => {
+  const listRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.intersectionRatio >= 0.3);
+      },
+      { threshold: [0, 0.3] }
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div id="skill" className="skills">
       <h3 className="skills__title">Skills</h3>
-      <div className="skills__list">
-        {SKILLS.map(({ name, badge }) => (
-          <div key={name} className="skills__item">
+      <div
+        ref={listRef}
+        className={`skills__list${inView ? ' skills__list--in' : ''}`}
+      >
+        {SKILLS.map(({ name, badge }, i) => (
+          <div key={name} className="skills__item" style={{ '--i': i }}>
             {badge()}
             <span className="skills__name">{name}</span>
           </div>
