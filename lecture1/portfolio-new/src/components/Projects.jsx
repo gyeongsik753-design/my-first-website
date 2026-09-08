@@ -9,13 +9,15 @@ const CARD_TILT_MAX_DEG = 10;
 
 const Projects = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [witfHovered, setWitfHovered] = useState(false);
 
   useEffect(() => {
+    if (witfHovered) return undefined;
     const timer = window.setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % WITF_SLIDES.length);
     }, SLIDE_INTERVAL);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [witfHovered]);
 
   const handleCardMove = (e) => {
     const el = e.currentTarget;
@@ -31,6 +33,13 @@ const Projects = () => {
     e.currentTarget.style.transform = '';
   };
 
+  const handleWitfEnter = () => setWitfHovered(true);
+
+  const handleWitfLeave = (e) => {
+    setWitfHovered(false);
+    handleCardLeave(e);
+  };
+
   return (
     <section id="projects" className="projects">
       <h2 className="projects__title">PROJECTS</h2>
@@ -40,8 +49,9 @@ const Projects = () => {
           target="_blank"
           rel="noopener noreferrer"
           className="projects__card projects__card--witf"
+          onMouseEnter={handleWitfEnter}
           onMouseMove={handleCardMove}
-          onMouseLeave={handleCardLeave}
+          onMouseLeave={handleWitfLeave}
         >
           <div className="projects__slideshow">
             {WITF_SLIDES.map((src, i) => (
