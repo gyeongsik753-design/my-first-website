@@ -73,21 +73,27 @@ const Profile = () => {
     <section id="profile" className="profile">
       <div className="profile__top">
         <div className="profile__photo-col">
-          <div className={`profile__photo-wrap${listInView ? ' profile__photo-wrap--in' : ''}`}>
+          <div className="profile__photo-wrap">
             <span className="profile__photo-label">Profile</span>
-            <div
-              className="profile__photo-tilt"
-              ref={tiltRef}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-            >
-              <img src={profilePhoto} alt="신경식 프로필 사진" className="profile__photo" />
-              <span className="profile__photo-glare" aria-hidden="true" />
+            <div className={`profile__photo-fly${listInView ? ' profile__photo-fly--in' : ''}`}>
+              <div
+                className="profile__photo-tilt"
+                ref={tiltRef}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
+                <img src={profilePhoto} alt="신경식 프로필 사진" className="profile__photo" />
+                <span className="profile__photo-glare" aria-hidden="true" />
+              </div>
             </div>
           </div>
           <div className={`profile__meta${listInView ? ' profile__meta--in' : ''}`}>
-            <span>Gyeong Sik Shin</span>
-            <span>1998 . 09 . 03</span>
+            <span className="profile__meta-item" style={{ '--i': 0 }}>
+              Gyeong Sik Shin
+            </span>
+            <span className="profile__meta-item" style={{ '--i': 1 }}>
+              1998 . 09 . 03
+            </span>
           </div>
         </div>
 
