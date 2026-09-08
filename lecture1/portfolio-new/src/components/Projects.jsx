@@ -5,6 +5,7 @@ import projectWitf3 from '../assets/project-witf-3.png';
 
 const WITF_SLIDES = [projectWitf1, projectWitf2, projectWitf3];
 const SLIDE_INTERVAL = 2200;
+const CARD_TILT_MAX_DEG = 10;
 
 const Projects = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -16,6 +17,20 @@ const Projects = () => {
     return () => window.clearInterval(timer);
   }, []);
 
+  const handleCardMove = (e) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    const rotateY = (px - 0.5) * CARD_TILT_MAX_DEG * 2;
+    const rotateX = (0.5 - py) * CARD_TILT_MAX_DEG * 2;
+    el.style.transform = `scale(1.06) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  };
+
+  const handleCardLeave = (e) => {
+    e.currentTarget.style.transform = '';
+  };
+
   return (
     <section id="projects" className="projects">
       <h2 className="projects__title">PROJECTS</h2>
@@ -25,6 +40,8 @@ const Projects = () => {
           target="_blank"
           rel="noopener noreferrer"
           className="projects__card projects__card--witf"
+          onMouseMove={handleCardMove}
+          onMouseLeave={handleCardLeave}
         >
           <div className="projects__slideshow">
             {WITF_SLIDES.map((src, i) => (
@@ -38,11 +55,19 @@ const Projects = () => {
           </div>
         </a>
 
-        <div className="projects__card placeholder">
+        <div
+          className="projects__card placeholder"
+          onMouseMove={handleCardMove}
+          onMouseLeave={handleCardLeave}
+        >
           <span className="placeholder__hint">프로젝트 2</span>
         </div>
 
-        <div className="projects__card placeholder">
+        <div
+          className="projects__card placeholder"
+          onMouseMove={handleCardMove}
+          onMouseLeave={handleCardLeave}
+        >
           <span className="placeholder__hint">프로젝트 3</span>
         </div>
       </div>

@@ -987,12 +987,17 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  perspective: 1400px;
 }
 
 .projects__card {
   aspect-ratio: 3 / 5;
   border-radius: 4px;
   overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease,
+    opacity 0.45s ease;
 }
 
 .projects__card--witf {
@@ -1001,6 +1006,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.projects__grid:has(.projects__card:hover) .projects__card:not(:hover) {
+  transform: scale(0.92) translateZ(-40px);
+  filter: brightness(0.6) saturate(0.7);
+  opacity: 0.75;
 }
 
 .projects__slideshow {
@@ -1016,23 +1027,23 @@
   height: 100%;
   object-fit: contain;
   opacity: 0;
-  transition: opacity 0.7s ease, transform 0.35s ease;
+  transition: opacity 0.7s ease;
 }
 
 .projects__slide--active {
   opacity: 1;
 }
 
-.projects__card--witf:hover .projects__slide--active {
-  transform: scale(1.1);
+@media (hover: none) {
+  .projects__card {
+    transition: none;
+  }
 }
 
-.projects__card.placeholder {
-  transition: transform 0.35s ease;
-}
-
-.projects__card.placeholder:hover {
-  transform: scale(1.04);
+@media (prefers-reduced-motion: reduce) {
+  .projects__card {
+    transition: none;
+  }
 }
 
 @media (max-width: 720px) {
