@@ -456,6 +456,8 @@
   align-items: center;
   justify-content: center;
   scroll-snap-align: start;
+  max-width: 1280px;
+  margin: 0 auto;
   padding: 96px 24px 80px;
   text-align: center;
 }
@@ -775,7 +777,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 40px 24px 60px;
   overflow-x: hidden;
@@ -783,8 +785,8 @@
 
 .profile__top {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 24px;
+  grid-template-columns: auto 1fr;
+  column-gap: 64px;
   align-items: flex-start;
 }
 
@@ -1106,7 +1108,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 1080px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 40px 24px 120px;
   text-align: center;
@@ -1293,6 +1295,8 @@
   position: relative;
   overflow: hidden;
   text-align: center;
+  max-width: 1280px;
+  margin: 0 auto;
   padding: 100px 24px 120px;
 }
 
