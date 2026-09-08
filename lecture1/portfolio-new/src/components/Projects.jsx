@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import projectWitf0 from '../assets/project-witf-0.png';
 import projectWitf1 from '../assets/project-witf-1.png';
 import projectWitf2 from '../assets/project-witf-2.png';
 import projectWitf3 from '../assets/project-witf-3.png';
 
-const WITF_SLIDES = [projectWitf1, projectWitf2, projectWitf3];
+const WITF_SLIDES = [projectWitf0, projectWitf1, projectWitf2, projectWitf3];
 const SLIDE_INTERVAL = 2200;
 const CARD_TILT_MAX_DEG = 10;
 
