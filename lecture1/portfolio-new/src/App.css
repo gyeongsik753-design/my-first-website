@@ -61,7 +61,7 @@
   font-size: clamp(40px, 8vw, 72px);
   letter-spacing: 0.5em;
   color: rgba(255, 255, 255, 0.15);
-  filter: blur(14px) brightness(0.4);
+  filter: blur(7px) brightness(0.4);
   opacity: 0;
   transition: opacity 1.4s ease, filter 1.4s ease,
     letter-spacing 1.4s cubic-bezier(0.22, 1, 0.36, 1), color 1.4s ease;
@@ -72,7 +72,7 @@
   filter: blur(0) brightness(1);
   letter-spacing: 0.08em;
   color: var(--white);
-  text-shadow: 0 0 18px rgba(143, 233, 255, 0.8), 0 0 40px rgba(143, 233, 255, 0.4);
+  text-shadow: 0 0 10px rgba(143, 233, 255, 0.75), 0 0 24px rgba(143, 233, 255, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {
