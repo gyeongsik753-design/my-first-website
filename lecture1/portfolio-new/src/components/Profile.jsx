@@ -71,7 +71,10 @@ const Profile = () => {
 
   return (
     <section id="profile" className="profile">
-      <div className="profile__top">
+      <div
+        className={`profile__top${listInView ? ' profile__top--in' : ''}`}
+        ref={infoRef}
+      >
         <div className="profile__photo-col">
           <div className="profile__photo-wrap">
             <span className="profile__photo-label">Profile</span>
@@ -97,47 +100,42 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="profile__right">
-          <div
-            className={`profile__info${listInView ? ' profile__info--in' : ''}`}
-            ref={infoRef}
-          >
-            <div className="profile__col">
-              <h3 className="profile__heading">Education</h3>
-              <ul>
-                {education.map((item) => (
-                  <li key={item.year + item.desc} style={{ '--i': item.i }}>
-                    <span className="profile__year">{item.year}</span>
-                    <span className="profile__desc">{item.desc}</span>
-                  </li>
-                ))}
-              </ul>
+        <div className="profile__col">
+          <h3 className="profile__heading">Education</h3>
+          <ul>
+            {education.map((item) => (
+              <li key={item.year + item.desc} style={{ '--i': item.i }}>
+                <span className="profile__year">{item.year}</span>
+                <span className="profile__desc">{item.desc}</span>
+              </li>
+            ))}
+          </ul>
 
-              <h3 className="profile__heading profile__heading--spaced">Work</h3>
-              <ul>
-                {work.map((item) => (
-                  <li key={item.year + item.desc} style={{ '--i': item.i }}>
-                    <span className="profile__year">{item.year}</span>
-                    <span className="profile__desc">{item.desc}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <h3 className="profile__heading profile__heading--spaced">Work</h3>
+          <ul>
+            {work.map((item) => (
+              <li key={item.year + item.desc} style={{ '--i': item.i }}>
+                <span className="profile__year">{item.year}</span>
+                <span className="profile__desc">{item.desc}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-            <div className="profile__col">
-              <h3 className="profile__heading">Certification</h3>
-              <ul>
-                {certification.map((item) => (
-                  <li key={item.year + item.desc + item.i} style={{ '--i': item.i }}>
-                    <span className="profile__year">{item.year}</span>
-                    <span className="profile__desc">{item.desc}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
+        <div className="profile__col profile__col--skills">
           <Skills />
+        </div>
+
+        <div className="profile__col">
+          <h3 className="profile__heading">Certification</h3>
+          <ul>
+            {certification.map((item) => (
+              <li key={item.year + item.desc + item.i} style={{ '--i': item.i }}>
+                <span className="profile__year">{item.year}</span>
+                <span className="profile__desc">{item.desc}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
