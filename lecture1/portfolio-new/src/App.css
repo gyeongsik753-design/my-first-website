@@ -656,11 +656,29 @@
 .profile__photo-wrap {
   width: 260px;
   opacity: 0;
-  transform: translateY(90px);
+  transform: translateY(340px) scale(0.45) rotate(5deg);
+  filter: blur(8px);
 }
 
 .profile__photo-wrap--in {
-  animation: profile-photo-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: profile-photo-fly-in 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes profile-photo-fly-in {
+  0% {
+    opacity: 0;
+    transform: translateY(340px) scale(0.45) rotate(5deg);
+    filter: blur(8px);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: blur(0);
+  }
 }
 
 @keyframes profile-photo-rise {
@@ -678,6 +696,7 @@
   .profile__photo-wrap {
     opacity: 1;
     transform: none;
+    filter: none;
   }
 
   .profile__photo-wrap--in {
