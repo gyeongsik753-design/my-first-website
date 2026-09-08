@@ -640,6 +640,7 @@
   max-width: 960px;
   margin: 0 auto;
   padding: 40px 24px 60px;
+  overflow-x: hidden;
 }
 
 .profile__top {
@@ -656,7 +657,7 @@
 .profile__photo-wrap {
   width: 260px;
   opacity: 0;
-  transform: translateY(340px) scale(0.45) rotate(5deg);
+  transform: translateX(-420px) scale(0.45) rotate(-5deg);
   filter: blur(8px);
 }
 
@@ -667,7 +668,7 @@
 @keyframes profile-photo-fly-in {
   0% {
     opacity: 0;
-    transform: translateY(340px) scale(0.45) rotate(5deg);
+    transform: translateX(-420px) scale(0.45) rotate(-5deg);
     filter: blur(8px);
   }
   55% {
@@ -676,7 +677,7 @@
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: translateX(0) scale(1) rotate(0deg);
     filter: blur(0);
   }
 }
