@@ -155,7 +155,7 @@
 }
 
 .navbar__item--active .navbar__label {
-  transform: scale(1.6);
+  transform: scale(1.45);
   color: #8fe9ff;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(143, 233, 255, 0.9), 0 0 22px rgba(143, 233, 255, 0.5);
