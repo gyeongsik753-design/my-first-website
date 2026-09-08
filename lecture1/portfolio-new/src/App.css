@@ -921,6 +921,7 @@
 
 .profile__info {
   display: flex;
+  justify-content: space-between;
   gap: 64px;
   flex-wrap: nowrap;
   align-items: flex-start;
