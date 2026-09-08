@@ -1269,14 +1269,14 @@
   width: 620px;
   height: 620px;
   margin: -310px 0 0 -310px;
-  animation: footer-ring-spin-a 26s linear infinite;
+  animation: footer-ring-spin-a 18s linear infinite;
 }
 
 .footer__ring--b {
   width: 400px;
   height: 400px;
   margin: -200px 0 0 -200px;
-  animation: footer-ring-spin-b 18s linear infinite;
+  animation: footer-ring-spin-b 13s linear infinite;
 }
 
 .footer__ring-frame {
