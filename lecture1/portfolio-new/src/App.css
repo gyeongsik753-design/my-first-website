@@ -93,7 +93,7 @@
 }
 
 .navbar__inner {
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
   box-sizing: border-box;
@@ -653,11 +653,11 @@
   min-height: 100vh;
   box-sizing: border-box;
   scroll-snap-align: start;
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 120px 24px;
   display: grid;
-  grid-template-columns: 7fr 4fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   column-gap: 24px;
   row-gap: 40px;
