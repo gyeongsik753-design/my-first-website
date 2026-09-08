@@ -657,7 +657,7 @@
   margin: 0 auto;
   padding: 120px 24px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 7fr 4fr;
   align-items: center;
   column-gap: 24px;
   row-gap: 40px;
@@ -667,9 +667,10 @@
   margin: 0;
   font-family: var(--heading-font);
   font-weight: 400;
-  font-size: clamp(48px, 9vw, 100px);
+  font-size: clamp(40px, 8vw, 100px);
   letter-spacing: 0.02em;
   color: transparent;
+  white-space: nowrap;
   -webkit-text-stroke: 2px var(--white);
 }
 
