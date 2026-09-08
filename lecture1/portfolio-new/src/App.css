@@ -1037,7 +1037,7 @@
 
 .projects__card--witf:hover .projects__slide--active {
   object-fit: cover;
-  animation: projects-witf-scroll 5.5s ease-in-out infinite alternate;
+  animation: projects-witf-scroll 2.4s ease-in-out infinite alternate;
 }
 
 @keyframes projects-witf-scroll {

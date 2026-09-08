@@ -34,7 +34,10 @@ const Projects = () => {
     e.currentTarget.style.transform = '';
   };
 
-  const handleWitfEnter = () => setWitfHovered(true);
+  const handleWitfEnter = () => {
+    setActiveSlide(0);
+    setWitfHovered(true);
+  };
 
   const handleWitfLeave = (e) => {
     setWitfHovered(false);
