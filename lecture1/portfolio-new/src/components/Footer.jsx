@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import profilePhoto from '../assets/profile.jpg';
 
-const TITLE_TEXT = 'Portfolio';
+const TITLE_TEXT = 'Contact';
 const NAME_TEXT = 'GyeongSik Shin';
 const EMAIL_TEXT = 'gyeongsik5694@naver.com';
 const PHONE_TEXT = '010-9822-5694';
