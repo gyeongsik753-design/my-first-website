@@ -18,14 +18,37 @@ const CERTIFICATION = [
   { year: '2025', desc: 'acp' },
 ];
 
-import { useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import profilePhoto from '../assets/profile.jpg';
 import Skills from './Skills';
 
 const TILT_MAX_DEG = 12;
 
+const withIndex = (list, offset = 0) => list.map((item, i) => ({ ...item, i: offset + i }));
+
 const Profile = () => {
   const tiltRef = useRef(null);
+  const infoRef = useRef(null);
+  const [listInView, setListInView] = useState(false);
+
+  const education = useMemo(() => withIndex(EDUCATION), []);
+  const work = useMemo(() => withIndex(WORK, EDUCATION.length), []);
+  const certification = useMemo(() => withIndex(CERTIFICATION), []);
+
+  useEffect(() => {
+    const el = infoRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setListInView(entry.intersectionRatio >= 0.2);
+      },
+      { threshold: [0, 0.2] }
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleMouseMove = (e) => {
     const el = tiltRef.current;
@@ -69,12 +92,15 @@ const Profile = () => {
         </div>
 
         <div className="profile__right">
-          <div className="profile__info">
+          <div
+            className={`profile__info${listInView ? ' profile__info--in' : ''}`}
+            ref={infoRef}
+          >
             <div className="profile__col">
               <h3 className="profile__heading">Education</h3>
               <ul>
-                {EDUCATION.map((item) => (
-                  <li key={item.year + item.desc}>
+                {education.map((item) => (
+                  <li key={item.year + item.desc} style={{ '--i': item.i }}>
                     <span className="profile__year">{item.year}</span>
                     <span className="profile__desc">{item.desc}</span>
                   </li>
@@ -83,8 +109,8 @@ const Profile = () => {
 
               <h3 className="profile__heading profile__heading--spaced">Work</h3>
               <ul>
-                {WORK.map((item) => (
-                  <li key={item.year + item.desc}>
+                {work.map((item) => (
+                  <li key={item.year + item.desc} style={{ '--i': item.i }}>
                     <span className="profile__year">{item.year}</span>
                     <span className="profile__desc">{item.desc}</span>
                   </li>
@@ -95,8 +121,8 @@ const Profile = () => {
             <div className="profile__col">
               <h3 className="profile__heading">Certification</h3>
               <ul>
-                {CERTIFICATION.map((item, i) => (
-                  <li key={item.year + item.desc + i}>
+                {certification.map((item) => (
+                  <li key={item.year + item.desc + item.i} style={{ '--i': item.i }}>
                     <span className="profile__year">{item.year}</span>
                     <span className="profile__desc">{item.desc}</span>
                   </li>
