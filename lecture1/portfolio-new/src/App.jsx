@@ -6,11 +6,13 @@ import Projects from './components/Projects';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import FrameCorners from './components/FrameCorners';
+import Preloader from './components/Preloader';
 import './App.css';
 
 function App() {
   return (
     <>
+      <Preloader />
       <CustomCursor />
       <FrameCorners />
       <div className="bg-aurora" aria-hidden="true">
