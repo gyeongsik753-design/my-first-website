@@ -18,17 +18,49 @@ const CERTIFICATION = [
   { year: '2025', desc: 'acp' },
 ];
 
+import { useRef } from 'react';
 import profilePhoto from '../assets/profile.jpg';
 import Skills from './Skills';
 
+const TILT_MAX_DEG = 12;
+
 const Profile = () => {
+  const tiltRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    const el = tiltRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    const rotateY = (px - 0.5) * TILT_MAX_DEG * 2;
+    const rotateX = (0.5 - py) * TILT_MAX_DEG * 2;
+    el.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
+    el.style.setProperty('--mx', `${px * 100}%`);
+    el.style.setProperty('--my', `${py * 100}%`);
+  };
+
+  const handleMouseLeave = () => {
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+  };
+
   return (
     <section id="profile" className="profile">
       <div className="profile__top">
         <div className="profile__photo-col">
           <div className="profile__photo-wrap">
             <span className="profile__photo-label">Profile</span>
-            <img src={profilePhoto} alt="신경식 프로필 사진" className="profile__photo" />
+            <div
+              className="profile__photo-tilt"
+              ref={tiltRef}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
+              <img src={profilePhoto} alt="신경식 프로필 사진" className="profile__photo" />
+              <span className="profile__photo-glare" aria-hidden="true" />
+            </div>
           </div>
           <div className="profile__meta">
             <span>Gyeong Sik Shin</span>
