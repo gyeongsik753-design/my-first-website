@@ -13,6 +13,11 @@ function App() {
     <>
       <CustomCursor />
       <FrameCorners />
+      <div className="bg-aurora" aria-hidden="true">
+        <span className="bg-aurora-blob bg-aurora-blob--cyan" />
+        <span className="bg-aurora-blob bg-aurora-blob--purple" />
+        <span className="bg-aurora-blob bg-aurora-blob--teal" />
+      </div>
       <div className="bg-bokeh" aria-hidden="true">
         <span className="bg-bokeh-dot bg-bokeh-dot--1" />
         <span className="bg-bokeh-dot bg-bokeh-dot--2" />

@@ -9,7 +9,7 @@ html {
 
 body {
   margin: 0;
-  background: radial-gradient(ellipse 120% 60% at 50% 0%, #1c1c24 0%, #0a0a0d 45%, #000 100%);
+  background: radial-gradient(ellipse 120% 60% at 50% 0%, #131722 0%, #0a0c12 45%, #030406 100%);
   color: #fff;
   font-family: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
