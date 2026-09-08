@@ -358,6 +358,7 @@
 .hero__camera-wrap {
   position: relative;
   display: inline-block;
+  perspective: 1400px;
 }
 
 .hero__camera {
@@ -367,6 +368,28 @@
   height: auto;
   object-fit: contain;
   display: block;
+  transform-origin: 50% 55%;
+  animation: hero-camera-reveal 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-camera-reveal {
+  0% {
+    opacity: 0;
+    transform: rotateY(-16deg) rotateX(5deg) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) rotateX(0deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__camera {
+    animation: none;
+  }
 }
 
 .hero__flash-burst {
