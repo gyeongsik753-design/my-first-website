@@ -73,7 +73,7 @@ const Profile = () => {
     <section id="profile" className="profile">
       <div className="profile__top">
         <div className="profile__photo-col">
-          <div className="profile__photo-wrap">
+          <div className={`profile__photo-wrap${listInView ? ' profile__photo-wrap--in' : ''}`}>
             <span className="profile__photo-label">Profile</span>
             <div
               className="profile__photo-tilt"
